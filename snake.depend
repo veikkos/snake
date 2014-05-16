@@ -618,3 +618,95 @@
 1400260068 source:c:\users\veino\documents\projektit\codeblocks\snake\dijkstra.cpp
 	"dijkstra.h"
 
+1400261383 source:c:\users\veino\documents\projektit\git\snake\ai.cpp
+	"ai.h"
+
+1400261383 c:\users\veino\documents\projektit\git\snake\ai.h
+	"snake.h"
+	"eatables.h"
+
+1400261383 c:\users\veino\documents\projektit\git\snake\snake.h
+	"defines.h"
+	"entity.h"
+
+1400261383 c:\users\veino\documents\projektit\git\snake\defines.h
+
+1400261383 c:\users\veino\documents\projektit\git\snake\entity.h
+
+1400261383 c:\users\veino\documents\projektit\git\snake\eatables.h
+	"defines.h"
+	"entity.h"
+
+1400261383 source:c:\users\veino\documents\projektit\git\snake\eatables.cpp
+	"eatables.h"
+	"defines.h"
+	"entity.h"
+	<string.h>
+	<stdlib.h>
+
+1400261383 source:c:\users\veino\documents\projektit\git\snake\entity.cpp
+	<stdlib.h>
+	"entity.h"
+
+1400261383 source:c:\users\veino\documents\projektit\git\snake\dijkstra.cpp
+	"dijkstra.h"
+
+1400261383 c:\users\veino\documents\projektit\git\snake\dijkstra.h
+
+1400261383 source:c:\users\veino\documents\projektit\git\snake\game.cpp
+	"game.h"
+	"defines.h"
+
+1400261383 c:\users\veino\documents\projektit\git\snake\game.h
+	"SDL/SDL.h"
+	"SDL/SDL_image.h"
+	"SDL/SDL_ttf.h"
+	<stdlib.h>
+	"screen.h"
+	"snake.h"
+	"eatables.h"
+	"ai.h"
+	"smart_ai.h"
+
+1400261383 c:\users\veino\documents\projektit\git\snake\screen.h
+	"SDL\SDL.h"
+	<string>
+
+1400261383 c:\users\veino\documents\projektit\git\snake\smart_ai.h
+	"snake.h"
+	"eatables.h"
+	"dijkstra.h"
+	"defines.h"
+
+1400261383 source:c:\users\veino\documents\projektit\git\snake\main.cpp
+	"game.h"
+	"menu.h"
+	<stdlib.h>
+	<time.h>
+
+1400261383 c:\users\veino\documents\projektit\git\snake\menu.h
+	"SDL\SDL.h"
+	"SDL\SDL_ttf.h"
+	"SDL\SDL_image.h"
+	"screen.h"
+	"defines.h"
+
+1400261383 source:c:\users\veino\documents\projektit\git\snake\menu.cpp
+	"menu.h"
+	"screen.h"
+
+1400261383 source:c:\users\veino\documents\projektit\git\snake\screen.cpp
+	"SDL\SDL.h"
+	"SDL\SDL_image.h"
+	<string>
+
+1400261383 source:c:\users\veino\documents\projektit\git\snake\snake.cpp
+	"snake.h"
+	"defines.h"
+	<string.h>
+
+1400266404 source:c:\users\veino\documents\projektit\git\snake\smart_ai.cpp
+	"smart_ai.h"
+	<cmath>
+	<iostream>
+

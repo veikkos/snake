@@ -41,8 +41,6 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
         {
             if(y == x)
                 cost[y][x] = 0;
-            if(BlockHasSnake(ai_snake, x, y))
-                cost[y][x] = 1000;
             else if(std::abs(y-x) == 1)
                 cost[y][x] = 1;
             else if(x - y == y_blocks)
@@ -54,12 +52,38 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
         }
     }
 
+    int i;
+
+    int snake_head = (ai_snake->GetPosY(0) / GRID_SIZE) * \
+                                x_blocks + ai_snake->GetPosX(0) / \
+                                GRID_SIZE;
+
+    for(i=1; i<ai_snake->GetLength(); i++){
+        int snake_in_block = (ai_snake->GetPosY(i) / GRID_SIZE) * \
+                                x_blocks + ai_snake->GetPosX(i) / \
+                                GRID_SIZE;
+
+        if(snake_in_block != snake_head){
+            int m_count;
+
+            for(m_count = 0; m_count < m_size; m_count++){
+
+                if(m_count != snake_in_block){
+                    cost[snake_in_block][m_count] = 1000;
+                    cost[m_count][snake_in_block] = 1000;
+                }
+            }
+        }
+    }
+
     int source_node = ai_snake->GetPosY(0) / GRID_SIZE;
     source_node *= x_blocks;
     source_node += ai_snake->GetPosX(0) / GRID_SIZE;
 
     dijkstra(m_size, source_node, cost, dist);
-    //dijkstra(m_size, cost, ai_snake->GetPosX(), ai_snake->GetPosY(), cur_eatable.x, cur_eatable.y);
+
+    // TODO: calculate shortest route
+    // TODO: return dir based on the shortest route
 
     for(y=0; y<m_size; y++)
     {
