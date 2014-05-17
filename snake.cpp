@@ -12,8 +12,8 @@ Snake::Snake(int x, int y, int len) : Entity(MAX_LENGTH)
     pos[0]->y = y;
 
     for(i=1; i<len; i++){
-        pos[i]->x = SCREEN_WIDTH;
-        pos[i]->y = 0;
+        pos[i]->x = x - GRID_SIZE * i;
+        pos[i]->y = y;
     }
 
     dir = s_right;

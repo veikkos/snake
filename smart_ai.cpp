@@ -31,7 +31,6 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
     int x, y, **cost, *dist;
     int m_size = (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
     int x_blocks = X_AREA / GRID_SIZE;
-    int y_blocks = Y_AREA / GRID_SIZE;
 
     dist = new int[m_size];
     cost = new int*[m_size];
@@ -44,11 +43,9 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
         {
             if(y == x)
                 cost[y][x] = 0;
-            else if(std::abs(y-x) == 1)
+            else if(abs(y-x) == 1)
                 cost[y][x] = 1;
-            else if(x - y == x_blocks)
-                cost[y][x] = 1;
-            else if(y - x == x_blocks)
+            else if(abs(x - y) == x_blocks)
                 cost[y][x] = 1;
             else
                 cost[y][x] = 1000;
