@@ -24,7 +24,7 @@ int Init(){
     screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SCREEN_FLAGS );
 
     //Set the window caption
-    SDL_WM_SetCaption( "Snake v0.3", NULL );
+    SDL_WM_SetCaption( "Snake v0.4", NULL );
 
     //Initialize SDL_ttf
     if( TTF_Init() == -1 )

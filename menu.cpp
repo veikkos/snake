@@ -39,7 +39,7 @@ void Menu::Main(SDL_Surface *screen, int *selection){
     int i_selection = 0;
     int x_pos = (SCREEN_WIDTH - 440) / 2;
 
-    SDL_Color textColor = { 160, 10, 30 };
+    SDL_Color textColor = { 230, 230, 230 };
 
     //Draw background to the screen
     apply_surface( 0, 0, background, screen, NULL );

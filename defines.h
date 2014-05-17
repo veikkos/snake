@@ -6,13 +6,13 @@
 #define SCREEN_BPP      32
 #define SCREEN_FLAGS    (SDL_HWSURFACE | SDL_DOUBLEBUF)
 
-#define FPS             10
+#define FPS             20
 
 #define GRID_SIZE       10
-#define X_AREA          320
-#define Y_AREA          320
+#define X_AREA          640
+#define Y_AREA          480
 
-#define MAX_LENGTH      200
+#define MAX_LENGTH      1000
 
 #define SNAKE_PAUSE     0
 

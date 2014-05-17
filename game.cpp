@@ -277,11 +277,17 @@ void Game::Render(SDL_Surface *screen, int end)
 {
     int i;
     char score_array[20];
-    SDL_Color textColor = { 160, 10, 30 };
+    SDL_Color textColor = { 230, 230, 230 };
     SDL_Rect clip[5];
 
     //Draw background to the screen
     apply_surface( 0, 0, background, screen );
+
+    // Draw score to the screen
+    strncpy(score_array, (char*)"SCORE: ", 7);
+    itoa(score, &score_array[7], 10);
+    score_text = TTF_RenderText_Solid( font, score_array, textColor );
+    apply_surface( 5, 5, score_text, screen );
 
     //Draw snake to the screen
     clip[ 0 ].x = 0;
@@ -331,12 +337,6 @@ void Game::Render(SDL_Surface *screen, int end)
 
         apply_surface( d_eatable->GetPosX(0), d_eatable->GetPosY(0), dyn_eatable, screen, &clip[d_eatable->GetFrame()]);
     }
-
-    // Draw score to the screen
-    strncpy(score_array, (char*)"SCORE: ", 7);
-    itoa(score, &score_array[7], 10);
-    score_text = TTF_RenderText_Solid( font, score_array, textColor );
-    apply_surface( 0, 0, score_text, screen );
 
     if(end){
         end_text = TTF_RenderText_Solid( font, (char*)"GAME OVER!", textColor );
