@@ -85,12 +85,21 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
 
     vector<int> path = dijkstra(m_size, snake_head, target, cost, dist);
 
-    // TODO: return dir based on the shortest route
-
     for(y=0; y<m_size; y++)
     {
         delete[] cost[y];
     }
+
+    int next_block = path.back();
+
+    if(next_block - snake_head == 1)
+        ai_snake->SetDir(s_right);
+    else if(snake_head - next_block == 1)
+        ai_snake->SetDir(s_left);
+    else if(next_block < snake_head)
+        ai_snake->SetDir(s_up);
+    else
+        ai_snake->SetDir(s_down);
 
     delete[] cost;
 }

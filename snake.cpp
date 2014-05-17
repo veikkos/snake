@@ -16,7 +16,7 @@ Snake::Snake(int x, int y, int len) : Entity(MAX_LENGTH)
         pos[i]->y = 0;
     }
 
-    dir = right;
+    dir = s_right;
     length = len;
     speed = 1;
     pause = 0;
@@ -29,13 +29,13 @@ Snake::~Snake()
 
 void Snake::SetDir(Direction n_dir){
 
-    if(dir == left && n_dir == right)
+    if(dir == s_left && n_dir == s_right)
         return;
-    else if(dir == right && n_dir == left)
+    else if(dir == s_right && n_dir == s_left)
         return;
-    else if(dir == up && n_dir == down)
+    else if(dir == s_up && n_dir == s_down)
         return;
-    else if(dir == down && n_dir == up)
+    else if(dir == s_down && n_dir == s_up)
         return;
 
     dir = n_dir;
@@ -83,7 +83,7 @@ void Snake::Move(){
 
     switch(dir){
 
-        case right:
+        case s_right:
 
             if((pos[0]->x + GRID_SIZE * speed) < X_AREA)
                 pos[0]->x += GRID_SIZE * speed;
@@ -92,7 +92,7 @@ void Snake::Move(){
 
             break;
 
-        case down:
+        case s_down:
 
             if((pos[0]->y + GRID_SIZE * speed) < Y_AREA)
                 pos[0]->y += GRID_SIZE * speed;
@@ -101,7 +101,7 @@ void Snake::Move(){
 
             break;
 
-        case left:
+        case s_left:
 
             if((pos[0]->x - GRID_SIZE * speed) >= 0)
                 pos[0]->x -= GRID_SIZE * speed;
@@ -110,7 +110,7 @@ void Snake::Move(){
 
             break;
 
-        case up:
+        case s_up:
 
             if((pos[0]->y - GRID_SIZE * speed) >= 0)
                 pos[0]->y -= GRID_SIZE * speed;

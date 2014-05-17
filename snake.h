@@ -5,10 +5,10 @@
 
 typedef enum{
 
-    right = 0,
-    down,
-    left,
-    up
+    s_right = 0,
+    s_down,
+    s_left,
+    s_up
 
 } Direction;
 

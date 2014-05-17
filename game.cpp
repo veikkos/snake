@@ -151,10 +151,10 @@ void Game::GetInput()
             //Set the proper message surface
             switch( event.key.keysym.sym )
             {
-                case SDLK_UP: snake->SetDir(up); dirGot = 1; break;
-                case SDLK_DOWN: snake->SetDir(down); dirGot = 1; break;
-                case SDLK_LEFT: snake->SetDir(left); dirGot = 1; break;
-                case SDLK_RIGHT: snake->SetDir(right); dirGot = 1; break;
+                case SDLK_UP: snake->SetDir(s_up); dirGot = 1; break;
+                case SDLK_DOWN: snake->SetDir(s_down); dirGot = 1; break;
+                case SDLK_LEFT: snake->SetDir(s_left); dirGot = 1; break;
+                case SDLK_RIGHT: snake->SetDir(s_right); dirGot = 1; break;
                 case SDLK_ESCAPE: done = QUITED; break;
                 default: break;
             }

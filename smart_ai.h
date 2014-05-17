@@ -13,6 +13,7 @@ public:
     ~SmartAi();
 
     void GetDir(Snake *ai_snake, Eatable *cur_eatable);
+
 private:
     bool BlockHasSnake(Snake *snake, int x, int y);
 };

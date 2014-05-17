@@ -8,7 +8,6 @@ vector<int> dijkstra(int matrix_size, int source, int target, int **cost, int *d
 {
     int i, u, count, w, *flag, min;
 
-    //vector< vector<int> > path(matrix_size);
     vector<int> previous_step(matrix_size);
 
     flag = new int[matrix_size];
@@ -42,7 +41,6 @@ vector<int> dijkstra(int matrix_size, int source, int target, int **cost, int *d
            if((dist[u] + cost[u][w]<dist[w]) && !flag[w])
            {
               dist[w] = dist[u] + cost[u][w];
-              //path.at(w).push_back(u);
               previous_step.at(w) = u;
            }
         }
@@ -61,5 +59,4 @@ vector<int> dijkstra(int matrix_size, int source, int target, int **cost, int *d
     delete[] flag;
 
     return path;
-    //return path.at(target);
 }

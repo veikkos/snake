@@ -15,19 +15,19 @@ void Ai::GetDir(Snake *ai_snake, Eatable *cur_eatable){
     new_dir = old_dir;
 
     // Get direction based on the eatable...
-    if((ai_snake->GetDir() == right) || (ai_snake->GetDir() == left)){
+    if((ai_snake->GetDir() == s_right) || (ai_snake->GetDir() == s_left)){
 
         if(ai_snake->GetPosY(0) < cur_eatable->GetPosY(0))
-            new_dir = down;
+            new_dir = s_down;
         else if(ai_snake->GetPosY(0) > cur_eatable->GetPosY(0) )
-            new_dir = up;
+            new_dir = s_up;
 
-    }else if((ai_snake->GetDir() == up) || (ai_snake->GetDir() == down)){
+    }else if((ai_snake->GetDir() == s_up) || (ai_snake->GetDir() == s_down)){
 
         if(ai_snake->GetPosX(0) < cur_eatable->GetPosX(0))
-            new_dir = right;
+            new_dir = s_right;
         else if(ai_snake->GetPosX(0) > cur_eatable->GetPosX(0))
-            new_dir = left;
+            new_dir = s_left;
     }
 
     // ...and check that snake doesn't crash to itself on next block.
@@ -40,109 +40,109 @@ void Ai::GetDir(Snake *ai_snake, Eatable *cur_eatable){
     // the eatable.
     switch(new_dir){
 
-        case right:
+        case s_right:
         {
             if(ai_snake->GetPosY(0) > cur_eatable->GetPosY(0)){
-                if(CollisionIn(ai_snake, up) == false){
-                    ai_snake->SetDir(up);
+                if(CollisionIn(ai_snake, s_up) == false){
+                    ai_snake->SetDir(s_up);
                     return;
-                }else if(CollisionIn(ai_snake, down) == false){
-                    ai_snake->SetDir(down);
+                }else if(CollisionIn(ai_snake, s_down) == false){
+                    ai_snake->SetDir(s_down);
                     return;
                 }
             }else{
-                if(CollisionIn(ai_snake, down) == false){
-                    ai_snake->SetDir(down);
+                if(CollisionIn(ai_snake, s_down) == false){
+                    ai_snake->SetDir(s_down);
                     return;
-                }else if(CollisionIn(ai_snake, up) == false){
-                    ai_snake->SetDir(up);
+                }else if(CollisionIn(ai_snake, s_up) == false){
+                    ai_snake->SetDir(s_up);
                     return;
                 }
             }
 
-            if(CollisionIn(ai_snake, left) == false){
-                ai_snake->SetDir(left);
+            if(CollisionIn(ai_snake, s_left) == false){
+                ai_snake->SetDir(s_left);
                 return;
             }
 
             break;
         }
-        case left:
+        case s_left:
         {
             if(ai_snake->GetPosY(0) > cur_eatable->GetPosY(0)){
-                if(CollisionIn(ai_snake, up) == false){
-                    ai_snake->SetDir(up);
+                if(CollisionIn(ai_snake, s_up) == false){
+                    ai_snake->SetDir(s_up);
                     return;
-                }else if(CollisionIn(ai_snake, down) == false){
-                    ai_snake->SetDir(down);
+                }else if(CollisionIn(ai_snake, s_down) == false){
+                    ai_snake->SetDir(s_down);
                     return;
                 }
             }else{
-                if(CollisionIn(ai_snake, down) == false){
-                    ai_snake->SetDir(down);
+                if(CollisionIn(ai_snake, s_down) == false){
+                    ai_snake->SetDir(s_down);
                     return;
-                }else if(CollisionIn(ai_snake, up) == false){
-                    ai_snake->SetDir(up);
+                }else if(CollisionIn(ai_snake, s_up) == false){
+                    ai_snake->SetDir(s_up);
                     return;
                 }
             }
 
-            if(CollisionIn(ai_snake, right) == false){
-                ai_snake->SetDir(right);
+            if(CollisionIn(ai_snake, s_right) == false){
+                ai_snake->SetDir(s_right);
                 return;
             }
 
             break;
         }
-        case down:
+        case s_down:
         {
             if(ai_snake->GetPosX(0) > cur_eatable->GetPosX(0)){
-                if(CollisionIn(ai_snake, left) == false){
-                    ai_snake->SetDir(left);
+                if(CollisionIn(ai_snake, s_left) == false){
+                    ai_snake->SetDir(s_left);
                     return;
-                }else if(CollisionIn(ai_snake, right) == false){
-                    ai_snake->SetDir(right);
+                }else if(CollisionIn(ai_snake, s_right) == false){
+                    ai_snake->SetDir(s_right);
                     return;
                 }
             }else{
-                if(CollisionIn(ai_snake, right) == false){
-                    ai_snake->SetDir(right);
+                if(CollisionIn(ai_snake, s_right) == false){
+                    ai_snake->SetDir(s_right);
                     return;
-                }else if(CollisionIn(ai_snake, left) == false){
-                    ai_snake->SetDir(left);
+                }else if(CollisionIn(ai_snake, s_left) == false){
+                    ai_snake->SetDir(s_left);
                     return;
                 }
             }
 
-            if(CollisionIn(ai_snake, up) == false){
-                ai_snake->SetDir(up);
+            if(CollisionIn(ai_snake, s_up) == false){
+                ai_snake->SetDir(s_up);
                 return;
             }
 
             break;
         }
-        case up:
+        case s_up:
         {
             if(ai_snake->GetPosX(0) > cur_eatable->GetPosX(0)){
-                if(CollisionIn(ai_snake, left) == false){
-                    ai_snake->SetDir(left);
+                if(CollisionIn(ai_snake, s_left) == false){
+                    ai_snake->SetDir(s_left);
                     return;
-                }else if(CollisionIn(ai_snake, right) == false){
-                    ai_snake->SetDir(right);
+                }else if(CollisionIn(ai_snake, s_right) == false){
+                    ai_snake->SetDir(s_right);
                     return;
                 }
             }else{
-                if(CollisionIn(ai_snake, right) == false){
-                    ai_snake->SetDir(right);
+                if(CollisionIn(ai_snake, s_right) == false){
+                    ai_snake->SetDir(s_right);
                     return;
-                }else if(CollisionIn(ai_snake, left) == false){
-                    ai_snake->SetDir(left);
+                }else if(CollisionIn(ai_snake, s_left) == false){
+                    ai_snake->SetDir(s_left);
                     return;
                 }
             }
 
-            if(CollisionIn(ai_snake, down) == false){
-                ai_snake->SetDir(down);
+            if(CollisionIn(ai_snake, s_down) == false){
+                ai_snake->SetDir(s_down);
                 return;
             }
 
@@ -159,7 +159,7 @@ bool Ai::CollisionIn(Snake *ai_snake, Direction dir){
 
         switch(dir){
 
-            case right:
+            case s_right:
             {
                 if((ai_snake->GetPosX(0) + GRID_SIZE) == ai_snake->GetPosX(i)){
 
@@ -170,7 +170,7 @@ bool Ai::CollisionIn(Snake *ai_snake, Direction dir){
 
                 break;
             }
-            case left:
+            case s_left:
             {
                 if((ai_snake->GetPosX(0) - GRID_SIZE) == ai_snake->GetPosX(i)){
 
@@ -181,7 +181,7 @@ bool Ai::CollisionIn(Snake *ai_snake, Direction dir){
 
                 break;
             }
-            case down:
+            case s_down:
             {
                 if((ai_snake->GetPosY(0) + GRID_SIZE) == ai_snake->GetPosY(i)){
 
@@ -192,7 +192,7 @@ bool Ai::CollisionIn(Snake *ai_snake, Direction dir){
 
                 break;
             }
-            case up:
+            case s_up:
             {
                 if((ai_snake->GetPosY(0) - GRID_SIZE) == ai_snake->GetPosY(i)){
 
