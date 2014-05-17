@@ -12,7 +12,7 @@
 #define X_AREA          640
 #define Y_AREA          480
 
-#define MAX_LENGTH      1000
+#define MAX_LENGTH      50000
 
 #define SNAKE_PAUSE     0
 

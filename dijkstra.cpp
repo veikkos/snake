@@ -8,9 +8,9 @@ vector<int> dijkstra(int matrix_size, int source, int target, int **cost)
 {
     int i, u = 0, count, w, min, *dist;
     bool *flag, done = false;
+    vector<int> previous_step(matrix_size);
 
     dist = new int[matrix_size];
-    vector<int> previous_step(matrix_size);
     flag = new bool[matrix_size];
 
     for(i=0; i<matrix_size; i++)
@@ -45,7 +45,7 @@ vector<int> dijkstra(int matrix_size, int source, int target, int **cost)
                 previous_step.at(w) = u;
 
                 if(u == target)
-                done = true;
+                    done = true;
             }
         }
     }
