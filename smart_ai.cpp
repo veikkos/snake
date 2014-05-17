@@ -1,6 +1,9 @@
 #include "smart_ai.h"
 #include <cmath>
 #include <iostream>
+#include <vector>
+
+using namespace std;
 
 SmartAi::SmartAi(){
 
@@ -76,13 +79,12 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
         }
     }
 
-    int source_node = ai_snake->GetPosY(0) / GRID_SIZE;
-    source_node *= x_blocks;
-    source_node += ai_snake->GetPosX(0) / GRID_SIZE;
+    int target = cur_eatable->GetPosY(0) / GRID_SIZE;
+    target *= x_blocks;
+    target += cur_eatable->GetPosX(0) / GRID_SIZE;
 
-    dijkstra(m_size, source_node, cost, dist);
+    vector<int> path = dijkstra(m_size, snake_head, target, cost, dist);
 
-    // TODO: calculate shortest route
     // TODO: return dir based on the shortest route
 
     for(y=0; y<m_size; y++)
