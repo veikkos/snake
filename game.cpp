@@ -101,7 +101,7 @@ bool Game::Execute(SDL_Surface *screen, bool useAi, bool useSmartAi)
 int Game::LoadContent(){
 
     //Open the font
-    font = TTF_OpenFont( "fonts/crackdr2.ttf", 28 );
+    font = TTF_OpenFont( "fonts/DigitalDreamFat.ttf", 24 );
 
      //If there was an error in loading the font
     if( font == NULL )

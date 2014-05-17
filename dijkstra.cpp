@@ -46,15 +46,18 @@ vector<int> dijkstra(int matrix_size, int source, int target, int **cost, int *d
         }
     }
 
-    vector<int> path(target);
+    vector<int> path;
     int p_ptr = previous_step.at(target);
 
-    while(previous_step.at(p_ptr) != 0){
+    path.push_back(target);
+
+    while(p_ptr && previous_step.at(p_ptr) != 0){
         path.push_back(p_ptr);
         p_ptr = previous_step.at(p_ptr);
     }
 
-    path.push_back(p_ptr);
+    if(p_ptr)
+        path.push_back(p_ptr);
 
     delete[] flag;
 

@@ -9,8 +9,8 @@
 #define FPS             10
 
 #define GRID_SIZE       10
-#define X_AREA          90
-#define Y_AREA          90
+#define X_AREA          320
+#define Y_AREA          320
 
 #define MAX_LENGTH      200
 

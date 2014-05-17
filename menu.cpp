@@ -19,7 +19,7 @@ Menu::~Menu(){
 bool Menu::Init(){
 
     //Open the font
-    font = TTF_OpenFont( "fonts/crackdr2.ttf", 28 );
+    font = TTF_OpenFont( "fonts/DigitalDream.ttf", 28 );
 
      //If there was an error in loading the font
     if( font == NULL )
@@ -37,16 +37,17 @@ bool Menu::Init(){
 void Menu::Main(SDL_Surface *screen, int *selection){
 
     int i_selection = 0;
+    int x_pos = (SCREEN_WIDTH - 440) / 2;
 
     SDL_Color textColor = { 160, 10, 30 };
 
     //Draw background to the screen
     apply_surface( 0, 0, background, screen, NULL );
 
-    PrintText(screen, 160, 100, (char*)"Select 1 to play", font, &textColor);
-    PrintText(screen, 160, 140, (char*)"Select 2 to AI play", font, &textColor);
-    PrintText(screen, 160, 180, (char*)"Select 3 to AI play", font, &textColor);
-    PrintText(screen, 160, 220, (char*)"Select ESC to quit", font, &textColor);
+    PrintText(screen, x_pos, 60, (char*)"Select 1 to play", font, &textColor);
+    PrintText(screen, x_pos, 100, (char*)"Select 2 to AI play", font, &textColor);
+    PrintText(screen, x_pos, 140, (char*)"Select 3 to AI2 play", font, &textColor);
+    PrintText(screen, x_pos, 180, (char*)"Select ESC to quit", font, &textColor);
 
     //Update the screen
     SDL_Flip( screen );

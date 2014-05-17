@@ -1,0 +1,1 @@
+D:\Libraries\MinGW\bin\gprof snake.exe gmon.out > profile.txt
