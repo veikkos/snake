@@ -4,45 +4,49 @@ using namespace std;
 
 #define MAX 1000
 
-vector<int> dijkstra(int matrix_size, int source, int target, int **cost, int *dist)
+vector<int> dijkstra(int matrix_size, int source, int target, int **cost)
 {
-    int i, u, count, w, *flag, min;
+    int i, u = 0, count, w, min, *dist;
+    bool *flag, done = false;
 
+    dist = new int[matrix_size];
     vector<int> previous_step(matrix_size);
-
-    flag = new int[matrix_size];
+    flag = new bool[matrix_size];
 
     for(i=0; i<matrix_size; i++)
     {
-        flag[i] = 0;
+        flag[i] = false;
         dist[i] = cost[source][i];
     }
 
     count = 1;
 
-    while(count < matrix_size)
+    while(count < matrix_size && !done)
     {
         min = MAX;
 
         for(w=0; w<matrix_size; w++)
         {
-           if(dist[w] < min && !flag[w])
-           {
-               min = dist[w];
-               u = w;
-           }
+            if(dist[w] < min && !flag[w])
+            {
+                min = dist[w];
+                u = w;
+            }
         }
 
-        flag[u] = 1;
+        flag[u] = true;
         count++;
 
         for(w=0; w<matrix_size; w++)
         {
-           if((dist[u] + cost[u][w]<dist[w]) && !flag[w])
-           {
-              dist[w] = dist[u] + cost[u][w];
-              previous_step.at(w) = u;
-           }
+            if((dist[u] + cost[u][w]<dist[w]) && !flag[w])
+            {
+                dist[w] = dist[u] + cost[u][w];
+                previous_step.at(w) = u;
+
+                if(u == target)
+                done = true;
+            }
         }
     }
 
@@ -59,7 +63,8 @@ vector<int> dijkstra(int matrix_size, int source, int target, int **cost, int *d
     if(p_ptr)
         path.push_back(p_ptr);
 
-    delete[] flag;
+    delete [] flag;
+    delete [] dist;
 
     return path;
 }

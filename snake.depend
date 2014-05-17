@@ -651,7 +651,7 @@
 1400314835 source:c:\users\veino\documents\projektit\git\snake\dijkstra.cpp
 	"dijkstra.h"
 
-1400311007 c:\users\veino\documents\projektit\git\snake\dijkstra.h
+1400335942 c:\users\veino\documents\projektit\git\snake\dijkstra.h
 	<vector>
 
 1400318364 source:c:\users\veino\documents\projektit\git\snake\game.cpp
@@ -706,7 +706,7 @@
 	"defines.h"
 	<string.h>
 
-1400317460 source:c:\users\veino\documents\projektit\git\snake\smart_ai.cpp
+1400319998 source:c:\users\veino\documents\projektit\git\snake\smart_ai.cpp
 	"smart_ai.h"
 	<cmath>
 	<iostream>

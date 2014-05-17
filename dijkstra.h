@@ -3,6 +3,6 @@
 
 #include <vector>
 
-std::vector<int> dijkstra(int n, int source, int target, int **cost, int *dist);
+std::vector<int> dijkstra(int matrix_size, int source, int target, int **cost);
 
 #endif // DIJKSTRA_H_

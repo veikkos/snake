@@ -28,11 +28,10 @@ bool SmartAi::BlockHasSnake(Snake *snake, int x, int y){
 
 void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
 
-    int x, y, **cost, *dist;
+    int x, y, **cost;
     int m_size = (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
     int x_blocks = X_AREA / GRID_SIZE;
 
-    dist = new int[m_size];
     cost = new int*[m_size];
 
     for(y = 0; y < m_size; y++)
@@ -80,11 +79,11 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
     target *= x_blocks;
     target += cur_eatable->GetPosX(0) / GRID_SIZE;
 
-    vector<int> path = dijkstra(m_size, snake_head, target, cost, dist);
+    vector<int> path = dijkstra(m_size, snake_head, target, cost);
 
     for(y=0; y<m_size; y++)
     {
-        delete[] cost[y];
+        delete [] cost[y];
     }
 
     int next_block = path.back();
@@ -98,5 +97,5 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
     else
         ai_snake->SetDir(s_down);
 
-    delete[] cost;
+    delete [] cost;
 }
