@@ -16,6 +16,8 @@ public:
 
 private:
     bool BlockHasSnake(Snake *snake, int x, int y);
+    int m_size;
+    int **cost;
 };
 
 #endif

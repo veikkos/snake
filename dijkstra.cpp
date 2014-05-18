@@ -44,8 +44,10 @@ vector<int> dijkstra(int matrix_size, int source, int target, int **cost)
                 dist[w] = dist[u] + cost[u][w];
                 previous_step.at(w) = u;
 
-                if(u == target)
+                if(u == target){
                     done = true;
+                    break;
+                }
             }
         }
     }

@@ -7,17 +7,33 @@ using namespace std;
 
 SmartAi::SmartAi(){
 
+    int i;
+    m_size = (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
+    cost = new int*[m_size];
+
+    for(i = 0; i < m_size; i++)
+    {
+        cost[i] = new int[m_size];
+    }
 }
 
 SmartAi::~SmartAi(){
 
+    int i;
+
+    for(i=0; i < m_size; i++)
+    {
+        delete [] cost[i];
+    }
+
+    delete [] cost;
 }
 
 bool SmartAi::BlockHasSnake(Snake *snake, int x, int y){
 
     int i;
 
-    for(i=0; i<snake->GetLength(); i++){
+    for(i=0; i < snake->GetLength(); i++){
 
         if(snake->GetPosX(i) / GRID_SIZE == x && snake->GetPosY(i) / GRID_SIZE == y)
             return true;
@@ -28,16 +44,11 @@ bool SmartAi::BlockHasSnake(Snake *snake, int x, int y){
 
 void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
 
-    int x, y, **cost;
-    int m_size = (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
+    int x, y;
     int x_blocks = X_AREA / GRID_SIZE;
-
-    cost = new int*[m_size];
 
     for(y = 0; y < m_size; y++)
     {
-        cost[y] = new int[m_size];
-
         for(x = 0; x < m_size; x++)
         {
             if(y == x)
@@ -57,7 +68,7 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
                                 x_blocks + ai_snake->GetPosX(0) / \
                                 GRID_SIZE;
 
-    for(i=1; i<ai_snake->GetLength(); i++){
+    for(i=1; i < ai_snake->GetLength(); i++){
         int snake_in_block = (ai_snake->GetPosY(i) / GRID_SIZE) * \
                                 x_blocks + (ai_snake->GetPosX(i) / \
                                 GRID_SIZE);
@@ -81,11 +92,6 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
 
     vector<int> path = dijkstra(m_size, snake_head, target, cost);
 
-    for(y=0; y<m_size; y++)
-    {
-        delete [] cost[y];
-    }
-
     int next_block = path.back();
 
     if(next_block - snake_head == 1)
@@ -94,8 +100,6 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
         ai_snake->SetDir(s_left);
     else if(next_block < snake_head)
         ai_snake->SetDir(s_up);
-    else
+    else if(next_block > snake_head)
         ai_snake->SetDir(s_down);
-
-    delete [] cost;
 }
