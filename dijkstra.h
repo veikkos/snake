@@ -3,6 +3,19 @@
 
 #include <vector>
 
-std::vector<int> dijkstra(int matrix_size, int source, int target, int **cost);
+class Dijkstra{
+
+public:
+    Dijkstra(unsigned int matrix_size);
+    ~Dijkstra();
+
+    std::vector<int> GetPath(int source, int target, int **cost);
+
+private:
+    int *dist;
+    bool *flag;
+    int matrix_size;
+    std::vector<int> previous_step;
+};
 
 #endif // DIJKSTRA_H_

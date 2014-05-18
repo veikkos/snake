@@ -4,14 +4,24 @@ using namespace std;
 
 #define MAX 1000
 
-vector<int> dijkstra(int matrix_size, int source, int target, int **cost)
-{
-    int i, u = 0, count, w, min, *dist;
-    bool *flag, done = false;
-    vector<int> previous_step(matrix_size);
+Dijkstra::Dijkstra(unsigned int m_size){
 
+    matrix_size = m_size;
     dist = new int[matrix_size];
     flag = new bool[matrix_size];
+    previous_step.resize(matrix_size);
+}
+
+Dijkstra::~Dijkstra(){
+
+    delete [] flag;
+    delete [] dist;
+}
+
+vector<int> Dijkstra::GetPath(int source, int target, int **cost)
+{
+    int i, u = 0, count, w, min;
+    bool done = false;
 
     for(i=0; i<matrix_size; i++)
     {
@@ -65,8 +75,8 @@ vector<int> dijkstra(int matrix_size, int source, int target, int **cost)
     if(p_ptr)
         path.push_back(p_ptr);
 
-    delete [] flag;
-    delete [] dist;
+    previous_step.resize(0);
+    previous_step.resize(matrix_size);
 
     return path;
 }

@@ -648,10 +648,10 @@
 	<stdlib.h>
 	"entity.h"
 
-1400397965 source:c:\users\veino\documents\projektit\git\snake\dijkstra.cpp
+1400428524 source:c:\users\veino\documents\projektit\git\snake\dijkstra.cpp
 	"dijkstra.h"
 
-1400335942 c:\users\veino\documents\projektit\git\snake\dijkstra.h
+1400428559 c:\users\veino\documents\projektit\git\snake\dijkstra.h
 	<vector>
 
 1400318364 source:c:\users\veino\documents\projektit\git\snake\game.cpp
@@ -673,7 +673,7 @@
 	"SDL\SDL.h"
 	<string>
 
-1400411420 c:\users\veino\documents\projektit\git\snake\smart_ai.h
+1400428386 c:\users\veino\documents\projektit\git\snake\smart_ai.h
 	"snake.h"
 	"eatables.h"
 	"dijkstra.h"
@@ -706,7 +706,7 @@
 	"defines.h"
 	<string.h>
 
-1400335989 source:c:\users\veino\documents\projektit\git\snake\smart_ai.cpp
+1400428393 source:c:\users\veino\documents\projektit\git\snake\smart_ai.cpp
 	"smart_ai.h"
 	<cmath>
 	<iostream>

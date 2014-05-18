@@ -15,6 +15,8 @@ SmartAi::SmartAi(){
     {
         cost[i] = new int[m_size];
     }
+
+    dijkstra = new Dijkstra(m_size);
 }
 
 SmartAi::~SmartAi(){
@@ -27,6 +29,8 @@ SmartAi::~SmartAi(){
     }
 
     delete [] cost;
+
+    delete dijkstra;
 }
 
 bool SmartAi::BlockHasSnake(Snake *snake, int x, int y){
@@ -90,7 +94,7 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
     target *= x_blocks;
     target += cur_eatable->GetPosX(0) / GRID_SIZE;
 
-    vector<int> path = dijkstra(m_size, snake_head, target, cost);
+    vector<int> path = dijkstra->GetPath(snake_head, target, cost);
 
     int next_block = path.back();
 
