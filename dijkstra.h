@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#define INFINITE 1000
+
 class Dijkstra{
 
 public:

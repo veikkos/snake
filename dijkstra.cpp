@@ -2,8 +2,6 @@
 
 using namespace std;
 
-#define MAX 1000
-
 Dijkstra::Dijkstra(unsigned int m_size){
 
     matrix_size = m_size;
@@ -33,7 +31,7 @@ vector<int> Dijkstra::GetPath(int source, int target, int **cost)
 
     while(count < matrix_size && !done)
     {
-        min = MAX;
+        min = INFINITE;
 
         for(w=0; w<matrix_size; w++)
         {
