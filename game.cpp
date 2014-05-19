@@ -1,6 +1,8 @@
 #include "game.h"
 #include "defines.h"
 
+using namespace std;
+
 Game::Game()
 {
     background = NULL;
@@ -57,7 +59,7 @@ bool Game::Init(){
 
     snake = new Snake(30, 30, 3);
 
-    s_eatable = new Eatable(e_static);
+    s_eatable = new Eatable(e_static, NULL);
 
     return true;
 }
@@ -230,6 +232,16 @@ int Game::Update()
     if((snake->GetPosX(0) == s_eatable->GetPosX(0)) && \
        (snake->GetPosY(0) == s_eatable->GetPosY(0))){
 
+        int i;
+        vector<position> used;
+
+        for(i=0; i<snake->GetLength(); i++){
+            used.push_back(snake->GetPos(i));
+        }
+
+        if(d_eatable)
+            used.push_back(d_eatable->GetPos(0));
+
         score++;
 
         snake->Grow(1);
@@ -237,13 +249,23 @@ int Game::Update()
         // Delete eaten "eatable" and
         // create a new one.
         delete s_eatable;
-        s_eatable = new Eatable(e_static);
+        s_eatable = new Eatable(e_static, &used);
     }
 
     if(d_eatable == NULL){
 
+        int i;
+        vector<position> used;
+
+        for(i=0; i<snake->GetLength(); i++){
+            used.push_back(snake->GetPos(i));
+        }
+
+        if(s_eatable)
+            used.push_back(s_eatable->GetPos(0));
+
         if((rand() % 1000) < 5)
-            d_eatable = new Eatable(e_dynamic);
+            d_eatable = new Eatable(e_dynamic, &used);
 
     }else{
 
@@ -341,6 +363,9 @@ void Game::Render(SDL_Surface *screen, int end)
     if(end){
         end_text = TTF_RenderText_Solid( font, (char*)"GAME OVER!", textColor );
         apply_surface( (SCREEN_WIDTH - end_text->w) / 2 , (SCREEN_HEIGHT - end_text->h) / 2, end_text, screen );
+
+        // Re-apply score, so it will be on top.
+        apply_surface( 5, 5, score_text, screen );
 
         SDL_FreeSurface(end_text);
         end_text = NULL;

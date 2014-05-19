@@ -1,5 +1,8 @@
 #ifndef _EATABLE_H_
 #define _EATABLE_H_
+
+#include <vector>
+
 #include "defines.h"
 #include "entity.h"
 
@@ -13,7 +16,7 @@ typedef enum{
 class Eatable : public Entity
 {
 public:
-    Eatable(eatable_type n_type);
+    Eatable(eatable_type n_type, std::vector<position> *used);
     ~Eatable();
 
     bool Update();

@@ -4,10 +4,30 @@
 #include <string.h>
 #include <stdlib.h>
 
-Eatable::Eatable(eatable_type n_type) : Entity(1)
+using namespace std;
+
+Eatable::Eatable(eatable_type n_type, vector<position>*used = NULL) : Entity(1)
 {
-    pos[0]->x = nearest(rand() % (X_AREA - GRID_SIZE), GRID_SIZE);
-    pos[0]->y = nearest(rand() % (Y_AREA - GRID_SIZE), GRID_SIZE);
+    bool block_used;
+
+    do{
+
+        block_used = false;
+
+        pos[0]->x = nearest(rand() % (X_AREA - GRID_SIZE), GRID_SIZE);
+        pos[0]->y = nearest(rand() % (Y_AREA - GRID_SIZE), GRID_SIZE);
+
+        if(used){
+            for (std::vector<position>::iterator iter = used->begin(); iter != used->end(); ++iter)
+            {
+                if(pos[0]->x == (*iter).x && pos[0]->y == (*iter).y){
+                    block_used = true;
+                    break;
+                }
+            }
+        }
+
+    }while(block_used);
 
     if(n_type == e_dynamic)
         frame = E_DYN_FRAMES - 1;

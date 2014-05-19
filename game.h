@@ -6,6 +6,7 @@
 #include "SDL/SDL_ttf.h"
 
 #include <stdlib.h>
+#include <vector>
 
 #include "screen.h"
 #include "snake.h"

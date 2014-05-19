@@ -10,11 +10,15 @@ SmartAi::SmartAi(){
     int i;
     m_size = (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
     cost = new int*[m_size];
+    cost_grid = new int*[m_size];
 
     for(i = 0; i < m_size; i++)
     {
         cost[i] = new int[m_size];
+        cost_grid[i] = new int[m_size];
     }
+
+    GenerateGrid(m_size, X_AREA / GRID_SIZE, cost_grid);
 
     dijkstra = new Dijkstra(m_size);
 }
@@ -26,9 +30,11 @@ SmartAi::~SmartAi(){
     for(i=0; i < m_size; i++)
     {
         delete [] cost[i];
+        delete [] cost_grid[i];
     }
 
     delete [] cost;
+    delete [] cost_grid;
 
     delete dijkstra;
 }
@@ -48,41 +54,12 @@ bool SmartAi::BlockHasSnake(Snake *snake, int x, int y){
 
 void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
 
-    int x, y, i;
+    int i;
     int x_blocks = X_AREA / GRID_SIZE;
     int snake_head, target;
     vector<int> path;
 
-    for(y = 0; y < m_size; y++)
-    {
-        for(x = 0; x < m_size; x++)
-        {
-            if(y == x){
-                // Move to itself is always 0
-                cost[y][x] = 0;
-            }else if((abs(y-x) == 1) && \
-                    !(!(x % x_blocks) && x > y) && \
-                    !(!(y % x_blocks) && x < y)){
-                // Move to adjacent (but not to different row)
-                cost[y][x] = 1;
-            }else if(abs(x - y) == x_blocks){
-                // Move to up or down
-                cost[y][x] = 1;
-            }else if(((x < x_blocks && y >= m_size - x_blocks) || \
-                    (y < x_blocks && x >= m_size - x_blocks)) && \
-                    ((y % x_blocks) == (x % x_blocks))){
-                // Top to bottom and vice versa
-                cost[y][x] = 1;
-            }else if( (!(x % x_blocks) && (y == x + x_blocks - 1)) ||
-                    (!(y % x_blocks) && (x == y + x_blocks - 1))){
-                // Left to right and vice versa
-                cost[y][x] = 1;
-            }else{
-                // To any other is infinite
-                cost[y][x] = INFINITE;
-            }
-        }
-    }
+    CopyGrid(cost, cost_grid, m_size);
 
     snake_head = (ai_snake->GetPosY(0) / GRID_SIZE) * \
                                 x_blocks + ai_snake->GetPosX(0) / \
@@ -114,16 +91,64 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
 
     int next_block = path.back();
 
-    // TODO: Add special cases when going from top to bottom,
-    // or vice versa.
     if((next_block - snake_head == 1) || \
         ((next_block < snake_head) && (snake_head - next_block == x_blocks - 1)))
         ai_snake->SetDir(s_right);
     else if((snake_head - next_block == 1) || \
         ((next_block > snake_head) && (next_block - snake_head == x_blocks - 1)))
         ai_snake->SetDir(s_left);
-    else if(next_block < snake_head)
+    else if((snake_head - next_block == x_blocks) || \
+        ((next_block > snake_head) && (snake_head < x_blocks) && (next_block >= m_size - x_blocks)))
         ai_snake->SetDir(s_up);
-    else if(next_block > snake_head)
+    else if((next_block - snake_head == x_blocks) || \
+        ((next_block < snake_head) && (next_block < x_blocks) && (snake_head >= m_size - x_blocks)))
         ai_snake->SetDir(s_down);
+}
+
+void SmartAi::GenerateGrid(int matrix_size, int width, int **cost_matrix){
+
+    int x, y;
+
+    for(y = 0; y < matrix_size; y++)
+    {
+        for(x = 0; x < matrix_size; x++)
+        {
+            if(y == x){
+                // Move to itself is always 0
+                cost_matrix[y][x] = 0;
+            }else if((abs(y-x) == 1) && \
+                    !(!(x % width) && x > y) && \
+                    !(!(y % width) && x < y)){
+                // Move to adjacent (but not to different row)
+                cost_matrix[y][x] = 1;
+            }else if(abs(x - y) == width){
+                // Move to up or down
+                cost_matrix[y][x] = 1;
+            }else if(((x < width && y >= matrix_size - width) || \
+                    (y < width && x >= matrix_size - width)) && \
+                    ((y % width) == (x % width))){
+                // Top to bottom and vice versa
+                cost_matrix[y][x] = 1;
+            }else if( (!(x % width) && (y == x + width - 1)) ||
+                    (!(y % width) && (x == y + width - 1))){
+                // Left to right and vice versa
+                cost_matrix[y][x] = 1;
+            }else{
+                // To any other is infinite
+                cost_matrix[y][x] = INFINITE;
+            }
+        }
+    }
+}
+
+void SmartAi::CopyGrid(int **dst, int **src, int size){
+
+    int x, y;
+
+    for(x = 0; x < m_size; x++){
+        for(y = 0; y < m_size; y++)
+        {
+            dst[x][y] = src[x][y];
+        }
+    }
 }
