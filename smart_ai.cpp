@@ -89,20 +89,22 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
 
     path = dijkstra->GetPath(snake_head, target, cost);
 
-    int next_block = path.back();
+    if(path.size()){
+        int next_block = path.back();
 
-    if((next_block - snake_head == 1) || \
-        ((next_block < snake_head) && (snake_head - next_block == x_blocks - 1)))
-        ai_snake->SetDir(s_right);
-    else if((snake_head - next_block == 1) || \
-        ((next_block > snake_head) && (next_block - snake_head == x_blocks - 1)))
-        ai_snake->SetDir(s_left);
-    else if((snake_head - next_block == x_blocks) || \
-        ((next_block > snake_head) && (snake_head < x_blocks) && (next_block >= m_size - x_blocks)))
-        ai_snake->SetDir(s_up);
-    else if((next_block - snake_head == x_blocks) || \
-        ((next_block < snake_head) && (next_block < x_blocks) && (snake_head >= m_size - x_blocks)))
-        ai_snake->SetDir(s_down);
+        if((next_block - snake_head == 1) || \
+            ((next_block < snake_head) && (snake_head - next_block == x_blocks - 1)))
+            ai_snake->SetDir(s_right);
+        else if((snake_head - next_block == 1) || \
+            ((next_block > snake_head) && (next_block - snake_head == x_blocks - 1)))
+            ai_snake->SetDir(s_left);
+        else if((snake_head - next_block == x_blocks) || \
+            ((next_block > snake_head) && (snake_head < x_blocks) && (next_block >= m_size - x_blocks)))
+            ai_snake->SetDir(s_up);
+        else if((next_block - snake_head == x_blocks) || \
+            ((next_block < snake_head) && (next_block < x_blocks) && (snake_head >= m_size - x_blocks)))
+            ai_snake->SetDir(s_down);
+    }
 }
 
 void SmartAi::GenerateGrid(int matrix_size, int width, int **cost_matrix){
