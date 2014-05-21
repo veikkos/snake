@@ -18,7 +18,7 @@ private:
 
     bool BlockHasSnake(Snake *snake, int x, int y);
     void GenerateGrid(int matrix_size, int width, int **cost);
-    void CopyGrid(int **dst, int **src, int size);
+    static void CopyGrid(int **dst, int **src, int size);
 
     int m_size;
     int **cost_grid;

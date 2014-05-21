@@ -147,8 +147,8 @@ void SmartAi::CopyGrid(int **dst, int **src, int size){
 
     int x, y;
 
-    for(x = 0; x < m_size; x++){
-        for(y = 0; y < m_size; y++)
+    for(x = 0; x < size; x++){
+        for(y = 0; y < size; y++)
         {
             dst[x][y] = src[x][y];
         }
