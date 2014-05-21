@@ -37,8 +37,8 @@ int Init(){
 
 int main(int argc, char* args[])
 {
-    Game *game;
-    Menu *menu;
+    Game *game = NULL;
+    Menu *menu = NULL;
 
     int selection;
     bool end;
@@ -46,11 +46,7 @@ int main(int argc, char* args[])
     if(Init() == false)
         return 0;
 
-    game = new Game;
     menu = new Menu;
-
-    if(game->Init() == false)
-        return 0;
 
     if(menu->Init() == false)
         return 0;
@@ -62,53 +58,45 @@ int main(int argc, char* args[])
         selection = 0;
         menu->Main(screen, &selection);
 
-        switch(selection){
+        if(selection != QUIT){
 
-            case SINGLE:
-                if(game->Execute(screen) == false)
-                    return 0;
+            game = new Game;
 
-                delete game;
-                game = new Game;
+            if(game->Init() == false)
+                return 0;
 
-                if(game->Init() == false)
-                    return 0;
+            switch(selection){
 
-                break;
+                case SINGLE:
+                    if(game->Execute(screen) == false)
+                        return 0;
+                    break;
+                case AI:
+                    if(game->Execute(screen, 1) == false)
+                        return 0;
+                    break;
+                case SMART_AI:
+                    if(game->Execute(screen, 1, 1) == false)
+                        return 0;
+                    break;
+                default:
+                    break;
+            }
 
-            case AI:
-                if(game->Execute(screen, 1) == false)
-                    return 0;
+            delete game;
+            game = NULL;
 
-                delete game;
-                game = new Game;
-
-                if(game->Init() == false)
-                    return 0;
-
-                break;
-
-            case SMART_AI:
-                if(game->Execute(screen, 1, 1) == false)
-                    return 0;
-
-                delete game;
-                game = new Game;
-
-                if(game->Init() == false)
-                    return 0;
-
-                break;
-            case QUIT:
-                end = true;
-                break;
-            default:
-                break;
+        }else{
+            end = true;
+            break;
         }
     }
 
-    delete game;
-    delete menu;
+    if(game)
+        delete game;
+
+    if(menu)
+        delete menu;
 
     TTF_Quit();
 	SDL_Quit();
