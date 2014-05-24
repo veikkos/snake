@@ -16,7 +16,11 @@ public:
 
 private:
 
+    bool CollisionIn(Snake *ai_snake, Direction dir);
     bool BlockHasSnake(Snake *snake, int x, int y);
+    bool BlockHasSnake(Snake *snake, int block);
+    void NoPath(Snake *ai_snake, Eatable *cur_eatable);
+
     void GenerateGrid(int matrix_size, int width, int **cost);
     static void CopyGrid(int **dst, int **src, int size);
 

@@ -20,6 +20,8 @@ Game::Game()
 
     score = 0;
     done = 0;
+
+    framelimit = true;
 }
 
 Game::~Game()
@@ -86,10 +88,12 @@ bool Game::Execute(SDL_Surface *screen, bool useAi, bool useSmartAi)
 		end = Update();
 		Render(screen, end);
 
-        delaytime = waittime - (SDL_GetTicks() - framestarttime);
-        if(delaytime > 0)
-            SDL_Delay((Uint32)delaytime);
-        framestarttime = SDL_GetTicks();
+        if(framelimit){
+            delaytime = waittime - (SDL_GetTicks() - framestarttime);
+            if(delaytime > 0)
+                SDL_Delay((Uint32)delaytime);
+            framestarttime = SDL_GetTicks();
+        }
 	}
 
     if(done == DIED)
@@ -164,7 +168,8 @@ void Game::GetInput()
     }
 }
 
-void Game::GetAi(Ai *ai)
+template <class TYPE>
+void Game::GetAi(TYPE *ai)
 {
     // Chase dynamic eatable if
     // it exists, and if not,
@@ -182,32 +187,12 @@ void Game::GetAi(Ai *ai)
         }else if( event.type == SDL_KEYDOWN ) {
 
             //Set the proper message surface
-            if( event.key.keysym.sym == SDLK_ESCAPE )
-                done = QUITED;
-        }
-    }
-}
-
-void Game::GetAi(SmartAi *ai)
-{
-    // Chase dynamic eatable if
-    // it exists, and if not,
-    // go for the basic eatable.
-    if(d_eatable != NULL)
-        ai->GetDir(snake, d_eatable);
-    else
-        ai->GetDir(snake, s_eatable);
-
-    // Poll keys if user want's to quit
-    while(SDL_PollEvent(&event)){
-
-        if(event.type == SDL_QUIT){
-            done = QUITED;
-        }else if( event.type == SDL_KEYDOWN ) {
-
-            //Set the proper message surface
-            if( event.key.keysym.sym == SDLK_ESCAPE )
-                done = QUITED;
+            switch( event.key.keysym.sym )
+            {
+                case SDLK_r: framelimit = !framelimit; break;
+                case SDLK_ESCAPE: done = QUITED; break;
+                default: break;
+            }
         }
     }
 }

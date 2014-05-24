@@ -29,12 +29,14 @@ public:
 private:
 
     int score;
+    bool framelimit;
 
     int LoadContent();
 
     void GetInput();
-    void GetAi(Ai *ai);
-    void GetAi(SmartAi *ai);
+
+    template <class TYPE>
+    void GetAi(TYPE *ai);
 
     int Update();
     void Render(SDL_Surface *screen, int end);

@@ -52,6 +52,16 @@ bool SmartAi::BlockHasSnake(Snake *snake, int x, int y){
     return false;
 }
 
+bool SmartAi::BlockHasSnake(Snake *snake, int block){
+
+    int x, y;
+
+    y = block / X_AREA;
+    x = block % X_AREA;
+
+    return BlockHasSnake(snake, x, y);
+}
+
 void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
 
     int i;
@@ -89,7 +99,9 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
 
     path = dijkstra->GetPath(snake_head, target, cost);
 
+    // If path exist, go for the target
     if(path.size()){
+
         int next_block = path.back();
 
         if((next_block - snake_head == 1) || \
@@ -104,7 +116,218 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable){
         else if((next_block - snake_head == x_blocks) || \
             ((next_block < snake_head) && (next_block < x_blocks) && (snake_head >= m_size - x_blocks)))
             ai_snake->SetDir(s_down);
+
+    }else{
+        // If path isn't found, avoid colliding by itself
+
+        NoPath(ai_snake, cur_eatable);
     }
+}
+
+void SmartAi::NoPath(Snake *ai_snake, Eatable *cur_eatable){
+
+    Direction new_dir = ai_snake->GetDir();
+
+    if(CollisionIn(ai_snake, new_dir) == false){
+        ai_snake->SetDir(new_dir);
+    }else{
+        // Prioritize the first two options with the distance to
+        // the eatable.
+        switch(new_dir){
+
+            case s_right:
+            {
+                if(ai_snake->GetPosY(0) > cur_eatable->GetPosY(0)){
+                    if(CollisionIn(ai_snake, s_up) == false){
+                        ai_snake->SetDir(s_up);
+                        return;
+                    }else if(CollisionIn(ai_snake, s_down) == false){
+                        ai_snake->SetDir(s_down);
+                        return;
+                    }
+                }else{
+                    if(CollisionIn(ai_snake, s_down) == false){
+                        ai_snake->SetDir(s_down);
+                        return;
+                    }else if(CollisionIn(ai_snake, s_up) == false){
+                        ai_snake->SetDir(s_up);
+                        return;
+                    }
+                }
+
+                if(CollisionIn(ai_snake, s_left) == false){
+                    ai_snake->SetDir(s_left);
+                    return;
+                }
+
+                break;
+            }
+            case s_left:
+            {
+                if(ai_snake->GetPosY(0) > cur_eatable->GetPosY(0)){
+                    if(CollisionIn(ai_snake, s_up) == false){
+                        ai_snake->SetDir(s_up);
+                        return;
+                    }else if(CollisionIn(ai_snake, s_down) == false){
+                        ai_snake->SetDir(s_down);
+                        return;
+                    }
+                }else{
+                    if(CollisionIn(ai_snake, s_down) == false){
+                        ai_snake->SetDir(s_down);
+                        return;
+                    }else if(CollisionIn(ai_snake, s_up) == false){
+                        ai_snake->SetDir(s_up);
+                        return;
+                    }
+                }
+
+                if(CollisionIn(ai_snake, s_right) == false){
+                    ai_snake->SetDir(s_right);
+                    return;
+                }
+
+                break;
+            }
+            case s_down:
+            {
+                if(ai_snake->GetPosX(0) > cur_eatable->GetPosX(0)){
+                    if(CollisionIn(ai_snake, s_left) == false){
+                        ai_snake->SetDir(s_left);
+                        return;
+                    }else if(CollisionIn(ai_snake, s_right) == false){
+                        ai_snake->SetDir(s_right);
+                        return;
+                    }
+                }else{
+                    if(CollisionIn(ai_snake, s_right) == false){
+                        ai_snake->SetDir(s_right);
+                        return;
+                    }else if(CollisionIn(ai_snake, s_left) == false){
+                        ai_snake->SetDir(s_left);
+                        return;
+                    }
+                }
+
+                if(CollisionIn(ai_snake, s_up) == false){
+                    ai_snake->SetDir(s_up);
+                    return;
+                }
+
+                break;
+            }
+            case s_up:
+            {
+                if(ai_snake->GetPosX(0) > cur_eatable->GetPosX(0)){
+                    if(CollisionIn(ai_snake, s_left) == false){
+                        ai_snake->SetDir(s_left);
+                        return;
+                    }else if(CollisionIn(ai_snake, s_right) == false){
+                        ai_snake->SetDir(s_right);
+                        return;
+                    }
+                }else{
+                    if(CollisionIn(ai_snake, s_right) == false){
+                        ai_snake->SetDir(s_right);
+                        return;
+                    }else if(CollisionIn(ai_snake, s_left) == false){
+                        ai_snake->SetDir(s_left);
+                        return;
+                    }
+                }
+
+                if(CollisionIn(ai_snake, s_down) == false){
+                    ai_snake->SetDir(s_down);
+                    return;
+                }
+
+                break;
+            }
+        }
+    }
+}
+
+bool SmartAi::CollisionIn(Snake *ai_snake, Direction dir){
+
+    int i;
+    int x, y;
+
+    for(i=1; i<ai_snake->GetLength(); i++){
+
+        switch(dir){
+
+            case s_right:
+            {
+                x = ai_snake->GetPosX(0) + GRID_SIZE;
+                y = ai_snake->GetPosY(0);
+
+                if(x >= X_AREA)
+                    x -= X_AREA;
+
+                if(x == ai_snake->GetPosX(i)){
+
+                    if(y == ai_snake->GetPosY(i)){
+                        return true;
+                    }
+                }
+
+                break;
+            }
+            case s_left:
+            {
+                x = ai_snake->GetPosX(0) - GRID_SIZE;
+                y = ai_snake->GetPosY(0);
+
+                if(x <= 0)
+                    x += X_AREA;
+
+                if(x == ai_snake->GetPosX(i)){
+
+                    if(y == ai_snake->GetPosY(i)){
+                        return true;
+                    }
+                }
+
+                break;
+            }
+            case s_down:
+            {
+                y = ai_snake->GetPosY(0) + GRID_SIZE;
+                x = ai_snake->GetPosX(0);
+
+                if(y >= Y_AREA)
+                    y -= Y_AREA;
+
+                if(y == ai_snake->GetPosY(i)){
+
+                    if(x == ai_snake->GetPosX(i)){
+                        return true;
+                    }
+                }
+
+                break;
+            }
+            case s_up:
+            {
+                y = ai_snake->GetPosY(0) - GRID_SIZE;
+                x = ai_snake->GetPosX(0);
+
+                if(y <= 0)
+                    y += Y_AREA;
+
+                if(y == ai_snake->GetPosY(i)){
+
+                    if(x == ai_snake->GetPosX(i)){
+                        return true;
+                    }
+                }
+
+                break;
+            }
+        }
+    }
+
+    return false;
 }
 
 void SmartAi::GenerateGrid(int matrix_size, int width, int **cost_matrix){
