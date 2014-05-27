@@ -24,7 +24,14 @@ public:
     ~Game();
 
     bool Init();
-    bool Execute(SDL_Surface *screen, bool useAi = NULL, bool useSmartAi = NULL);
+
+    typedef enum{
+        SINGLE,
+        AI,
+        SMART_AI
+    }game_mode;
+
+    bool Execute(SDL_Surface *screen, game_mode mode);
 
 private:
 

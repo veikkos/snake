@@ -3,11 +3,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define QUIT        -1
-#define SINGLE      1
-#define AI          2
-#define SMART_AI    3
-
 SDL_Surface *screen;
 
 int Init(){
@@ -40,7 +35,7 @@ int main(int argc, char* args[])
     Game *game = NULL;
     Menu *menu = NULL;
 
-    int selection;
+    Menu::selection sel;
     bool end;
 
     if(Init() == false)
@@ -55,28 +50,27 @@ int main(int argc, char* args[])
 
     while(end != true){
 
-        selection = 0;
-        menu->Main(screen, &selection);
+        sel = menu->Main(screen);
 
-        if(selection != QUIT){
+        if(sel != Menu::QUIT){
 
             game = new Game;
 
             if(game->Init() == false)
                 return 0;
 
-            switch(selection){
+            switch(sel){
 
-                case SINGLE:
-                    if(game->Execute(screen) == false)
+                case Menu::SINGLE:
+                    if(game->Execute(screen, Game::SINGLE) == false)
                         return 0;
                     break;
-                case AI:
-                    if(game->Execute(screen, 1) == false)
+                case Menu::AI:
+                    if(game->Execute(screen, Game::AI) == false)
                         return 0;
                     break;
-                case SMART_AI:
-                    if(game->Execute(screen, 1, 1) == false)
+                case Menu::SMART_AI:
+                    if(game->Execute(screen, Game::SMART_AI) == false)
                         return 0;
                     break;
                 default:

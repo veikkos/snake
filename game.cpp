@@ -66,7 +66,7 @@ bool Game::Init(){
     return true;
 }
 
-bool Game::Execute(SDL_Surface *screen, bool useAi, bool useSmartAi)
+bool Game::Execute(SDL_Surface *screen, game_mode mode)
 {
     int end = 0;
     Uint32 waittime = 1000.0f/FPS;
@@ -77,13 +77,18 @@ bool Game::Execute(SDL_Surface *screen, bool useAi, bool useSmartAi)
 
 	while(!done)
 	{
-	    if(useAi == false && useSmartAi == false)
-            GetInput();
-        else if(useSmartAi)
-            GetAi(&smartai);
-        else{
-            GetAi(&ai);
-        }
+	    switch(mode){
+
+            case SINGLE:
+                GetInput();
+                break;
+            case SMART_AI:
+                GetAi(&smartai);
+                break;
+            case AI:
+                GetAi(&ai);
+                break;
+	    }
 
 		end = Update();
 		Render(screen, end);

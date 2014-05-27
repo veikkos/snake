@@ -15,11 +15,20 @@ class Menu
         ~Menu();
 
         bool Init();
-        void Main(SDL_Surface *screen, int *selection);
+
+        typedef enum{
+            NONE,
+            QUIT,
+            SINGLE,
+            AI,
+            SMART_AI
+        }selection;
+
+        selection Main(SDL_Surface *screen);
 
     private:
 
-        int GetInput();
+        selection GetInput();
         int PrintText(SDL_Surface *screen, int x, int y, char* text, TTF_Font *font, SDL_Color *color);
 
         SDL_Event event;

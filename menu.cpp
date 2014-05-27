@@ -34,9 +34,9 @@ bool Menu::Init(){
 }
 
 
-void Menu::Main(SDL_Surface *screen, int *selection){
+Menu::selection Menu::Main(SDL_Surface *screen){
 
-    int i_selection = 0;
+    Menu::selection i_selection = Menu::NONE;
     int x_pos = (SCREEN_WIDTH - 440) / 2;
 
     SDL_Color textColor = { 230, 230, 230 };
@@ -52,12 +52,12 @@ void Menu::Main(SDL_Surface *screen, int *selection){
     //Update the screen
     SDL_Flip( screen );
 
-    while(i_selection == 0){
+    while(i_selection == Menu::NONE){
         SDL_Delay(10);
         i_selection = GetInput();
     }
 
-    *selection = i_selection;
+    return i_selection;
 }
 
 int Menu::PrintText(SDL_Surface *screen, int x, int y, char* text, TTF_Font *s_font, SDL_Color *color){
@@ -72,12 +72,12 @@ int Menu::PrintText(SDL_Surface *screen, int x, int y, char* text, TTF_Font *s_f
     return true;
 }
 
-int Menu::GetInput()
+Menu::selection Menu::GetInput()
 {
 	while(SDL_PollEvent(&event))
     {
         if(event.type == SDL_QUIT){
-            return -1;
+            return Menu::QUIT;
 
         //If a key was pressed
         }else if( event.type == SDL_KEYDOWN ) {
@@ -85,14 +85,14 @@ int Menu::GetInput()
             //Set the proper message surface
             switch( event.key.keysym.sym )
             {
-                case SDLK_1: return 1;
-                case SDLK_2: return 2;
-                case SDLK_3: return 3;
-                case SDLK_ESCAPE: return -1;
+                case SDLK_1: return Menu::SINGLE;
+                case SDLK_2: return Menu::AI;
+                case SDLK_3: return Menu::SMART_AI;
+                case SDLK_ESCAPE: return Menu::QUIT;
                 default: break;
             }
         }
     }
 
-    return 0;
+    return Menu::NONE;
 }
