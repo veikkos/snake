@@ -14,17 +14,17 @@
 				<Compiler>
 					<Add option="-pg" />
 					<Add option="-g" />
-					<Add directory="D:/Libraries/SDL-1.2.15/include" />
+					<Add directory="D:/Libraries/SDL2-2.0.1/i686-w64-mingw32/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
 					<Add option="-lmingw32" />
-					<Add option="-lSDLmain" />
-					<Add option="-lSDL" />
-					<Add option="-lSDL_image" />
-					<Add option="-lSDL_ttf" />
+					<Add option="-lSDL2main" />
+					<Add option="-lSDL2" />
+					<Add option="-lSDL2_image" />
+					<Add option="-lSDL2_ttf" />
 					<Add option="-static-libstdc++" />
-					<Add directory="D:/Libraries/SDL-1.2.15/lib" />
+					<Add directory="D:/Libraries/SDL2-2.0.1/i686-w64-mingw32/lib" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -35,17 +35,17 @@
 				<Compiler>
 					<Add option="-fexpensive-optimizations" />
 					<Add option="-O3" />
-					<Add directory="D:/Libraries/SDL-1.2.15/include" />
+					<Add directory="D:/Libraries/SDL2-2.0.1/i686-w64-mingw32/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
 					<Add option="-lmingw32" />
-					<Add option="-lSDLmain" />
-					<Add option="-lSDL" />
-					<Add option="-lSDL_image" />
-					<Add option="-lSDL_ttf" />
+					<Add option="-lSDL2main" />
+					<Add option="-lSDL2" />
+					<Add option="-lSDL2_image" />
+					<Add option="-lSDL2_ttf" />
 					<Add option="-static-libstdc++" />
-					<Add directory="D:/Libraries/SDL-1.2.15/lib" />
+					<Add directory="D:/Libraries/SDL2-2.0.1/i686-w64-mingw32/lib" />
 				</Linker>
 			</Target>
 		</Build>
