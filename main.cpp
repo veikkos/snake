@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-SDL_Surface *screen;
+SDL_Window *sdlWindow = NULL;
+SDL_Renderer *sdlRenderer = NULL;
 
 int Init(){
 
@@ -16,10 +17,19 @@ int Init(){
     }
 
     //Set up the screen
-    screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SCREEN_FLAGS );
+    if( !(sdlWindow = SDL_CreateWindow(
+                                "Snake v0.5",
+                                SDL_WINDOWPOS_UNDEFINED,
+                                SDL_WINDOWPOS_UNDEFINED,
+                                SCREEN_WIDTH,
+                                SCREEN_HEIGHT,
+                                SCREEN_FLAGS)) ){
+        return false;
+    }
 
-    //Set the window caption
-    SDL_WM_SetCaption( "Snake v0.4", NULL );
+    if( !(sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_ACCELERATED)) ){
+        return false;
+    }
 
     //Initialize SDL_ttf
     if( TTF_Init() == -1 )
@@ -50,7 +60,7 @@ int main(int argc, char* args[])
 
     while(end != true){
 
-        sel = menu->Main(screen);
+        sel = menu->Main(sdlWindow);
 
         if(sel != Menu::QUIT){
 
@@ -62,15 +72,15 @@ int main(int argc, char* args[])
             switch(sel){
 
                 case Menu::SINGLE:
-                    if(game->Execute(screen, Game::SINGLE) == false)
+                    if(game->Execute(sdlWindow, Game::SINGLE) == false)
                         return 0;
                     break;
                 case Menu::AI:
-                    if(game->Execute(screen, Game::AI) == false)
+                    if(game->Execute(sdlWindow, Game::AI) == false)
                         return 0;
                     break;
                 case Menu::SMART_AI:
-                    if(game->Execute(screen, Game::SMART_AI) == false)
+                    if(game->Execute(sdlWindow, Game::SMART_AI) == false)
                         return 0;
                     break;
                 default:
@@ -91,6 +101,12 @@ int main(int argc, char* args[])
 
     if(menu)
         delete menu;
+
+    if(sdlRenderer)
+        SDL_DestroyRenderer(sdlRenderer);
+
+    if(sdlWindow)
+        SDL_DestroyWindow(sdlWindow);
 
     TTF_Quit();
 	SDL_Quit();

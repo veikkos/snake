@@ -66,12 +66,14 @@ bool Game::Init(){
     return true;
 }
 
-bool Game::Execute(SDL_Surface *screen, game_mode mode)
+bool Game::Execute(SDL_Window *window, game_mode mode)
 {
     int end = 0;
+
     Uint32 waittime = 1000.0f/FPS;
     Uint32 framestarttime = 0;
     Sint32 delaytime;
+
     Ai *ai = NULL;
     SmartAi *smartai = NULL;
 
@@ -103,7 +105,7 @@ bool Game::Execute(SDL_Surface *screen, game_mode mode)
 	    }
 
 		end = Update();
-		Render(screen, end);
+		Render(window, end);
 
         if(framelimit){
             delaytime = waittime - (SDL_GetTicks() - framestarttime);
@@ -303,8 +305,9 @@ int Game::Update()
     return 0;
 }
 
-void Game::Render(SDL_Surface *screen, int end)
+void Game::Render(SDL_Window *window, int end)
 {
+    SDL_Surface *screen = SDL_GetWindowSurface( window );
     int i;
     char score_array[20];
     SDL_Color textColor = { 230, 230, 230 };
@@ -383,5 +386,7 @@ void Game::Render(SDL_Surface *screen, int end)
     score_text = NULL;
 
     //Update the screen
-    SDL_Flip( screen );
+    SDL_UpdateWindowSurface( window );
+
+    delete screen;
 }

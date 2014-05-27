@@ -1,9 +1,9 @@
 #ifndef _MENU_H_
 #define _MENU_H_
 
-#include "SDL\SDL.h"
-#include "SDL\SDL_ttf.h"
-#include "SDL\SDL_image.h"
+#include "SDL2\SDL.h"
+#include "SDL2\SDL_ttf.h"
+#include "SDL2\SDL_image.h"
 #include "screen.h"
 #include "defines.h"
 
@@ -24,7 +24,7 @@ class Menu
             SMART_AI
         }selection;
 
-        selection Main(SDL_Surface *screen);
+        selection Main(SDL_Window *window);
 
     private:
 

@@ -10,7 +10,7 @@ Menu::Menu(){
 Menu::~Menu(){
 
     if(background != NULL)
-        SDL_FreeSurface(background);
+        SDL_FreeSurface( background );
 
     if(font != NULL)
         TTF_CloseFont( font );
@@ -34,7 +34,9 @@ bool Menu::Init(){
 }
 
 
-Menu::selection Menu::Main(SDL_Surface *screen){
+Menu::selection Menu::Main(SDL_Window *window){
+
+    SDL_Surface *screen = SDL_GetWindowSurface( window );
 
     Menu::selection i_selection = Menu::NONE;
     int x_pos = (SCREEN_WIDTH - 440) / 2;
@@ -49,8 +51,7 @@ Menu::selection Menu::Main(SDL_Surface *screen){
     PrintText(screen, x_pos, 140, (char*)"Select 3 to AI2 play", font, &textColor);
     PrintText(screen, x_pos, 180, (char*)"Select ESC to quit", font, &textColor);
 
-    //Update the screen
-    SDL_Flip( screen );
+    SDL_UpdateWindowSurface( window );
 
     while(i_selection == Menu::NONE){
         SDL_Delay(10);
@@ -67,7 +68,7 @@ int Menu::PrintText(SDL_Surface *screen, int x, int y, char* text, TTF_Font *s_f
     m_text = TTF_RenderText_Solid( s_font, text, *color );
     apply_surface( x, y, m_text, screen );
 
-    SDL_FreeSurface(m_text);
+    SDL_FreeSurface( m_text );
 
     return true;
 }

@@ -1,9 +1,9 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
-#include "SDL/SDL.h"
-#include "SDL/SDL_image.h"
-#include "SDL/SDL_ttf.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
+#include "SDL2/SDL_ttf.h"
 
 #include <stdlib.h>
 #include <vector>
@@ -31,7 +31,7 @@ public:
         SMART_AI
     }game_mode;
 
-    bool Execute(SDL_Surface *screen, game_mode mode);
+    bool Execute(SDL_Window *window, game_mode mode);
 
 private:
 
@@ -46,7 +46,7 @@ private:
     void GetAi(TYPE *ai);
 
     int Update();
-    void Render(SDL_Surface *screen, int end);
+    void Render(SDL_Window *window, int end);
 
     int done;
 

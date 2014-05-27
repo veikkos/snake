@@ -3,8 +3,7 @@
 
 #define SCREEN_WIDTH    640
 #define SCREEN_HEIGHT   480
-#define SCREEN_BPP      32
-#define SCREEN_FLAGS    (SDL_HWSURFACE | SDL_DOUBLEBUF)
+#define SCREEN_FLAGS    (SDL_WINDOW_OPENGL)
 
 #define FPS             20
 
