@@ -72,8 +72,20 @@ bool Game::Execute(SDL_Surface *screen, game_mode mode)
     Uint32 waittime = 1000.0f/FPS;
     Uint32 framestarttime = 0;
     Sint32 delaytime;
-    Ai ai;
-    SmartAi smartai;
+    Ai *ai = NULL;
+    SmartAi *smartai = NULL;
+
+    switch(mode){
+        case SMART_AI:
+            smartai = new SmartAi;
+            break;
+        case AI:
+            ai = new Ai;
+            break;
+        default:
+            break;
+    }
+
 
 	while(!done)
 	{
@@ -83,10 +95,10 @@ bool Game::Execute(SDL_Surface *screen, game_mode mode)
                 GetInput();
                 break;
             case SMART_AI:
-                GetAi(&smartai);
+                GetAi(smartai);
                 break;
             case AI:
-                GetAi(&ai);
+                GetAi(ai);
                 break;
 	    }
 
@@ -103,6 +115,12 @@ bool Game::Execute(SDL_Surface *screen, game_mode mode)
 
     if(done == DIED)
         SDL_Delay(2000);
+
+    if(ai)
+        delete ai;
+
+    if(smartai)
+        delete smartai;
 
     return true;
 }
