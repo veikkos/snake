@@ -2,80 +2,73 @@
 
 using namespace std;
 
-Dijkstra::Dijkstra(unsigned int m_size){
+Dijkstra::Dijkstra(unsigned int m_size) {
 
-    matrix_size = m_size;
-    dist = new int[matrix_size];
-    flag = new bool[matrix_size];
-    previous_step.resize(matrix_size, -1);
+	matrix_size = m_size;
+	dist = new int[matrix_size];
+	flag = new bool[matrix_size];
+	previous_step.resize(matrix_size, -1);
 }
 
-Dijkstra::~Dijkstra(){
+Dijkstra::~Dijkstra() {
 
-    delete [] flag;
-    delete [] dist;
+	delete [] flag;
+	delete [] dist;
 }
 
-vector<int> Dijkstra::GetPath(int source, int target, int **cost)
-{
-    int i, u = 0, count, w, min;
-    bool done = false;
-    vector<int> path;
+vector<int> Dijkstra::GetPath(int source, int target, int **cost) {
+	int i, u = 0, count, w, min;
+	bool done = false;
+	vector<int> path;
 
-    for(i=0; i<matrix_size; i++)
-    {
-        flag[i] = false;
-        dist[i] = cost[source][i];
-    }
+	for(i=0; i<matrix_size; i++) {
+		flag[i] = false;
+		dist[i] = cost[source][i];
+	}
 
-    count = 1;
+	count = 1;
 
-    previous_step.at(source) = 0;
+	previous_step.at(source) = 0;
 
-    while(count < matrix_size && !done)
-    {
-        min = INFINITE;
+	while(count < matrix_size && !done) {
+		min = INFINITE;
 
-        for(w=0; w<matrix_size; w++)
-        {
-            if(dist[w] < min && !flag[w])
-            {
-                min = dist[w];
-                u = w;
-            }
-        }
+		for(w=0; w<matrix_size; w++) {
+			if(dist[w] < min && !flag[w]) {
+				min = dist[w];
+				u = w;
+			}
+		}
 
-        flag[u] = true;
-        count++;
+		flag[u] = true;
+		count++;
 
-        for(w=0; w<matrix_size; w++)
-        {
-            if((dist[u] + cost[u][w]<dist[w]) && !flag[w])
-            {
-                dist[w] = dist[u] + cost[u][w];
-                previous_step.at(w) = u;
+		for(w=0; w<matrix_size; w++) {
+			if((dist[u] + cost[u][w]<dist[w]) && !flag[w]) {
+				dist[w] = dist[u] + cost[u][w];
+				previous_step.at(w) = u;
 
-                if(u == target || w == target){
-                    done = true;
-                    break;
-                }
-            }
-        }
-    }
+				if(u == target || w == target) {
+					done = true;
+					break;
+				}
+			}
+		}
+	}
 
-    if(done){
-        int p_ptr = previous_step.at(target);
+	if(done) {
+		int p_ptr = previous_step.at(target);
 
-        path.push_back(target);
+		path.push_back(target);
 
-        while(p_ptr != -1){
-            path.push_back(p_ptr);
-            p_ptr = previous_step.at(p_ptr);
-        }
-    }
+		while(p_ptr != -1) {
+			path.push_back(p_ptr);
+			p_ptr = previous_step.at(p_ptr);
+		}
+	}
 
-    previous_step.resize(0);
-    previous_step.resize(matrix_size, -1);
+	previous_step.resize(0);
+	previous_step.resize(matrix_size, -1);
 
-    return path;
+	return path;
 }

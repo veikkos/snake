@@ -7,34 +7,34 @@
 #include "screen.h"
 #include "defines.h"
 
-class Menu
-{
-    public:
+class Menu {
+public:
 
-        Menu();
-        ~Menu();
+	Menu();
+	~Menu();
 
-        bool Init();
+	bool Init();
 
-        typedef enum{
-            NONE,
-            QUIT,
-            SINGLE,
-            AI,
-            SMART_AI
-        }selection;
+	typedef enum {
+		NONE,
+		QUIT,
+		SINGLE,
+		AI,
+		SMART_AI
+	} selection;
 
-        selection Main(SDL_Window *window);
+	selection Main(SDL_Window *window);
 
-    private:
+private:
 
-        selection GetInput();
-        int PrintText(SDL_Surface *screen, int x, int y, char* text, TTF_Font *font, SDL_Color *color);
+	selection GetInput();
+	int PrintText(SDL_Surface *screen, int x, int y, char *text,
+	              TTF_Font *font, SDL_Color *color);
 
-        SDL_Event event;
-        SDL_Surface *background;
+	SDL_Event event;
+	SDL_Surface *background;
 
-        TTF_Font *font;
+	TTF_Font *font;
 };
 
 #endif

@@ -5,19 +5,19 @@
 
 #define INFINITE 1000
 
-class Dijkstra{
+class Dijkstra {
 
 public:
-    Dijkstra(unsigned int matrix_size);
-    ~Dijkstra();
+	Dijkstra(unsigned int matrix_size);
+	~Dijkstra();
 
-    std::vector<int> GetPath(int source, int target, int **cost);
+	std::vector<int> GetPath(int source, int target, int **cost);
 
 private:
-    int *dist;
-    bool *flag;
-    int matrix_size;
-    std::vector<int> previous_step;
+	int *dist;
+	bool *flag;
+	int matrix_size;
+	std::vector<int> previous_step;
 };
 
 #endif // DIJKSTRA_H_

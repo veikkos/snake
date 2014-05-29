@@ -17,53 +17,52 @@
 #define QUITED  1
 #define DIED    2
 
-class Game
-{
+class Game {
 public:
-    Game();
-    ~Game();
+	Game();
+	~Game();
 
-    bool Init();
+	bool Init();
 
-    typedef enum{
-        SINGLE,
-        AI,
-        SMART_AI
-    }game_mode;
+	typedef enum {
+		SINGLE,
+		AI,
+		SMART_AI
+	} game_mode;
 
-    bool Execute(SDL_Window *window, game_mode mode);
+	bool Execute(SDL_Window *window, game_mode mode);
 
 private:
 
-    int score;
-    bool framelimit;
+	int score;
+	bool framelimit;
 
-    int LoadContent();
+	int LoadContent();
 
-    void GetInput();
+	void GetInput();
 
-    template <class TYPE>
-    void GetAi(TYPE *ai);
+	template <class TYPE>
+	void GetAi(TYPE *ai);
 
-    int Update();
-    void Render(SDL_Window *window, int end);
+	int Update();
+	void Render(SDL_Window *window, int end);
 
-    int done;
+	int done;
 
-    SDL_Event event;
+	SDL_Event event;
 
-    SDL_Surface *background;
-    SDL_Surface *snake_t;
-    SDL_Surface *eatable;
-    SDL_Surface *dyn_eatable;
-    SDL_Surface *score_text;
-    SDL_Surface *end_text;
+	SDL_Surface *background;
+	SDL_Surface *snake_t;
+	SDL_Surface *eatable;
+	SDL_Surface *dyn_eatable;
+	SDL_Surface *score_text;
+	SDL_Surface *end_text;
 
-    TTF_Font *font;
+	TTF_Font *font;
 
-    Snake *snake;
-    Eatable *s_eatable;
-    Eatable *d_eatable;
+	Snake *snake;
+	Eatable *s_eatable;
+	Eatable *d_eatable;
 };
 
 
