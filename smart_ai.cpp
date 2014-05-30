@@ -3,36 +3,22 @@
 #include <iostream>
 #include <vector>
 
+#include <stdio.h>
+
 using namespace std;
 
 SmartAi::SmartAi() {
 
-	int i;
 	m_size = (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
-	cost = new int *[m_size];
-	cost_grid = new int *[m_size];
+	cost.resize(m_size);
+	cost_grid.resize(m_size);
 
-	for(i = 0; i < m_size; i++) {
-		cost[i] = new int[m_size];
-		cost_grid[i] = new int[m_size];
-	}
-
-	GenerateGrid(m_size, X_AREA / GRID_SIZE, cost_grid);
+	GenerateGrid(m_size, X_AREA / GRID_SIZE, &cost_grid);
 
 	dijkstra = new Dijkstra(m_size);
 }
 
 SmartAi::~SmartAi() {
-
-	int i;
-
-	for(i=0; i < m_size; i++) {
-		delete [] cost[i];
-		delete [] cost_grid[i];
-	}
-
-	delete [] cost;
-	delete [] cost_grid;
 
 	delete dijkstra;
 }
@@ -69,7 +55,7 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable) {
 	int snake_head, target;
 	vector<int> path;
 
-	CopyGrid(cost, cost_grid, m_size);
+	cost = cost_grid;
 
 	snake_head = (ai_snake->GetPosY(0) / GRID_SIZE) * \
 	             x_blocks + ai_snake->GetPosX(0) / \
@@ -81,15 +67,14 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable) {
 		                                 GRID_SIZE);
 
 		if(snake_in_block != snake_head) {
-			int m_count;
 
-			for(m_count = 0; m_count < m_size; m_count++) {
+            cost.at(snake_in_block).clear();
 
-				if(m_count != snake_in_block) {
-					cost[snake_in_block][m_count] = INFINITE;
-					cost[m_count][snake_in_block] = INFINITE;
-				}
-			}
+            Dijkstra::vertex v;
+
+            v.first = snake_in_block;
+            v.second = 0;
+            cost.at(snake_in_block).push_back(v);
 		}
 	}
 
@@ -338,47 +323,63 @@ bool SmartAi::CollisionIn(Snake *ai_snake, Direction dir) {
 	return false;
 }
 
-void SmartAi::GenerateGrid(int matrix_size, int width, int **cost_matrix) {
+void SmartAi::GenerateGrid(int matrix_size, int width, Dijkstra::vector_vertex_vector *cost_matrix) {
 
-	int x, y;
+	int i = 0;
 
-	for(y = 0; y < matrix_size; y++) {
-		for(x = 0; x < matrix_size; x++) {
-			if(y == x) {
-				// Move to itself is always 0
-				cost_matrix[y][x] = 0;
-			} else if((abs(y-x) == 1) && \
-			          !(!(x % width) && x > y) && \
-			          !(!(y % width) && x < y)) {
-				// Move to adjacent (but not to different row)
-				cost_matrix[y][x] = 1;
-			} else if(abs(x - y) == width) {
-				// Move to up or down
-				cost_matrix[y][x] = 1;
-			} else if(((x < width && y >= matrix_size - width) || \
-			           (y < width && x >= matrix_size - width)) && \
-			          ((y % width) == (x % width))) {
-				// Top to bottom and vice versa
-				cost_matrix[y][x] = 1;
-			} else if( (!(x % width) && (y == x + width - 1)) ||
-			           (!(y % width) && (x == y + width - 1))) {
-				// Left to right and vice versa
-				cost_matrix[y][x] = 1;
-			} else {
-				// To any other is infinite
-				cost_matrix[y][x] = INFINITE;
-			}
-		}
-	}
-}
+	for(Dijkstra::vector_vertex_vector::iterator it = cost_matrix->begin(); it != cost_matrix->end(); ++it) {
 
-void SmartAi::CopyGrid(int **dst, int **src, int size) {
+        Dijkstra::vertex v;
+        Dijkstra::vertex_vector *vec = &(*it);
 
-	int x, y;
+        if(i==65)
+            printf("65!\n");
 
-	for(x = 0; x < size; x++) {
-		for(y = 0; y < size; y++) {
-			dst[x][y] = src[x][y];
-		}
+        printf("%i: ", i);
+
+        v.first = i;
+        v.second = 0;
+
+        vec->push_back(v);
+
+        v.first = i + 1;
+        v.second = 1;
+
+        if((i + 1) % (X_AREA / GRID_SIZE) == 0)
+            v.first -= (X_AREA / GRID_SIZE);
+
+        vec->push_back(v);
+        printf("%i, ", v.first);
+
+        v.first = i - 1;
+        v.second = 1;
+
+        if(i % (X_AREA / GRID_SIZE) == 0)
+            v.first += (X_AREA / GRID_SIZE);
+
+        printf("%i, ", v.first);
+        vec->push_back(v);
+
+        v.first = i + (X_AREA / GRID_SIZE);
+
+        if(i > (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE) - (X_AREA / GRID_SIZE))
+            v.first -= (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
+
+        v.second = 1;
+
+        printf("%i, ", v.first);
+        vec->push_back(v);
+
+        v.first = i - (X_AREA / GRID_SIZE);
+
+        if(i < (X_AREA / GRID_SIZE))
+            v.first += (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
+
+        v.second = 1;
+
+        printf("%i\n", v.first);
+        vec->push_back(v);
+
+        i++;
 	}
 }

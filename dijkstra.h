@@ -11,7 +11,11 @@ public:
 	Dijkstra(unsigned int matrix_size);
 	~Dijkstra();
 
-	std::vector<int> GetPath(int source, int target, int **cost);
+    typedef std::pair <int,int> vertex;
+    typedef std::vector<vertex> vertex_vector;
+    typedef std::vector<vertex_vector> vector_vertex_vector;
+
+	std::vector<int> GetPath(int source, int target, vector_vertex_vector cost);
 
 private:
 	int *dist;

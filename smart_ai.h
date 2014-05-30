@@ -21,12 +21,12 @@ private:
 	bool BlockHasSnake(Snake *snake, int block);
 	void NoPath(Snake *ai_snake, Eatable *cur_eatable);
 
-	void GenerateGrid(int matrix_size, int width, int **cost);
-	static void CopyGrid(int **dst, int **src, int size);
+	void GenerateGrid(int matrix_size, int width, \
+                   Dijkstra::vector_vertex_vector *cost_matrix);
 
 	int m_size;
-	int **cost_grid;
-	int **cost;
+	Dijkstra::vector_vertex_vector cost_grid;
+	Dijkstra::vector_vertex_vector cost;
 	Dijkstra *dijkstra;
 };
 

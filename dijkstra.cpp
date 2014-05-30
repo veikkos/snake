@@ -16,15 +16,23 @@ Dijkstra::~Dijkstra() {
 	delete [] dist;
 }
 
-vector<int> Dijkstra::GetPath(int source, int target, int **cost) {
+vector<int> Dijkstra::GetPath(int source, int target, vector_vertex_vector cost) {
+
 	int i, u = 0, count, w, min;
 	bool done = false;
 	vector<int> path;
 
 	for(i=0; i<matrix_size; i++) {
 		flag[i] = false;
-		dist[i] = cost[source][i];
+		dist[i] = INFINITE;
 	}
+
+    for(vertex_vector::iterator it = cost.at(source).begin(); it != cost.at(source).end(); ++it) {
+
+        vertex node = (*it);
+
+        dist[node.first] = node.second;
+    }
 
 	count = 1;
 
@@ -43,12 +51,15 @@ vector<int> Dijkstra::GetPath(int source, int target, int **cost) {
 		flag[u] = true;
 		count++;
 
-		for(w=0; w<matrix_size; w++) {
-			if((dist[u] + cost[u][w]<dist[w]) && !flag[w]) {
-				dist[w] = dist[u] + cost[u][w];
-				previous_step.at(w) = u;
+		for(std::vector<vertex>::iterator it = cost.at(u).begin(); it != cost.at(u).end(); ++it) {
 
-				if(u == target || w == target) {
+			vertex v = (*it);
+
+			if((dist[u] + v.second < dist[v.first]) && !flag[v.first]) {
+				dist[v.first] = dist[u] + v.second;
+				previous_step.at(v.first) = u;
+
+				if(u == target) {
 					done = true;
 					break;
 				}
