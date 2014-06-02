@@ -18,8 +18,9 @@ public:
 	std::vector<int> GetPath(int source, int target, vector_vertex_vector cost);
 
 private:
-	int *dist;
-	bool *flag;
+
+    typedef std::pair <int, bool> dist_pair;
+    dist_pair *dist;
 	int matrix_size;
 	std::vector<int> previous_step;
 };

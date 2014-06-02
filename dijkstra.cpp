@@ -5,14 +5,12 @@ using namespace std;
 Dijkstra::Dijkstra(unsigned int m_size) {
 
 	matrix_size = m_size;
-	dist = new int[matrix_size];
-	flag = new bool[matrix_size];
+	dist = new dist_pair[matrix_size];
 	previous_step.resize(matrix_size, -1);
 }
 
 Dijkstra::~Dijkstra() {
 
-	delete [] flag;
 	delete [] dist;
 }
 
@@ -23,43 +21,38 @@ vector<int> Dijkstra::GetPath(int source, int target, vector_vertex_vector cost)
 	vector<int> path;
 
 	for(i=0; i<matrix_size; i++) {
-		flag[i] = false;
-		dist[i] = INFINITE;
+		dist[i].second = false;
+		dist[i].first = INFINITE;
 	}
 
-    for(vertex_vector::iterator it = cost.at(source).begin(); it != cost.at(source).end(); ++it) {
-
-        vertex node = (*it);
-
-        dist[node.first] = node.second;
-    }
+    dist[source].first = 0;
 
 	count = 1;
 
-	previous_step.at(source) = 0;
+	previous_step.at(source) = -1;
 
 	while(count < matrix_size && !done) {
 		min = INFINITE;
 
 		for(w=0; w<matrix_size; w++) {
-			if(dist[w] < min && !flag[w]) {
-				min = dist[w];
+			if(dist[w].first < min && !dist[w].second) {
+				min = dist[w].first;
 				u = w;
 			}
 		}
 
-		flag[u] = true;
+		dist[u].second = true;
 		count++;
 
 		for(std::vector<vertex>::iterator it = cost.at(u).begin(); it != cost.at(u).end(); ++it) {
 
 			vertex v = (*it);
 
-			if((dist[u] + v.second < dist[v.first]) && !flag[v.first]) {
-				dist[v.first] = dist[u] + v.second;
+			if((dist[u].first + v.second < dist[v.first].first) && !dist[v.first].second) {
+				dist[v.first].first = dist[u].first + v.second;
 				previous_step.at(v.first) = u;
 
-				if(u == target) {
+				if(u == target || v.first == target) {
 					done = true;
 					break;
 				}
@@ -72,7 +65,7 @@ vector<int> Dijkstra::GetPath(int source, int target, vector_vertex_vector cost)
 
 		path.push_back(target);
 
-		while(p_ptr != -1) {
+		while(p_ptr != -1 && p_ptr != source) {
 			path.push_back(p_ptr);
 			p_ptr = previous_step.at(p_ptr);
 		}
