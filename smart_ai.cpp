@@ -69,12 +69,6 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable) {
 		if(snake_in_block != snake_head) {
 
             cost.at(snake_in_block).clear();
-
-            Dijkstra::vertex v;
-
-            v.first = snake_in_block;
-            v.second = 0;
-            cost.at(snake_in_block).push_back(v);
 		}
 	}
 
@@ -332,52 +326,40 @@ void SmartAi::GenerateGrid(int matrix_size, int width, Dijkstra::vector_vertex_v
         Dijkstra::vertex v;
         Dijkstra::vertex_vector *vec = &(*it);
 
-        if(i==65)
-            printf("65!\n");
-
-        printf("%i: ", i);
-
-        v.first = i;
-        v.second = 0;
-
-        vec->push_back(v);
-
+        // Right
         v.first = i + 1;
-        v.second = 1;
 
         if((i + 1) % (X_AREA / GRID_SIZE) == 0)
             v.first -= (X_AREA / GRID_SIZE);
 
-        vec->push_back(v);
-        printf("%i, ", v.first);
-
-        v.first = i - 1;
         v.second = 1;
+        vec->push_back(v);
+
+        // Left
+        v.first = i - 1;
 
         if(i % (X_AREA / GRID_SIZE) == 0)
             v.first += (X_AREA / GRID_SIZE);
 
-        printf("%i, ", v.first);
+        v.second = 1;
         vec->push_back(v);
 
+        // Down
         v.first = i + (X_AREA / GRID_SIZE);
 
         if(i > (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE) - (X_AREA / GRID_SIZE))
             v.first -= (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
 
         v.second = 1;
-
-        printf("%i, ", v.first);
         vec->push_back(v);
 
+        // Up
         v.first = i - (X_AREA / GRID_SIZE);
 
         if(i < (X_AREA / GRID_SIZE))
             v.first += (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
 
         v.second = 1;
-
-        printf("%i\n", v.first);
         vec->push_back(v);
 
         i++;

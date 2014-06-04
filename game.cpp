@@ -26,9 +26,17 @@ Game::Game() {
 Game::~Game() {
 	// Delete content here
 
-	delete snake;
-	delete s_eatable;
-	delete d_eatable;
+    if(snake){
+        delete snake;
+    }
+
+	if(s_eatable){
+        delete s_eatable;
+	}
+
+    if(d_eatable){
+        delete d_eatable;
+    }
 
 	if(background != NULL) {
 		SDL_FreeSurface(background);
