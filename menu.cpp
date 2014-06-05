@@ -18,7 +18,7 @@ Menu::~Menu() {
 	}
 }
 
-bool Menu::Init() {
+bool Menu::Init(SDL_PixelFormat *pixelformat) {
 
 	//Open the font
 	font = TTF_OpenFont( "fonts/DigitalDream.ttf", 28 );
@@ -28,7 +28,7 @@ bool Menu::Init() {
 		return false;
 	}
 
-	background = load_image( "img/m_bg.png" );
+	background = load_image( "img/m_bg.png", pixelformat );
 
 	if( background == NULL ) {
 		return false;

@@ -22,7 +22,7 @@ public:
 	Game();
 	~Game();
 
-	bool Init();
+	bool Init(SDL_PixelFormat *pixelformat);
 
 	typedef enum {
 		SINGLE,
@@ -38,7 +38,7 @@ private:
 	bool framelimit;
 	bool render_path;
 
-	int LoadContent();
+	int LoadContent(SDL_PixelFormat *pixelformat);
 
 	void GetInput();
 

@@ -13,7 +13,7 @@ public:
 	Menu();
 	~Menu();
 
-	bool Init();
+	bool Init(SDL_PixelFormat *pixelformat);
 
 	typedef enum {
 		NONE,

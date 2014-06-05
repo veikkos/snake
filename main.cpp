@@ -42,6 +42,7 @@ int Init() {
 int main(int argc, char *args[]) {
 	Game *game = NULL;
 	Menu *menu = NULL;
+	SDL_Surface *screen;
 
 	Menu::selection sel;
 	bool end;
@@ -50,9 +51,11 @@ int main(int argc, char *args[]) {
 		return 0;
 	}
 
+	screen = SDL_GetWindowSurface( sdlWindow );
+
 	menu = new Menu;
 
-	if(menu->Init() == false) {
+	if(menu->Init(screen->format) == false) {
 		return 0;
 	}
 
@@ -66,7 +69,7 @@ int main(int argc, char *args[]) {
 
 			game = new Game;
 
-			if(game->Init() == false) {
+			if(game->Init(screen->format) == false) {
 				return 0;
 			}
 

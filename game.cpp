@@ -77,9 +77,9 @@ Game::~Game() {
 	}
 }
 
-bool Game::Init() {
+bool Game::Init(SDL_PixelFormat *pixelformat) {
 
-	if(LoadContent() == false) {
+	if(LoadContent(pixelformat) == false) {
 		return false;
 	}
 
@@ -160,7 +160,7 @@ bool Game::Execute(SDL_Window *window, game_mode mode) {
 
 // Private
 
-int Game::LoadContent() {
+int Game::LoadContent(SDL_PixelFormat *pixelformat) {
 
 	//Open the font
 	font = TTF_OpenFont( "fonts/DigitalDreamFat.ttf", 24 );
@@ -170,31 +170,31 @@ int Game::LoadContent() {
 		return false;
 	}
 
-	background = load_image( "img/g_bg.png" );
+	background = load_image( "img/g_bg.png", pixelformat );
 
 	if( background == NULL ) {
 		return false;
 	}
 
-	snake_t = load_image( "img/snake.png" );
+	snake_t = load_image( "img/snake.png", pixelformat );
 
 	if( snake_t == NULL ) {
 		return false;
 	}
 
-	eatable = load_image( "img/eatable.png" );
+	eatable = load_image( "img/eatable.png", pixelformat );
 
 	if( eatable == NULL ) {
 		return false;
 	}
 
-	dyn_eatable = load_image( "img/dyn_eatable.png" );
+	dyn_eatable = load_image( "img/dyn_eatable.png", pixelformat );
 
 	if( dyn_eatable == NULL ) {
 		return false;
 	}
 
-	path_mark = load_image( "img/path.png" );
+	path_mark = load_image( "img/path.png", pixelformat );
 
 	if( path_mark == NULL ) {
 		return false;
