@@ -5,6 +5,7 @@
 #include "eatables.h"
 #include "dijkstra.h"
 #include "defines.h"
+#include <vector>
 
 class SmartAi {
 
@@ -13,6 +14,7 @@ public:
 	~SmartAi();
 
 	void GetDir(Snake *ai_snake, Eatable *cur_eatable);
+	std::vector< std::pair <int,int> > GetPath();
 
 private:
 
@@ -22,12 +24,14 @@ private:
 	void NoPath(Snake *ai_snake, Eatable *cur_eatable);
 
 	void GenerateGrid(int matrix_size, int width, \
-                   Dijkstra::vector_vertex_vector *cost_matrix);
+	                  Dijkstra::vector_vertex_vector *cost_matrix);
 
 	int m_size;
 	Dijkstra::vector_vertex_vector cost_grid;
 	Dijkstra::vector_vertex_vector cost;
 	Dijkstra *dijkstra;
+
+	std::vector<int> path;
 };
 
 #endif

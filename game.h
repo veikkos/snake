@@ -36,6 +36,7 @@ private:
 
 	int score;
 	bool framelimit;
+	bool render_path;
 
 	int LoadContent();
 
@@ -57,12 +58,16 @@ private:
 	SDL_Surface *dyn_eatable;
 	SDL_Surface *score_text;
 	SDL_Surface *end_text;
+	SDL_Surface *path_mark;
 
 	TTF_Font *font;
 
 	Snake *snake;
 	Eatable *s_eatable;
 	Eatable *d_eatable;
+
+	Ai *ai;
+	SmartAi *smartai;
 };
 
 

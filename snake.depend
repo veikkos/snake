@@ -629,7 +629,7 @@
 	"defines.h"
 	"entity.h"
 
-1401911310 c:\users\veino\documents\projektit\git\snake\defines.h
+1401957430 c:\users\veino\documents\projektit\git\snake\defines.h
 
 1401642576 c:\users\veino\documents\projektit\git\snake\entity.h
 
@@ -649,17 +649,18 @@
 	<stdlib.h>
 	"entity.h"
 
-1401908408 source:c:\users\veino\documents\projektit\git\snake\dijkstra.cpp
+1401957745 source:c:\users\veino\documents\projektit\git\snake\dijkstra.cpp
 	"dijkstra.h"
 
-1401908408 c:\users\veino\documents\projektit\git\snake\dijkstra.h
+1401957745 c:\users\veino\documents\projektit\git\snake\dijkstra.h
 	<vector>
 
-1401642576 source:c:\users\veino\documents\projektit\git\snake\game.cpp
+1401957812 source:c:\users\veino\documents\projektit\git\snake\game.cpp
 	"game.h"
 	"defines.h"
+	<vector>
 
-1401290677 c:\users\veino\documents\projektit\git\snake\game.h
+1401957745 c:\users\veino\documents\projektit\git\snake\game.h
 	"SDL2/SDL.h"
 	"SDL2/SDL_image.h"
 	"SDL2/SDL_ttf.h"
@@ -675,11 +676,12 @@
 	"SDL2\SDL.h"
 	<string>
 
-1401908408 c:\users\veino\documents\projektit\git\snake\smart_ai.h
+1401957812 c:\users\veino\documents\projektit\git\snake\smart_ai.h
 	"snake.h"
 	"eatables.h"
 	"dijkstra.h"
 	"defines.h"
+	<vector>
 
 1401721304 source:c:\users\veino\documents\projektit\git\snake\main.cpp
 	"game.h"
@@ -708,7 +710,7 @@
 	"defines.h"
 	<string.h>
 
-1401911193 source:c:\users\veino\documents\projektit\git\snake\smart_ai.cpp
+1401957299 source:c:\users\veino\documents\projektit\git\snake\smart_ai.cpp
 	"smart_ai.h"
 	<cmath>
 	<iostream>

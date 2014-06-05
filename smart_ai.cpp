@@ -53,7 +53,6 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable) {
 	int i;
 	int x_blocks = X_AREA / GRID_SIZE;
 	int snake_head, target;
-	vector<int> path;
 
 	cost = cost_grid;
 
@@ -68,7 +67,7 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable) {
 
 		if(snake_in_block != snake_head) {
 
-            cost.at(snake_in_block).clear();
+			cost.at(snake_in_block).clear();
 		}
 	}
 
@@ -105,8 +104,32 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable) {
 	} else {
 		// If path isn't found, avoid colliding by itself
 
+		path.clear();
 		NoPath(ai_snake, cur_eatable);
 	}
+}
+
+std::vector< std::pair <int,int> > SmartAi::GetPath() {
+
+	vector< std::pair <int,int> > path_in_world_coordinates;
+
+	if(path.size()) {
+
+		for(vector<int>::iterator it = path.begin(); it != path.end(); ++it) {
+
+			std::pair <int,int> coord;
+			int block = *it;
+
+			coord.first = (block * GRID_SIZE) % X_AREA;
+			coord.second = ((block * GRID_SIZE) / X_AREA) * GRID_SIZE;
+
+			path_in_world_coordinates.push_back(coord);
+		}
+
+		path_in_world_coordinates.pop_back();
+	}
+
+	return path_in_world_coordinates;
 }
 
 void SmartAi::NoPath(Snake *ai_snake, Eatable *cur_eatable) {
@@ -317,51 +340,58 @@ bool SmartAi::CollisionIn(Snake *ai_snake, Direction dir) {
 	return false;
 }
 
-void SmartAi::GenerateGrid(int matrix_size, int width, Dijkstra::vector_vertex_vector *cost_matrix) {
+void SmartAi::GenerateGrid(int matrix_size, int width,
+                           Dijkstra::vector_vertex_vector *cost_matrix) {
 
 	int i = 0;
 
-	for(Dijkstra::vector_vertex_vector::iterator it = cost_matrix->begin(); it != cost_matrix->end(); ++it) {
+	for(Dijkstra::vector_vertex_vector::iterator it = cost_matrix->begin();
+	        it != cost_matrix->end(); ++it) {
 
-        Dijkstra::vertex v;
-        Dijkstra::vertex_vector *vec = &(*it);
+		Dijkstra::vertex v;
+		Dijkstra::vertex_vector *vec = &(*it);
 
-        // Right
-        v.first = i + 1;
+		// Right
+		v.first = i + 1;
 
-        if((i + 1) % (X_AREA / GRID_SIZE) == 0)
-            v.first -= (X_AREA / GRID_SIZE);
+		if((i + 1) % (X_AREA / GRID_SIZE) == 0) {
+			v.first -= (X_AREA / GRID_SIZE);
+		}
 
-        v.second = 1;
-        vec->push_back(v);
+		v.second = 1;
+		vec->push_back(v);
 
-        // Left
-        v.first = i - 1;
+		// Left
+		v.first = i - 1;
 
-        if(i % (X_AREA / GRID_SIZE) == 0)
-            v.first += (X_AREA / GRID_SIZE);
+		if(i % (X_AREA / GRID_SIZE) == 0) {
+			v.first += (X_AREA / GRID_SIZE);
+		}
 
-        v.second = 1;
-        vec->push_back(v);
+		v.second = 1;
+		vec->push_back(v);
 
-        // Down
-        v.first = i + (X_AREA / GRID_SIZE);
+		// Down
+		v.first = i + (X_AREA / GRID_SIZE);
 
-        if(i > (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE) - (X_AREA / GRID_SIZE))
-            v.first -= (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
+		if(i > (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE) -
+		        (X_AREA / GRID_SIZE)) {
+			v.first -= (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
+		}
 
-        v.second = 1;
-        vec->push_back(v);
+		v.second = 1;
+		vec->push_back(v);
 
-        // Up
-        v.first = i - (X_AREA / GRID_SIZE);
+		// Up
+		v.first = i - (X_AREA / GRID_SIZE);
 
-        if(i < (X_AREA / GRID_SIZE))
-            v.first += (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
+		if(i < (X_AREA / GRID_SIZE)) {
+			v.first += (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
+		}
 
-        v.second = 1;
-        vec->push_back(v);
+		v.second = 1;
+		vec->push_back(v);
 
-        i++;
+		i++;
 	}
 }

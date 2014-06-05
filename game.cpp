@@ -1,5 +1,6 @@
 #include "game.h"
 #include "defines.h"
+#include <vector>
 
 using namespace std;
 
@@ -16,27 +17,32 @@ Game::Game() {
 	snake = NULL;
 	s_eatable = NULL;
 	d_eatable = NULL;
+	path_mark = NULL;
 
 	score = 0;
 	done = 0;
 
 	framelimit = true;
+	render_path = false;
+
+	ai = NULL;
+	smartai = NULL;
 }
 
 Game::~Game() {
 	// Delete content here
 
-    if(snake){
-        delete snake;
-    }
-
-	if(s_eatable){
-        delete s_eatable;
+	if(snake) {
+		delete snake;
 	}
 
-    if(d_eatable){
-        delete d_eatable;
-    }
+	if(s_eatable) {
+		delete s_eatable;
+	}
+
+	if(d_eatable) {
+		delete d_eatable;
+	}
 
 	if(background != NULL) {
 		SDL_FreeSurface(background);
@@ -60,6 +66,10 @@ Game::~Game() {
 
 	if(end_text != NULL) {
 		SDL_FreeSurface(end_text);
+	}
+
+	if(path_mark != NULL) {
+		SDL_FreeSurface(path_mark);
 	}
 
 	if(font != NULL) {
@@ -86,9 +96,6 @@ bool Game::Execute(SDL_Window *window, game_mode mode) {
 	Uint32 waittime = 1000.0f/FPS;
 	Uint32 framestarttime = 0;
 	Sint32 delaytime;
-
-	Ai *ai = NULL;
-	SmartAi *smartai = NULL;
 
 	switch(mode) {
 		case SMART_AI:
@@ -140,10 +147,12 @@ bool Game::Execute(SDL_Window *window, game_mode mode) {
 
 	if(ai) {
 		delete ai;
+		ai = NULL;
 	}
 
 	if(smartai) {
 		delete smartai;
+		smartai = NULL;
 	}
 
 	return true;
@@ -182,6 +191,12 @@ int Game::LoadContent() {
 	dyn_eatable = load_image( "img/dyn_eatable.png" );
 
 	if( dyn_eatable == NULL ) {
+		return false;
+	}
+
+	path_mark = load_image( "img/path.png" );
+
+	if( path_mark == NULL ) {
 		return false;
 	}
 
@@ -262,6 +277,10 @@ void Game::GetAi(TYPE *ai) {
 			switch( event.key.keysym.sym ) {
 				case SDLK_r:
 					framelimit = !framelimit;
+					break;
+
+				case SDLK_d:
+					render_path = !render_path;
 					break;
 
 				case SDLK_ESCAPE:
@@ -393,6 +412,21 @@ void Game::Render(SDL_Window *window, int end) {
 	for(i=1; i<snake->GetLength(); i++) {
 		apply_surface( snake->GetPosX(i), snake->GetPosY(i), snake_t, screen,
 		               &clip[1] );
+	}
+
+	if(smartai && render_path && path_mark) {
+
+		vector< pair <int,int> > path = smartai->GetPath();
+
+		if(path.size()) {
+			for(vector< pair <int,int> >::iterator it = path.begin(); it != path.end();
+			        ++it) {
+				pair <int,int> path_point = *it;
+
+				apply_surface( path_point.first, path_point.second, path_mark,
+				               screen );
+			}
+		}
 	}
 
 	//Draw eatable(s)
