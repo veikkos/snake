@@ -1,0 +1,8 @@
+bin
+obj
+*.out
+*.exe
+*.o
+*.layout
+*.depend
+*.cscope_file_list

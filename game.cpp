@@ -194,7 +194,7 @@ int Game::LoadContent(SDL_PixelFormat *pixelformat) {
 		return false;
 	}
 
-	path_mark = load_image( "img/path.png", pixelformat );
+	path_mark = load_image( "img/path.png" );
 
 	if( path_mark == NULL ) {
 		return false;

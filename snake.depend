@@ -655,7 +655,7 @@
 1401957745 c:\users\veino\documents\projektit\git\snake\dijkstra.h
 	<vector>
 
-1401974608 source:c:\users\veino\documents\projektit\git\snake\game.cpp
+1402044561 source:c:\users\veino\documents\projektit\git\snake\game.cpp
 	"game.h"
 	"defines.h"
 	<vector>
@@ -672,7 +672,7 @@
 	"ai.h"
 	"smart_ai.h"
 
-1401974508 c:\users\veino\documents\projektit\git\snake\screen.h
+1402045160 c:\users\veino\documents\projektit\git\snake\screen.h
 	"SDL2\SDL.h"
 	<string>
 
@@ -683,7 +683,7 @@
 	"defines.h"
 	<vector>
 
-1401974695 source:c:\users\veino\documents\projektit\git\snake\main.cpp
+1401975047 source:c:\users\veino\documents\projektit\git\snake\main.cpp
 	"game.h"
 	"menu.h"
 	<stdlib.h>
@@ -696,11 +696,11 @@
 	"screen.h"
 	"defines.h"
 
-1401291376 source:c:\users\veino\documents\projektit\git\snake\menu.cpp
+1401974718 source:c:\users\veino\documents\projektit\git\snake\menu.cpp
 	"menu.h"
 	"screen.h"
 
-1401974458 source:c:\users\veino\documents\projektit\git\snake\screen.cpp
+1402044547 source:c:\users\veino\documents\projektit\git\snake\screen.cpp
 	"SDL2\SDL.h"
 	"SDL2\SDL_image.h"
 	<string>
