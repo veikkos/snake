@@ -1,5 +1,6 @@
 #include "game.h"
 #include "defines.h"
+#include <stdio.h>
 #include <vector>
 
 using namespace std;
@@ -391,7 +392,7 @@ void Game::Render(SDL_Window *window, int end) {
 
 	// Draw score to the screen
 	strncpy(score_array, (char *)"SCORE: ", 7);
-	itoa(score, &score_array[7], 10);
+	snprintf(&score_array[7], sizeof(score_array) - 7, "%d", score);
 	score_text = TTF_RenderText_Solid( font, score_array, textColor );
 	apply_surface( 5, 5, score_text, screen );
 
@@ -481,6 +482,4 @@ void Game::Render(SDL_Window *window, int end) {
 
 	//Update the screen
 	SDL_UpdateWindowSurface( window );
-
-	delete screen;
 }

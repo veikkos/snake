@@ -1,7 +1,7 @@
 #ifndef _SCREEN_H_
 #define _SCREEN_H_
 
-#include "SDL2\SDL.h"
+#include "SDL2/SDL.h"
 #include <string>
 
 SDL_Surface *load_image( std::string filename,
