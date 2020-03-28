@@ -11,6 +11,8 @@
 
 #define SCREEN_FLAGS    (SDL_WINDOW_OPENGL)
 
+using namespace Port;
+
 struct HandleImpl
 {
   SDL_Window *sdlWindow;
@@ -74,7 +76,7 @@ void Port::Deinit(Handle handle)
   SDL_Quit();
 }
 
-void Port::FrameLimit(Handle handle)
+void Time::FrameLimit(Handle handle)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;
 
@@ -90,12 +92,12 @@ void Port::FrameLimit(Handle handle)
   handleImpl->framestarttime = SDL_GetTicks();
 }
 
-void Port::Delay(unsigned int delay)
+void Time::Delay(unsigned int delay)
 {
   SDL_Delay(delay);
 }
 
-GameSelection Port::GetGameInput(Snake *snake) {
+GameSelection Input::Game(Snake *snake) {
   bool dirGot = false;
   SDL_Event event;
 
@@ -148,7 +150,7 @@ GameSelection Port::GetGameInput(Snake *snake) {
   return GAME_NONE;
 }
 
-MenuSelection Port::GetMenuInput()
+MenuSelection Input::Menu()
 {
   SDL_Event event;
 
@@ -160,20 +162,15 @@ MenuSelection Port::GetMenuInput()
     }
     else if (event.type == SDL_KEYDOWN) {
 
-      //Set the proper message surface
       switch (event.key.keysym.sym) {
       case SDLK_1:
         return MenuSelection::MENU_SINGLE;
-
       case SDLK_2:
         return MenuSelection::MENU_AI;
-
       case SDLK_3:
         return MenuSelection::MENU_SMART_AI;
-
       case SDLK_ESCAPE:
         return MenuSelection::MENU_QUIT;
-
       default:
         break;
       }
@@ -183,7 +180,7 @@ MenuSelection Port::GetMenuInput()
   return MenuSelection::MENU_NONE;
 }
 
-AiSelection Port::GetAiInput()
+AiSelection Input::Ai()
 {
   SDL_Event event;
 
@@ -194,7 +191,6 @@ AiSelection Port::GetAiInput()
     }
     else if (event.type == SDL_KEYDOWN) {
 
-      //Set the proper message surface
       switch (event.key.keysym.sym) {
       case SDLK_r:
         return AiSelection::AI_FRAMELIMIT;
@@ -211,23 +207,23 @@ AiSelection Port::GetAiInput()
   return AiSelection::AI_NONE;
 }
 
-void Port::Render(Handle handle)
+void Render::Draw(Handle handle)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;
   SDL_UpdateWindowSurface(handleImpl->sdlWindow);
 }
 
-Font Port::LoadFont(const char* path, unsigned int size)
+Font Resources::LoadFont(const char* path, unsigned int size)
 {
   return (Font)TTF_OpenFont(path, size);
 }
 
-void Port::FreeFont(Font font)
+void Resources::FreeFont(Font font)
 {
   TTF_CloseFont((TTF_Font*)font);
 }
 
-void Port::RenderText(Handle handle, int x, int y, Font font, const char* text, Color color, bool center)
+void Render::Text(Handle handle, int x, int y, Font font, const char* text, Color color, bool center)
 {
   SDL_Color sdlColor = {
     color.r,
@@ -245,11 +241,11 @@ void Port::RenderText(Handle handle, int x, int y, Font font, const char* text, 
     }
 
     Blit(handle, x, y, (Image)textSurface);
-    FreeImage((Image)textSurface);
+    Resources::FreeImage((Image)textSurface);
   }
 }
 
-Image Port::LoadImage(Handle handle, const char* filename)
+Image Resources::LoadImage(Handle handle, const char* filename)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;
   SDL_Surface *optimizedImage = NULL;
@@ -269,12 +265,12 @@ Image Port::LoadImage(Handle handle, const char* filename)
   }
 }
 
-void Port::FreeImage(Image image)
+void Resources::FreeImage(Image image)
 {
   SDL_FreeSurface((SDL_Surface*)image);
 }
 
-void Port::Blit(Handle handle, int x, int y, Image source, Rect* clip)
+void Render::Blit(Handle handle, int x, int y, Image source, Rect* clip)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;
 

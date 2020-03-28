@@ -1,5 +1,5 @@
-#ifndef _SDL_PORT_H_
-#define _SDL_PORT_H_
+#ifndef _PORT_H_
+#define _PORT_H_
 
 #include "defines.h"
 #include "snake.h"
@@ -11,29 +11,41 @@ namespace Port
 
   void Deinit(Handle handle);
 
-  void FrameLimit(Handle handle);
+  namespace Time
+  {
+    void FrameLimit(Handle handle);
 
-  void Delay(unsigned int delay);
+    void Delay(unsigned int delay);
+  }
 
-  GameSelection GetGameInput(Snake *snake);
+  namespace Input
+  {
+    GameSelection Game(Snake *snake);
 
-  MenuSelection GetMenuInput();
+    MenuSelection Menu();
 
-  AiSelection GetAiInput();
+    AiSelection Ai();
+  }
 
-  void Render(Handle handle);
+  namespace Resources
+  {
+    Font LoadFont(const char* path, unsigned int size);
 
-  Font LoadFont(const char* path, unsigned int size);
+    void FreeFont(Font font);
 
-  void FreeFont(Font font);
+    Image LoadImage(Handle handle, const char* path);
 
-  void RenderText(Handle handle, int x, int y, Font font, const char* text, Color color, bool center = false);
+    void FreeImage(Image image);
+  }
 
-  Image LoadImage(Handle handle, const char* path);
+  namespace Render
+  {
+    void Blit(Handle handle, int x, int y, Image source, Rect* clip = NULL);
 
-  void FreeImage(Image image);
+    void Text(Handle handle, int x, int y, Font font, const char* text, Color color, bool center = false);
 
-  void Blit(Handle handle, int x, int y, Image source, Rect* clip = NULL);
+    void Draw(Handle handle);
+  }
 }
 
 #endif

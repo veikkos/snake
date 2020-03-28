@@ -10,25 +10,25 @@ Menu::Menu() {
 Menu::~Menu() {
 
   if (background != NULL) {
-    Port::FreeImage(background);
+    Port::Resources::FreeImage(background);
   }
 
   if (font != NULL) {
-    Port::FreeFont(font);
+    Port::Resources::FreeFont(font);
   }
 }
 
 bool Menu::Init(Handle handle) {
 
   // Open the font
-  font = Port::LoadFont("fonts/DigitalDream.ttf", 28);
+  font = Port::Resources::LoadFont("fonts/DigitalDream.ttf", 28);
 
   // If there was an error in loading the font
   if (font == NULL) {
     return false;
   }
 
-  background = Port::LoadImage(handle, "img/m_bg.png");
+  background = Port::Resources::LoadImage(handle, "img/m_bg.png");
 
   if (background == NULL) {
     return false;
@@ -36,7 +36,6 @@ bool Menu::Init(Handle handle) {
 
   return true;
 }
-
 
 MenuSelection Menu::Main(Handle handle) {
 
@@ -46,7 +45,7 @@ MenuSelection Menu::Main(Handle handle) {
   Color textColor = { 230, 230, 230 };
 
   // Draw background to the screen
-  Port::Blit(handle, 0, 0, background);
+  Port::Render::Blit(handle, 0, 0, background);
 
   PrintText(handle, x_pos, 60, (char *)"Select 1 to play", font, &textColor);
   PrintText(handle, x_pos, 100, (char *)"Select 2 to AI play", font,
@@ -56,10 +55,10 @@ MenuSelection Menu::Main(Handle handle) {
   PrintText(handle, x_pos, 180, (char *)"Select ESC to quit", font,
     &textColor);
 
-  Port::Render(handle);
+  Port::Render::Draw(handle);
 
   while (i_selection == MenuSelection::MENU_NONE) {
-    Port::Delay(10);
+    Port::Time::Delay(10);
     i_selection = GetInput();
   }
 
@@ -68,10 +67,10 @@ MenuSelection Menu::Main(Handle handle) {
 
 int Menu::PrintText(Handle handle, int x, int y, char *text,
   Font font, Color *color) {
-  Port::RenderText(handle, x, y, font, text, *color);
+  Port::Render::Text(handle, x, y, font, text, *color);
   return true;
 }
 
 MenuSelection Menu::GetInput() {
-  return Port::GetMenuInput();
+  return Port::Input::Menu();
 }
