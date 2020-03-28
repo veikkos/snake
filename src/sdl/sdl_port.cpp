@@ -95,13 +95,13 @@ void Port::Delay(unsigned int delay)
   SDL_Delay(delay);
 }
 
-int Port::GetInput(Snake *snake) {
+GameSelection Port::GetGameInput(Snake *snake) {
   bool dirGot = false;
   SDL_Event event;
 
   while (SDL_PollEvent(&event)) {
     if (event.type == SDL_QUIT) {
-      return 1;
+      return GAME_QUIT;
     }
 
     // Accept only one direction change when
@@ -137,8 +137,7 @@ int Port::GetInput(Snake *snake) {
         break;
 
       case SDLK_ESCAPE:
-        return 2;
-        break;
+        return GAME_QUIT;
 
       default:
         break;
@@ -146,7 +145,7 @@ int Port::GetInput(Snake *snake) {
     }
   }
 
-  return 0;
+  return GAME_NONE;
 }
 
 MenuSelection Port::GetMenuInput()
@@ -228,7 +227,7 @@ void Port::FreeFont(Font font)
   TTF_CloseFont((TTF_Font*)font);
 }
 
-Image Port::RenderText(Font font, const char* text, Color color)
+void Port::RenderText(Handle handle, int x, int y, Font font, const char* text, Color color, bool center)
 {
   SDL_Color sdlColor = {
     color.r,
@@ -237,7 +236,17 @@ Image Port::RenderText(Font font, const char* text, Color color)
     255
   };
 
-  return (Image)TTF_RenderText_Solid((TTF_Font*)font, text, sdlColor);
+  SDL_Surface *textSurface = TTF_RenderText_Solid((TTF_Font*)font, text, sdlColor);
+
+  if (textSurface) {
+    if (center) {
+      x -= textSurface->w / 2;
+      y -= textSurface->h / 2;
+    }
+
+    Blit(handle, x, y, (Image)textSurface);
+    FreeImage((Image)textSurface);
+  }
 }
 
 Image Port::LoadImage(Handle handle, const char* filename)
@@ -248,15 +257,16 @@ Image Port::LoadImage(Handle handle, const char* filename)
 
   loadedImage = IMG_Load(filename);
 
-  if (loadedImage && handleImpl->screenSurface->format) {
-    optimizedImage = SDL_ConvertSurface(loadedImage, handleImpl->screenSurface->format, 0);
+  if (loadedImage) {
+    optimizedImage = SDL_ConvertSurfaceFormat(loadedImage, SDL_PIXELFORMAT_RGBA8888, 0);
 
     SDL_FreeSurface(loadedImage);
-  } else {
-    return (Image)loadedImage;
-  }
 
-  return (Image)optimizedImage;
+    return (Image)optimizedImage;
+  }
+  else {
+    return NULL;
+  }
 }
 
 void Port::FreeImage(Image image)
@@ -264,17 +274,7 @@ void Port::FreeImage(Image image)
   SDL_FreeSurface((SDL_Surface*)image);
 }
 
-unsigned int Port::GetW(Image image)
-{
-  return ((SDL_Surface*)image)->w;
-}
-
-unsigned int Port::GetH(Image image)
-{
-  return ((SDL_Surface*)image)->h;
-}
-
-void Port::ApplySurface(Handle handle, int x, int y, Image source, Rect* clip)
+void Port::Blit(Handle handle, int x, int y, Image source, Rect* clip)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;
 

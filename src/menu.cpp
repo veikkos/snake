@@ -46,7 +46,7 @@ MenuSelection Menu::Main(Handle handle) {
   Color textColor = { 230, 230, 230 };
 
   // Draw background to the screen
-  Port::ApplySurface(handle, 0, 0, background);
+  Port::Blit(handle, 0, 0, background);
 
   PrintText(handle, x_pos, 60, (char *)"Select 1 to play", font, &textColor);
   PrintText(handle, x_pos, 100, (char *)"Select 2 to AI play", font,
@@ -68,14 +68,7 @@ MenuSelection Menu::Main(Handle handle) {
 
 int Menu::PrintText(Handle handle, int x, int y, char *text,
   Font font, Color *color) {
-
-  Image m_text = NULL;
-
-  m_text = Port::RenderText(font, text, *color);
-  Port::ApplySurface(handle, x, y, m_text);
-
-  Port::FreeImage(m_text);
-
+  Port::RenderText(handle, x, y, font, text, *color);
   return true;
 }
 

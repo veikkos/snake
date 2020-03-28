@@ -15,7 +15,7 @@ namespace Port
 
   void Delay(unsigned int delay);
 
-  int GetInput(Snake *snake);
+  GameSelection GetGameInput(Snake *snake);
 
   MenuSelection GetMenuInput();
 
@@ -27,17 +27,13 @@ namespace Port
 
   void FreeFont(Font font);
 
-  Image RenderText(Font font, const char* text, Color color);
+  void RenderText(Handle handle, int x, int y, Font font, const char* text, Color color, bool center = false);
 
   Image LoadImage(Handle handle, const char* path);
 
   void FreeImage(Image image);
 
-  unsigned int GetW(Image image);
-
-  unsigned int GetH(Image image);
-
-  void ApplySurface(Handle handle, int x, int y, Image source, Rect* clip = NULL);
+  void Blit(Handle handle, int x, int y, Image source, Rect* clip = NULL);
 }
 
 #endif

@@ -19,11 +19,19 @@
 #define E_DYN_FRAME_AGE FPS
 #define E_DYN_FRAMES    5
 
-typedef void* Handle;
+struct HandleImpl;
+typedef HandleImpl* Handle;
 
-typedef void* Font;
+struct FontImpl;
+typedef FontImpl* Font;
 
-typedef void* Image;
+struct ImageImpl;
+typedef ImageImpl* Image;
+
+typedef enum {
+  GAME_NONE,
+  GAME_QUIT
+} GameSelection;
 
 typedef enum {
   MENU_NONE,

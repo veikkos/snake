@@ -10,8 +10,6 @@ Game::Game() {
   snake_t = NULL;
   eatable = NULL;
   dyn_eatable = NULL;
-  score_text = NULL;
-  end_text = NULL;
 
   font = NULL;
 
@@ -59,14 +57,6 @@ Game::~Game() {
 
   if (dyn_eatable != NULL) {
     Port::FreeImage(dyn_eatable);
-  }
-
-  if (score_text != NULL) {
-    Port::FreeImage(score_text);
-  }
-
-  if (end_text != NULL) {
-    Port::FreeImage(end_text);
   }
 
   if (path_mark != NULL) {
@@ -192,7 +182,7 @@ int Game::LoadContent(Handle handle) {
 }
 
 void Game::GetInput() {
-  if (Port::GetInput(snake)) {
+  if (Port::GetGameInput(snake) == GameSelection::GAME_QUIT) {
     done = QUITED;
   }
 }
@@ -321,13 +311,12 @@ void Game::Render(Handle handle, int end) {
   Rect clip[5];
 
   // Draw background to the screen
-  Port::ApplySurface(handle, 0, 0, background);
+  Port::Blit(handle, 0, 0, background);
 
   // Draw score to the screen
   strncpy_s(score_array, (char *)"SCORE: ", 7);
   snprintf(&score_array[7], sizeof(score_array) - 7, "%d", score);
-  score_text = Port::RenderText(font, score_array, textColor);
-  Port::ApplySurface(handle, 5, 5, score_text);
+  Port::RenderText(handle, 5, 5, font, score_array, textColor);
 
   // Draw snake to the screen
   clip[0].x = 0;
@@ -340,10 +329,10 @@ void Game::Render(Handle handle, int end) {
   clip[1].w = 10;
   clip[1].h = 10;
 
-  Port::ApplySurface(handle, snake->GetPosX(0), snake->GetPosY(0), snake_t, &clip[0]);
+  Port::Blit(handle, snake->GetPosX(0), snake->GetPosY(0), snake_t, &clip[0]);
 
   for (i = 1; i < snake->GetLength(); i++) {
-    Port::ApplySurface(handle, snake->GetPosX(i), snake->GetPosY(i), snake_t, &clip[1]);
+    Port::Blit(handle, snake->GetPosX(i), snake->GetPosY(i), snake_t, &clip[1]);
   }
 
   if (smartai && render_path && path_mark) {
@@ -354,14 +343,14 @@ void Game::Render(Handle handle, int end) {
         ++it) {
         pair <int, int> path_point = *it;
 
-        Port::ApplySurface(handle, path_point.first, path_point.second, path_mark
+        Port::Blit(handle, path_point.first, path_point.second, path_mark
         );
       }
     }
   }
 
   // Draw eatable(s)
-  Port::ApplySurface(handle, s_eatable->GetPosX(0), s_eatable->GetPosY(0), eatable);
+  Port::Blit(handle, s_eatable->GetPosX(0), s_eatable->GetPosY(0), eatable);
 
   if (d_eatable != NULL) {
 
@@ -390,24 +379,16 @@ void Game::Render(Handle handle, int end) {
     clip[4].w = 10;
     clip[4].h = 10;
 
-    Port::ApplySurface(handle, d_eatable->GetPosX(0), d_eatable->GetPosY(0), dyn_eatable,
+    Port::Blit(handle, d_eatable->GetPosX(0), d_eatable->GetPosY(0), dyn_eatable,
       &clip[d_eatable->GetFrame()]);
   }
 
   if (end) {
-    end_text = Port::RenderText(font, (char *)"GAME OVER!", textColor);
-    Port::ApplySurface(handle, (SCREEN_WIDTH - Port::GetW(end_text)) / 2,
-      (SCREEN_HEIGHT - Port::GetH(end_text)) / 2, end_text);
+    Port::RenderText(handle, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, font, (char *)"GAME OVER!", textColor, true);
 
     // Re-apply score, so it will be on top.
-    Port::ApplySurface(handle, 5, 5, score_text);
-
-    Port::FreeImage(end_text);
-    end_text = NULL;
+    Port::RenderText(handle, 5, 5, font, score_array, textColor);
   }
-
-  Port::FreeImage(score_text);
-  score_text = NULL;
 
   // Update the screen
   Port::Render(handle);
