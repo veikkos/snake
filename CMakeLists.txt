@@ -19,7 +19,7 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
-file(GLOB SOURCES *.h *.cpp)
+file(GLOB SOURCES src/*.h src/*.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
