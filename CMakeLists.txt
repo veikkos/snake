@@ -1,38 +1,64 @@
 cmake_minimum_required(VERSION 3.0)
 project(snake VERSION 1.0.0)
 
-set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}/cmake-modules)
+file(GLOB SOURCES src/*.h src/*.cpp)
 
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2.cmake")
-    file(DOWNLOAD "https://github.com/tcbrindle/sdl2-cmake-scripts/raw/master/FindSDL2.cmake" "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2.cmake")
+if(BUILD MATCHES "GBA")
+    file(GLOB PORT_SOURCES src/gba/*)
+    list(APPEND SOURCES ${PORT_SOURCES})
+
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -mthumb-interwork -mthumb -O2")
+    set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -mthumb-interwork -mthumb -specs=gba.specs")
+else()
+    file(GLOB PORT_SOURCES src/sdl/*)
+    list(APPEND SOURCES ${PORT_SOURCES})
+
+    set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}/cmake-modules)
+
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2.cmake")
+        file(DOWNLOAD
+            "https://github.com/tcbrindle/sdl2-cmake-scripts/raw/master/FindSDL2.cmake"
+            "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2.cmake")
+    endif()
+
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2_image.cmake")
+        file(DOWNLOAD
+            "https://github.com/tcbrindle/sdl2-cmake-scripts/raw/master/FindSDL2_image.cmake"
+            "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2_image.cmake")
+    endif()
+
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2_ttf.cmake")
+        file(DOWNLOAD
+            "https://github.com/tcbrindle/sdl2-cmake-scripts/raw/master/FindSDL2_ttf.cmake"
+            "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2_ttf.cmake")
+    endif()
+
+    find_package(SDL2 REQUIRED)
+    find_package(SDL2_image REQUIRED)
+    find_package(SDL2_ttf REQUIRED)
 endif()
-
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2_image.cmake")
-    file(DOWNLOAD "https://github.com/tcbrindle/sdl2-cmake-scripts/raw/master/FindSDL2_image.cmake" "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2_image.cmake")
-endif()
-
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2_ttf.cmake")
-    file(DOWNLOAD "https://github.com/tcbrindle/sdl2-cmake-scripts/raw/master/FindSDL2_ttf.cmake" "${CMAKE_BINARY_DIR}/cmake-modules/FindSDL2_ttf.cmake")
-endif()
-
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_ttf REQUIRED)
-
-file(GLOB SOURCES src/*.h src/*.cpp src/sdl/*)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_include_directories(${PROJECT_NAME}
-    SYSTEM PUBLIC
+target_include_directories(${PROJECT_NAME} PRIVATE
     src/
-    ${SDL2_INCLUDE_DIR}
-    ${SDL2_IMAGE_INCLUDE_DIRS}
-    ${SDL2_TTF_INCLUDE_DIRS}
     )
 
-target_link_libraries(${PROJECT_NAME}
-    ${SDL2_LIBRARY}
-    ${SDL2_IMAGE_LIBRARIES}
-    ${SDL2_TTF_LIBRARIES}
-    )
+if(BUILD MATCHES "GBA")
+    add_custom_command(TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} ARGS -O binary ${PROJECT_NAME} ${PROJECT_NAME}.gba)
+else()
+    target_include_directories(${PROJECT_NAME}
+        SYSTEM PRIVATE
+        ${SDL2_INCLUDE_DIR}
+        ${SDL2_IMAGE_INCLUDE_DIRS}
+        ${SDL2_TTF_INCLUDE_DIRS}
+        )
+
+    target_link_libraries(${PROJECT_NAME}
+        ${SDL2_LIBRARY}
+        ${SDL2_IMAGE_LIBRARIES}
+        ${SDL2_TTF_LIBRARIES}
+        )
+endif()

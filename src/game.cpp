@@ -1,5 +1,6 @@
 #include "game.h"
 #include "defines.h"
+#include <cstring>
 #include <stdio.h>
 #include <vector>
 
@@ -314,7 +315,12 @@ void Game::Render(Handle handle, int end) {
   Port::Render::Blit(handle, 0, 0, background);
 
   // Draw score to the screen
-  strncpy_s(score_array, (char *)"SCORE: ", 7);
+#if _MSC_VER
+  strncpy_s
+#else
+  strncpy
+#endif
+  (score_array, (char *)"SCORE: ", 7);
   snprintf(&score_array[7], sizeof(score_array) - 7, "%d", score);
   Port::Render::Text(handle, 5, 5, font, score_array, textColor);
 
