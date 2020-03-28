@@ -7,13 +7,13 @@
 class Ai {
 
 public:
-	Ai();
-	~Ai();
+  Ai();
+  ~Ai();
 
-	void GetDir(Snake *ai_snake, Eatable *cur_eatable);
+  void GetDir(Snake *ai_snake, Eatable *cur_eatable);
 
 private:
-	bool CollisionIn(Snake *ai_snake, Direction dir);
+  bool CollisionIn(Snake *ai_snake, Direction dir);
 };
 
 #endif

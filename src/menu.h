@@ -1,40 +1,28 @@
 #ifndef _MENU_H_
 #define _MENU_H_
 
-#include "SDL.h"
-#include "SDL_ttf.h"
-#include "SDL_image.h"
-#include "screen.h"
 #include "defines.h"
+#include "port.h"
 
 class Menu {
 public:
 
-	Menu();
-	~Menu();
+  Menu();
+  ~Menu();
 
-	bool Init(SDL_PixelFormat *pixelformat);
+  bool Init(Handle handle);
 
-	typedef enum {
-		NONE,
-		QUIT,
-		SINGLE,
-		AI,
-		SMART_AI
-	} selection;
-
-	selection Main(SDL_Window *window);
+  MenuSelection Main(Handle handle);
 
 private:
 
-	selection GetInput();
-	int PrintText(SDL_Surface *screen, int x, int y, char *text,
-	              TTF_Font *font, SDL_Color *color);
+  MenuSelection GetInput();
+  int PrintText(Handle handle, int x, int y, char *text,
+    Font font, Color *color);
 
-	SDL_Event event;
-	SDL_Surface *background;
+  Image background;
 
-	TTF_Font *font;
+  Font font;
 };
 
 #endif

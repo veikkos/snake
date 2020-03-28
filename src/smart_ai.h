@@ -10,28 +10,28 @@
 class SmartAi {
 
 public:
-	SmartAi();
-	~SmartAi();
+  SmartAi();
+  ~SmartAi();
 
-	void GetDir(Snake *ai_snake, Eatable *cur_eatable);
-	std::vector< std::pair <int,int> > GetPath();
+  void GetDir(Snake *ai_snake, Eatable *cur_eatable);
+  std::vector< std::pair <int, int> > GetPath();
 
 private:
 
-	bool CollisionIn(Snake *ai_snake, Direction dir);
-	bool BlockHasSnake(Snake *snake, int x, int y);
-	bool BlockHasSnake(Snake *snake, int block);
-	void NoPath(Snake *ai_snake, Eatable *cur_eatable);
+  bool CollisionIn(Snake *ai_snake, Direction dir);
+  bool BlockHasSnake(Snake *snake, int x, int y);
+  bool BlockHasSnake(Snake *snake, int block);
+  void NoPath(Snake *ai_snake, Eatable *cur_eatable);
 
-	void GenerateGrid(int matrix_size, int width, \
-	                  Dijkstra::vector_vertex_vector *cost_matrix);
+  void GenerateGrid(int matrix_size, int width, \
+    Dijkstra::vector_vertex_vector *cost_matrix);
 
-	int m_size;
-	Dijkstra::vector_vertex_vector cost_grid;
-	Dijkstra::vector_vertex_vector cost;
-	Dijkstra *dijkstra;
+  int m_size;
+  Dijkstra::vector_vertex_vector cost_grid;
+  Dijkstra::vector_vertex_vector cost;
+  Dijkstra *dijkstra;
 
-	std::vector<int> path;
+  std::vector<int> path;
 };
 
 #endif

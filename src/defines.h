@@ -1,9 +1,10 @@
 #ifndef _DEFINES_H_
 #define _DEFINES_H_
 
+#include <stdint.h>
+
 #define SCREEN_WIDTH    640
 #define SCREEN_HEIGHT   480
-#define SCREEN_FLAGS    (SDL_WINDOW_OPENGL)
 
 #define FPS             20
 
@@ -17,5 +18,37 @@
 
 #define E_DYN_FRAME_AGE FPS
 #define E_DYN_FRAMES    5
+
+typedef void* Handle;
+
+typedef void* Font;
+
+typedef void* Image;
+
+typedef enum {
+  MENU_NONE,
+  MENU_QUIT,
+  MENU_SINGLE,
+  MENU_AI,
+  MENU_SMART_AI
+} MenuSelection;
+
+typedef enum {
+  AI_NONE,
+  AI_QUIT,
+  AI_FRAMELIMIT,
+  AI_PATH
+} AiSelection;
+
+struct Color {
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
+};
+
+struct Rect {
+  int x, y;
+  int w, h;
+};
 
 #endif

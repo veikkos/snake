@@ -1,132 +1,85 @@
 #include "game.h"
 #include "menu.h"
-#include <stdlib.h>
-#include <time.h>
-
-SDL_Window *sdlWindow = NULL;
-SDL_Renderer *sdlRenderer = NULL;
-
-int Init() {
-
-	srand ( time(NULL) );
-
-	//Initialize all SDL subsystems
-	if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 ) {
-		return false;
-	}
-
-	//Set up the screen
-	if( !(sdlWindow = SDL_CreateWindow(
-	                      "Snake v0.5",
-	                      SDL_WINDOWPOS_UNDEFINED,
-	                      SDL_WINDOWPOS_UNDEFINED,
-	                      SCREEN_WIDTH,
-	                      SCREEN_HEIGHT,
-	                      SCREEN_FLAGS)) ) {
-		return false;
-	}
-
-	if( !(sdlRenderer = SDL_CreateRenderer(sdlWindow, -1,
-	                                       SDL_RENDERER_ACCELERATED)) ) {
-		return false;
-	}
-
-	//Initialize SDL_ttf
-	if( TTF_Init() == -1 ) {
-		return false;
-	}
-
-	return true;
-}
+#include "port.h"
 
 int main(int argc, char *args[]) {
-	Game *game = NULL;
-	Menu *menu = NULL;
-	SDL_Surface *screenSurface;
+  Game *game = NULL;
+  Menu *menu = NULL;
 
-	Menu::selection sel;
-	bool end;
+  MenuSelection sel;
+  bool end;
+  Handle handle = Port::Init();
 
-	if(Init() == false) {
-		return 0;
-	}
+  if (!handle) {
+    return 0;
+  }
 
-	screenSurface = SDL_GetWindowSurface( sdlWindow );
+  menu = new Menu;
 
-	menu = new Menu;
+  if (menu->Init(handle) == false) {
+    return 0;
+  }
 
-	if(menu->Init(screenSurface->format) == false) {
-		return 0;
-	}
+  end = false;
 
-	end = false;
+  while (end != true) {
 
-	while(end != true) {
+    sel = menu->Main(handle);
 
-		sel = menu->Main(sdlWindow);
+    if (sel != MenuSelection::MENU_QUIT) {
 
-		if(sel != Menu::QUIT) {
+      game = new Game;
 
-			game = new Game;
+      if (game->Init(handle) == false) {
+        return 0;
+      }
 
-			if(game->Init(screenSurface->format) == false) {
-				return 0;
-			}
+      switch (sel) {
 
-			switch(sel) {
+      case MenuSelection::MENU_SINGLE:
+        if (game->Execute(handle, Game::SINGLE) == false) {
+          return 0;
+        }
 
-				case Menu::SINGLE:
-					if(game->Execute(sdlWindow, Game::SINGLE) == false) {
-						return 0;
-					}
+        break;
 
-					break;
+      case MenuSelection::MENU_AI:
+        if (game->Execute(handle, Game::AI) == false) {
+          return 0;
+        }
 
-				case Menu::AI:
-					if(game->Execute(sdlWindow, Game::AI) == false) {
-						return 0;
-					}
+        break;
 
-					break;
+      case MenuSelection::MENU_SMART_AI:
+        if (game->Execute(handle, Game::SMART_AI) == false) {
+          return 0;
+        }
 
-				case Menu::SMART_AI:
-					if(game->Execute(sdlWindow, Game::SMART_AI) == false) {
-						return 0;
-					}
+        break;
 
-					break;
+      default:
+        break;
+      }
 
-				default:
-					break;
-			}
+      delete game;
+      game = NULL;
 
-			delete game;
-			game = NULL;
+    }
+    else {
+      end = true;
+      break;
+    }
+  }
 
-		} else {
-			end = true;
-			break;
-		}
-	}
+  if (game) {
+    delete game;
+  }
 
-	if(game) {
-		delete game;
-	}
+  if (menu) {
+    delete menu;
+  }
 
-	if(menu) {
-		delete menu;
-	}
+  Port::Deinit(handle);
 
-	if(sdlRenderer) {
-		SDL_DestroyRenderer(sdlRenderer);
-	}
-
-	if(sdlWindow) {
-		SDL_DestroyWindow(sdlWindow);
-	}
-
-	TTF_Quit();
-	SDL_Quit();
-
-	return 1;
+  return 1;
 }

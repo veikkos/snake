@@ -6,480 +6,409 @@
 using namespace std;
 
 Game::Game() {
-	background = NULL;
-	snake_t = NULL;
-	eatable = NULL;
-	dyn_eatable = NULL;
-	score_text = NULL;
-	end_text = NULL;
+  background = NULL;
+  snake_t = NULL;
+  eatable = NULL;
+  dyn_eatable = NULL;
+  score_text = NULL;
+  end_text = NULL;
 
-	font = NULL;
+  font = NULL;
 
-	snake = NULL;
-	s_eatable = NULL;
-	d_eatable = NULL;
-	path_mark = NULL;
+  snake = NULL;
+  s_eatable = NULL;
+  d_eatable = NULL;
+  path_mark = NULL;
 
-	score = 0;
-	done = 0;
+  score = 0;
+  done = 0;
 
-	framelimit = true;
-	render_path = false;
+  framelimit = true;
+  render_path = false;
 
-	ai = NULL;
-	smartai = NULL;
+  ai = NULL;
+  smartai = NULL;
 }
 
 Game::~Game() {
-	// Delete content here
+  // Delete content here
 
-	if(snake) {
-		delete snake;
-	}
+  if (snake) {
+    delete snake;
+  }
 
-	if(s_eatable) {
-		delete s_eatable;
-	}
+  if (s_eatable) {
+    delete s_eatable;
+  }
 
-	if(d_eatable) {
-		delete d_eatable;
-	}
+  if (d_eatable) {
+    delete d_eatable;
+  }
 
-	if(background != NULL) {
-		SDL_FreeSurface(background);
-	}
+  if (background != NULL) {
+    Port::FreeImage(background);
+  }
 
-	if(snake_t != NULL) {
-		SDL_FreeSurface(snake_t);
-	}
+  if (snake_t != NULL) {
+    Port::FreeImage(snake_t);
+  }
 
-	if(eatable != NULL) {
-		SDL_FreeSurface(eatable);
-	}
+  if (eatable != NULL) {
+    Port::FreeImage(eatable);
+  }
 
-	if(dyn_eatable != NULL) {
-		SDL_FreeSurface(dyn_eatable);
-	}
+  if (dyn_eatable != NULL) {
+    Port::FreeImage(dyn_eatable);
+  }
 
-	if(score_text != NULL) {
-		SDL_FreeSurface(score_text);
-	}
+  if (score_text != NULL) {
+    Port::FreeImage(score_text);
+  }
 
-	if(end_text != NULL) {
-		SDL_FreeSurface(end_text);
-	}
+  if (end_text != NULL) {
+    Port::FreeImage(end_text);
+  }
 
-	if(path_mark != NULL) {
-		SDL_FreeSurface(path_mark);
-	}
+  if (path_mark != NULL) {
+    Port::FreeImage(path_mark);
+  }
 
-	if(font != NULL) {
-		TTF_CloseFont(font);
-	}
+  if (font != NULL) {
+    Port::FreeFont(font);
+  }
 }
 
-bool Game::Init(SDL_PixelFormat *pixelformat) {
+bool Game::Init(Handle handle) {
 
-	if(LoadContent(pixelformat) == false) {
-		return false;
-	}
+  if (LoadContent(handle) == false) {
+    return false;
+  }
 
-	snake = new Snake(30, 30, 3);
+  snake = new Snake(30, 30, 3);
 
-	s_eatable = new Eatable(e_static, NULL);
+  s_eatable = new Eatable(e_static, NULL);
 
-	return true;
+  return true;
 }
 
-bool Game::Execute(SDL_Window *window, game_mode mode) {
-	int end = 0;
+bool Game::Execute(Handle handle, game_mode mode) {
+  int end = 0;
 
-	Uint32 waittime = 1000.0f/FPS;
-	Uint32 framestarttime = 0;
-	Sint32 delaytime;
+  switch (mode) {
+  case SMART_AI:
+    smartai = new SmartAi;
+    break;
 
-	switch(mode) {
-		case SMART_AI:
-			smartai = new SmartAi;
-			break;
+  case AI:
+    ai = new Ai;
+    break;
 
-		case AI:
-			ai = new Ai;
-			break;
-
-		default:
-			break;
-	}
+  default:
+    break;
+  }
 
 
-	while(!done) {
-		switch(mode) {
+  while (!done) {
+    switch (mode) {
 
-			case SINGLE:
-				GetInput();
-				break;
+    case SINGLE:
+      GetInput();
+      break;
 
-			case SMART_AI:
-				GetAi(smartai);
-				break;
+    case SMART_AI:
+      GetAi(smartai);
+      break;
 
-			case AI:
-				GetAi(ai);
-				break;
-		}
+    case AI:
+      GetAi(ai);
+      break;
+    }
 
-		end = Update();
-		Render(window, end);
+    end = Update();
+    Render(handle, end);
 
-		if(framelimit) {
-			delaytime = waittime - (SDL_GetTicks() - framestarttime);
+    if (framelimit) {
+      Port::FrameLimit(handle);
+    }
+  }
 
-			if(delaytime > 0) {
-				SDL_Delay((Uint32)delaytime);
-			}
+  if (done == DIED) {
+    Port::Delay(2000);
+  }
 
-			framestarttime = SDL_GetTicks();
-		}
-	}
+  if (ai) {
+    delete ai;
+    ai = NULL;
+  }
 
-	if(done == DIED) {
-		SDL_Delay(2000);
-	}
+  if (smartai) {
+    delete smartai;
+    smartai = NULL;
+  }
 
-	if(ai) {
-		delete ai;
-		ai = NULL;
-	}
-
-	if(smartai) {
-		delete smartai;
-		smartai = NULL;
-	}
-
-	return true;
+  return true;
 }
 
 // Private
 
-int Game::LoadContent(SDL_PixelFormat *pixelformat) {
+int Game::LoadContent(Handle handle) {
+  font = Port::LoadFont("fonts/DigitalDreamFat.ttf", 24);
 
-	//Open the font
-	font = TTF_OpenFont( "fonts/DigitalDreamFat.ttf", 24 );
+  if (font == NULL) {
+    return false;
+  }
 
-	//If there was an error in loading the font
-	if( font == NULL ) {
-		return false;
-	}
+  background = Port::LoadImage(handle, "img/g_bg.png");
 
-	background = load_image( "img/g_bg.png", pixelformat );
+  if (background == NULL) {
+    return false;
+  }
 
-	if( background == NULL ) {
-		return false;
-	}
+  snake_t = Port::LoadImage(handle, "img/snake.png");
 
-	snake_t = load_image( "img/snake.png", pixelformat );
+  if (snake_t == NULL) {
+    return false;
+  }
 
-	if( snake_t == NULL ) {
-		return false;
-	}
+  eatable = Port::LoadImage(handle, "img/eatable.png");
 
-	eatable = load_image( "img/eatable.png", pixelformat );
+  if (eatable == NULL) {
+    return false;
+  }
 
-	if( eatable == NULL ) {
-		return false;
-	}
+  dyn_eatable = Port::LoadImage(handle, "img/dyn_eatable.png");
 
-	dyn_eatable = load_image( "img/dyn_eatable.png", pixelformat );
+  if (dyn_eatable == NULL) {
+    return false;
+  }
 
-	if( dyn_eatable == NULL ) {
-		return false;
-	}
+  path_mark = Port::LoadImage(handle, "img/path.png");
 
-	path_mark = load_image( "img/path.png" );
+  if (path_mark == NULL) {
+    return false;
+  }
 
-	if( path_mark == NULL ) {
-		return false;
-	}
-
-	return true;
+  return true;
 }
 
 void Game::GetInput() {
-	int dirGot = 0;
-
-	while(SDL_PollEvent(&event)) {
-		if(event.type == SDL_QUIT) {
-			done = QUITED;
-		}
-
-		// Accept only one direction change when
-		// GetInput is called so we won't crash
-		// to itself in one move.
-		if(dirGot) {
-			continue;
-		}
-
-		//If a key was pressed
-		if( event.type == SDL_KEYDOWN ) {
-
-			//Set the proper message surface
-			switch( event.key.keysym.sym ) {
-				case SDLK_UP:
-					snake->SetDir(s_up);
-					dirGot = 1;
-					break;
-
-				case SDLK_DOWN:
-					snake->SetDir(s_down);
-					dirGot = 1;
-					break;
-
-				case SDLK_LEFT:
-					snake->SetDir(s_left);
-					dirGot = 1;
-					break;
-
-				case SDLK_RIGHT:
-					snake->SetDir(s_right);
-					dirGot = 1;
-					break;
-
-				case SDLK_ESCAPE:
-					done = QUITED;
-					break;
-
-				default:
-					break;
-			}
-		}
-	}
+  if (Port::GetInput(snake)) {
+    done = QUITED;
+  }
 }
 
 template <class TYPE>
 void Game::GetAi(TYPE *ai) {
-	// Chase dynamic eatable if
-	// it exists, and if not,
-	// go for the basic eatable.
-	if(d_eatable != NULL) {
-		ai->GetDir(snake, d_eatable);
-	}
-	else {
-		ai->GetDir(snake, s_eatable);
-	}
+  // Chase dynamic eatable if
+  // it exists, and if not,
+  // go for the basic eatable.
+  if (d_eatable != NULL) {
+    ai->GetDir(snake, d_eatable);
+  }
+  else {
+    ai->GetDir(snake, s_eatable);
+  }
 
-	// Poll keys if user want's to quit
-	while(SDL_PollEvent(&event)) {
-
-		if(event.type == SDL_QUIT) {
-			done = QUITED;
-		} else if( event.type == SDL_KEYDOWN ) {
-
-			//Set the proper message surface
-			switch( event.key.keysym.sym ) {
-				case SDLK_r:
-					framelimit = !framelimit;
-					break;
-
-				case SDLK_d:
-					render_path = !render_path;
-					break;
-
-				case SDLK_ESCAPE:
-					done = QUITED;
-					break;
-
-				default:
-					break;
-			}
-		}
-	}
+  // Poll keys if user want's to quit
+  AiSelection selection = Port::GetAiInput();
+  switch (selection)
+  {
+  case AI_QUIT:
+    done = QUITED;
+    break;
+  case AI_FRAMELIMIT:
+    framelimit = !framelimit;
+    break;
+  case AI_PATH:
+    render_path = !render_path;
+    break;
+  default:
+    break;
+  }
 }
 
 int Game::Update() {
-	int i;
+  int i;
 
-	snake->Move();
+  snake->Move();
 
-	// Check that if snake has contact with itself
-	for(i=1; i<snake->GetLength(); i++) {
+  // Check that if snake has contact with itself
+  for (i = 1; i < snake->GetLength(); i++) {
 
-		if((snake->GetPosX(0) == snake->GetPosX(i)) && \
-		        (snake->GetPosY(0) == snake->GetPosY(i))) {
-			done = DIED;
-			return 1;
-		}
-	}
+    if ((snake->GetPosX(0) == snake->GetPosX(i)) && \
+      (snake->GetPosY(0) == snake->GetPosY(i))) {
+      done = DIED;
+      return 1;
+    }
+  }
 
-	// Check if snake has collided with the eatable
-	if((snake->GetPosX(0) == s_eatable->GetPosX(0)) && \
-	        (snake->GetPosY(0) == s_eatable->GetPosY(0))) {
+  // Check if snake has collided with the eatable
+  if ((snake->GetPosX(0) == s_eatable->GetPosX(0)) && \
+    (snake->GetPosY(0) == s_eatable->GetPosY(0))) {
 
-		int i;
-		vector<position> used;
+    int i;
+    vector<position> used;
 
-		for(i=0; i<snake->GetLength(); i++) {
-			used.push_back(snake->GetPos(i));
-		}
+    for (i = 0; i < snake->GetLength(); i++) {
+      used.push_back(snake->GetPos(i));
+    }
 
-		if(d_eatable) {
-			used.push_back(d_eatable->GetPos(0));
-		}
+    if (d_eatable) {
+      used.push_back(d_eatable->GetPos(0));
+    }
 
-		score++;
+    score++;
 
-		snake->Grow(1);
+    snake->Grow(1);
 
-		// Delete eaten "eatable" and
-		// create a new one.
-		delete s_eatable;
-		s_eatable = new Eatable(e_static, &used);
-	}
+    // Delete eaten "eatable" and
+    // create a new one.
+    delete s_eatable;
+    s_eatable = new Eatable(e_static, &used);
+  }
 
-	if(d_eatable == NULL) {
+  if (d_eatable == NULL) {
 
-		int i;
-		vector<position> used;
+    int i;
+    vector<position> used;
 
-		for(i=0; i<snake->GetLength(); i++) {
-			used.push_back(snake->GetPos(i));
-		}
+    for (i = 0; i < snake->GetLength(); i++) {
+      used.push_back(snake->GetPos(i));
+    }
 
-		if(s_eatable) {
-			used.push_back(s_eatable->GetPos(0));
-		}
+    if (s_eatable) {
+      used.push_back(s_eatable->GetPos(0));
+    }
 
-		if((rand() % 1000) < 5) {
-			d_eatable = new Eatable(e_dynamic, &used);
-		}
+    if ((rand() % 1000) < 5) {
+      d_eatable = new Eatable(e_dynamic, &used);
+    }
 
-	} else {
+  }
+  else {
 
-		// Check if snake has collided with the dynamic eatable
-		if((snake->GetPosX(0) == d_eatable->GetPosX(0)) && \
-		        (snake->GetPosY(0) == d_eatable->GetPosY(0))) {
+    // Check if snake has collided with the dynamic eatable
+    if ((snake->GetPosX(0) == d_eatable->GetPosX(0)) && \
+      (snake->GetPosY(0) == d_eatable->GetPosY(0))) {
 
-			score += d_eatable->GetFrame() + 1;
+      score += d_eatable->GetFrame() + 1;
 
-			snake->Grow(1);
+      snake->Grow(1);
 
-			delete d_eatable;
-			d_eatable = NULL;
-		}
+      delete d_eatable;
+      d_eatable = NULL;
+    }
 
-		// Update dynamic eatable status
-		// and check if it's still alive
-		if(d_eatable != NULL) {
-			if(d_eatable->Update() == false) {
+    // Update dynamic eatable status
+    // and check if it's still alive
+    if (d_eatable != NULL) {
+      if (d_eatable->Update() == false) {
 
-				delete d_eatable;
-				d_eatable = NULL;
-			}
-		}
-	}
+        delete d_eatable;
+        d_eatable = NULL;
+      }
+    }
+  }
 
-	return 0;
+  return 0;
 }
 
-void Game::Render(SDL_Window *window, int end) {
-	SDL_Surface *screen = SDL_GetWindowSurface( window );
-	int i;
-	char score_array[20];
-	SDL_Color textColor = { 230, 230, 230 };
-	SDL_Rect clip[5];
+void Game::Render(Handle handle, int end) {
 
-	//Draw background to the screen
-	apply_surface( 0, 0, background, screen );
+  int i;
+  char score_array[20];
+  Color textColor = { 230, 230, 230 };
+  Rect clip[5];
 
-	// Draw score to the screen
-	strncpy(score_array, (char *)"SCORE: ", 7);
-	snprintf(&score_array[7], sizeof(score_array) - 7, "%d", score);
-	score_text = TTF_RenderText_Solid( font, score_array, textColor );
-	apply_surface( 5, 5, score_text, screen );
+  // Draw background to the screen
+  Port::ApplySurface(handle, 0, 0, background);
 
-	//Draw snake to the screen
-	clip[ 0 ].x = 0;
-	clip[ 0 ].y = 0;
-	clip[ 0 ].w = 10;
-	clip[ 0 ].h = 10;
+  // Draw score to the screen
+  strncpy_s(score_array, (char *)"SCORE: ", 7);
+  snprintf(&score_array[7], sizeof(score_array) - 7, "%d", score);
+  score_text = Port::RenderText(font, score_array, textColor);
+  Port::ApplySurface(handle, 5, 5, score_text);
 
-	clip[ 1 ].x = 10;
-	clip[ 1 ].y = 0;
-	clip[ 1 ].w = 10;
-	clip[ 1 ].h = 10;
+  // Draw snake to the screen
+  clip[0].x = 0;
+  clip[0].y = 0;
+  clip[0].w = 10;
+  clip[0].h = 10;
 
-	apply_surface( snake->GetPosX(0), snake->GetPosY(0), snake_t, screen,
-	               &clip[0] );
+  clip[1].x = 10;
+  clip[1].y = 0;
+  clip[1].w = 10;
+  clip[1].h = 10;
 
-	for(i=1; i<snake->GetLength(); i++) {
-		apply_surface( snake->GetPosX(i), snake->GetPosY(i), snake_t, screen,
-		               &clip[1] );
-	}
+  Port::ApplySurface(handle, snake->GetPosX(0), snake->GetPosY(0), snake_t, &clip[0]);
 
-	if(smartai && render_path && path_mark) {
+  for (i = 1; i < snake->GetLength(); i++) {
+    Port::ApplySurface(handle, snake->GetPosX(i), snake->GetPosY(i), snake_t, &clip[1]);
+  }
 
-		vector< pair <int,int> > path = smartai->GetPath();
+  if (smartai && render_path && path_mark) {
+    vector< pair <int, int> > path = smartai->GetPath();
 
-		if(path.size()) {
-			for(vector< pair <int,int> >::iterator it = path.begin(); it != path.end();
-			        ++it) {
-				pair <int,int> path_point = *it;
+    if (path.size()) {
+      for (vector< pair <int, int> >::iterator it = path.begin(); it != path.end();
+        ++it) {
+        pair <int, int> path_point = *it;
 
-				apply_surface( path_point.first, path_point.second, path_mark,
-				               screen );
-			}
-		}
-	}
+        Port::ApplySurface(handle, path_point.first, path_point.second, path_mark
+        );
+      }
+    }
+  }
 
-	//Draw eatable(s)
-	apply_surface( s_eatable->GetPosX(0), s_eatable->GetPosY(0), eatable,
-	               screen );
+  // Draw eatable(s)
+  Port::ApplySurface(handle, s_eatable->GetPosX(0), s_eatable->GetPosY(0), eatable);
 
-	if(d_eatable != NULL) {
+  if (d_eatable != NULL) {
 
-		clip[ 0 ].x = 40;
-		clip[ 0 ].y = 0;
-		clip[ 0 ].w = 10;
-		clip[ 0 ].h = 10;
+    clip[0].x = 40;
+    clip[0].y = 0;
+    clip[0].w = 10;
+    clip[0].h = 10;
 
-		clip[ 1 ].x = 30;
-		clip[ 1 ].y = 0;
-		clip[ 1 ].w = 10;
-		clip[ 1 ].h = 10;
+    clip[1].x = 30;
+    clip[1].y = 0;
+    clip[1].w = 10;
+    clip[1].h = 10;
 
-		clip[ 2 ].x = 20;
-		clip[ 2 ].y = 0;
-		clip[ 2 ].w = 10;
-		clip[ 2 ].h = 10;
+    clip[2].x = 20;
+    clip[2].y = 0;
+    clip[2].w = 10;
+    clip[2].h = 10;
 
-		clip[ 3 ].x = 10;
-		clip[ 3 ].y = 0;
-		clip[ 3 ].w = 10;
-		clip[ 3 ].h = 10;
+    clip[3].x = 10;
+    clip[3].y = 0;
+    clip[3].w = 10;
+    clip[3].h = 10;
 
-		clip[ 4 ].x = 0;
-		clip[ 4 ].y = 0;
-		clip[ 4 ].w = 10;
-		clip[ 4 ].h = 10;
+    clip[4].x = 0;
+    clip[4].y = 0;
+    clip[4].w = 10;
+    clip[4].h = 10;
 
-		apply_surface( d_eatable->GetPosX(0), d_eatable->GetPosY(0), dyn_eatable,
-		               screen, &clip[d_eatable->GetFrame()]);
-	}
+    Port::ApplySurface(handle, d_eatable->GetPosX(0), d_eatable->GetPosY(0), dyn_eatable,
+      &clip[d_eatable->GetFrame()]);
+  }
 
-	if(end) {
-		end_text = TTF_RenderText_Solid( font, (char *)"GAME OVER!", textColor );
-		apply_surface( (SCREEN_WIDTH - end_text->w) / 2 ,
-		               (SCREEN_HEIGHT - end_text->h) / 2, end_text, screen );
+  if (end) {
+    end_text = Port::RenderText(font, (char *)"GAME OVER!", textColor);
+    Port::ApplySurface(handle, (SCREEN_WIDTH - Port::GetW(end_text)) / 2,
+      (SCREEN_HEIGHT - Port::GetH(end_text)) / 2, end_text);
 
-		// Re-apply score, so it will be on top.
-		apply_surface( 5, 5, score_text, screen );
+    // Re-apply score, so it will be on top.
+    Port::ApplySurface(handle, 5, 5, score_text);
 
-		SDL_FreeSurface(end_text);
-		end_text = NULL;
-	}
+    Port::FreeImage(end_text);
+    end_text = NULL;
+  }
 
-	SDL_FreeSurface(score_text);
-	score_text = NULL;
+  Port::FreeImage(score_text);
+  score_text = NULL;
 
-	//Update the screen
-	SDL_UpdateWindowSurface( window );
+  // Update the screen
+  Port::Render(handle);
 }

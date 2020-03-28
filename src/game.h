@@ -1,73 +1,67 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
-
 #include <stdlib.h>
 #include <vector>
 
-#include "screen.h"
 #include "snake.h"
 #include "eatables.h"
 #include "ai.h"
 #include "smart_ai.h"
+#include "port.h"
 
 #define QUITED  1
 #define DIED    2
 
 class Game {
 public:
-	Game();
-	~Game();
+  Game();
+  ~Game();
 
-	bool Init(SDL_PixelFormat *pixelformat);
+  bool Init(Handle handle);
 
-	typedef enum {
-		SINGLE,
-		AI,
-		SMART_AI
-	} game_mode;
+  typedef enum {
+    SINGLE,
+    AI,
+    SMART_AI
+  } game_mode;
 
-	bool Execute(SDL_Window *window, game_mode mode);
+  bool Execute(Handle handle, game_mode mode);
 
 private:
 
-	int score;
-	bool framelimit;
-	bool render_path;
+  int score;
+  bool framelimit;
+  bool render_path;
 
-	int LoadContent(SDL_PixelFormat *pixelformat);
+  int LoadContent(Handle handle);
 
-	void GetInput();
+  void GetInput();
 
-	template <class TYPE>
-	void GetAi(TYPE *ai);
+  template <class TYPE>
+  void GetAi(TYPE *ai);
 
-	int Update();
-	void Render(SDL_Window *window, int end);
+  int Update();
+  void Render(Handle handle, int end);
 
-	int done;
+  int done;
 
-	SDL_Event event;
+  Image background;
+  Image snake_t;
+  Image eatable;
+  Image dyn_eatable;
+  Image score_text;
+  Image end_text;
+  Image path_mark;
 
-	SDL_Surface *background;
-	SDL_Surface *snake_t;
-	SDL_Surface *eatable;
-	SDL_Surface *dyn_eatable;
-	SDL_Surface *score_text;
-	SDL_Surface *end_text;
-	SDL_Surface *path_mark;
+  Font font;
 
-	TTF_Font *font;
+  Snake *snake;
+  Eatable *s_eatable;
+  Eatable *d_eatable;
 
-	Snake *snake;
-	Eatable *s_eatable;
-	Eatable *d_eatable;
-
-	Ai *ai;
-	SmartAi *smartai;
+  Ai *ai;
+  SmartAi *smartai;
 };
 
 
