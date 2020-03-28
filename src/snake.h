@@ -15,7 +15,7 @@ typedef enum {
 class Snake : public Entity {
 public:
   Snake(int x, int y, int len);
-  ~Snake();
+  virtual ~Snake();
 
   void SetDir(Direction n_dir);
   int GetLength();

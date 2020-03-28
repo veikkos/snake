@@ -3,16 +3,25 @@
 
 #include <stdint.h>
 
+#if GBA_BUILD
+#define SCREEN_WIDTH    240
+#define SCREEN_HEIGHT   160
+#else
 #define SCREEN_WIDTH    640
 #define SCREEN_HEIGHT   480
+#endif
 
 #define FPS             20
 
 #define GRID_SIZE       10
-#define X_AREA          640
-#define Y_AREA          480
+#define X_AREA          SCREEN_WIDTH
+#define Y_AREA          SCREEN_HEIGHT
 
+#if GBA_BUILD
+#define MAX_LENGTH      128
+#else
 #define MAX_LENGTH      50000
+#endif
 
 #define SNAKE_PAUSE     0
 

@@ -44,6 +44,8 @@ namespace Port
 
     void Text(Handle handle, int x, int y, Font font, const char* text, Color color, bool center = false);
 
+    void Clear(Handle handle);
+
     void Draw(Handle handle);
   }
 }

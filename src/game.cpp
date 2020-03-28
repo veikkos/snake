@@ -398,4 +398,6 @@ void Game::Render(Handle handle, int end) {
 
   // Update the screen
   Port::Render::Draw(handle);
+
+  Port::Render::Clear(handle);
 }

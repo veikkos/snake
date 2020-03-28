@@ -9,7 +9,7 @@ typedef struct {
 class Entity {
 public:
   Entity(int size);
-  ~Entity();
+  virtual ~Entity();
 
   int GetPosY(int bit);
   int GetPosX(int bit);

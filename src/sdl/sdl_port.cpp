@@ -245,6 +245,10 @@ void Render::Text(Handle handle, int x, int y, Font font, const char* text, Colo
   }
 }
 
+void Render::Clear(Handle)
+{
+}
+
 Image Resources::LoadImage(Handle handle, const char* filename)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;

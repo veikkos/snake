@@ -40,19 +40,24 @@ bool Menu::Init(Handle handle) {
 MenuSelection Menu::Main(Handle handle) {
 
   MenuSelection i_selection = MenuSelection::MENU_NONE;
-  int x_pos = (SCREEN_WIDTH - 440) / 2;
+  const int x_pos = SCREEN_WIDTH / 6;
+  int y_pos = SCREEN_HEIGHT / 8;
+  const int y_increment = SCREEN_HEIGHT / 12;
 
   Color textColor = { 230, 230, 230 };
 
   // Draw background to the screen
   Port::Render::Blit(handle, 0, 0, background);
 
-  PrintText(handle, x_pos, 60, (char *)"Select 1 to play", font, &textColor);
-  PrintText(handle, x_pos, 100, (char *)"Select 2 to AI play", font,
+  PrintText(handle, x_pos, y_pos, (char *)"Select 1 to play", font, &textColor);
+  y_pos += y_increment;
+  PrintText(handle, x_pos, y_pos, (char *)"Select 2 to AI play", font,
     &textColor);
-  PrintText(handle, x_pos, 140, (char *)"Select 3 to AI2 play", font,
+  y_pos += y_increment;
+  PrintText(handle, x_pos, y_pos, (char *)"Select 3 to AI2 play", font,
     &textColor);
-  PrintText(handle, x_pos, 180, (char *)"Select ESC to quit", font,
+  y_pos += y_increment;
+  PrintText(handle, x_pos, y_pos, (char *)"Select ESC to quit", font,
     &textColor);
 
   Port::Render::Draw(handle);
@@ -61,6 +66,8 @@ MenuSelection Menu::Main(Handle handle) {
     Port::Time::Delay(10);
     i_selection = GetInput();
   }
+
+  Port::Render::Clear(handle);
 
   return i_selection;
 }
