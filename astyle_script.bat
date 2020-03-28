@@ -1,1 +1,0 @@
-"D:\Program Files\AStyle\bin\AStyle.exe" --indent=tab --indent-switches --align-pointer=name --suffix=none --break-blocks --add-brackets --max-code-length=75 --break-after-logical C:\Users\Veino\Documents\Projektit\git\snake\*.cpp C:\Users\Veino\Documents\Projektit\git\snake\*.h
