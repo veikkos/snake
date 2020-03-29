@@ -13,13 +13,14 @@
 
 #define FPS             20
 
-#define GRID_SIZE       10
 #define X_AREA          SCREEN_WIDTH
 #define Y_AREA          SCREEN_HEIGHT
 
 #if GBA_BUILD
+#define GRID_SIZE       8
 #define MAX_LENGTH      128
 #else
+#define GRID_SIZE       10
 #define MAX_LENGTH      50000
 #endif
 

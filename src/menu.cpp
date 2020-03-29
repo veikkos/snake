@@ -1,6 +1,16 @@
 #include "menu.h"
 #include "port.h"
 
+#if GBA_BUILD
+#define BUTTON_1 "A"
+#define BUTTON_2 "L"
+#define BUTTON_3 "R"
+#else
+#define BUTTON_1 "1"
+#define BUTTON_2 "2"
+#define BUTTON_3 "3"
+#endif
+
 Menu::Menu() {
 
   background = NULL;
@@ -49,16 +59,19 @@ MenuSelection Menu::Main(Handle handle) {
   // Draw background to the screen
   Port::Render::Blit(handle, 0, 0, background);
 
-  PrintText(handle, x_pos, y_pos, (char *)"Select 1 to play", font, &textColor);
+  PrintText(handle, x_pos, y_pos, (char *)"Select " BUTTON_1 " to play", font, &textColor);
   y_pos += y_increment;
-  PrintText(handle, x_pos, y_pos, (char *)"Select 2 to AI play", font,
+  PrintText(handle, x_pos, y_pos, (char *)"Select " BUTTON_2 " to AI play", font,
     &textColor);
   y_pos += y_increment;
-  PrintText(handle, x_pos, y_pos, (char *)"Select 3 to AI2 play", font,
+  PrintText(handle, x_pos, y_pos, (char *)"Select " BUTTON_3 " to AI2 play", font,
     &textColor);
+
+#ifndef GBA_BUILD
   y_pos += y_increment;
   PrintText(handle, x_pos, y_pos, (char *)"Select ESC to quit", font,
     &textColor);
+#endif
 
   Port::Render::Draw(handle);
 

@@ -3,13 +3,15 @@
 #include "SuperCrateBox-GBA/gba.h"
 #include "SuperCrateBox-GBA/font.h"
 
+#include "sprites.h"
+
 #include <cstring>
 
 using namespace Port;
 
 struct HandleImpl
 {
-  int activeLetters;
+  int active;
 } handle;
 
 const unsigned short bg_palette[256] __attribute__((aligned(4)))=
@@ -51,6 +53,13 @@ const unsigned short bg_palette[256] __attribute__((aligned(4)))=
   0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,
 };
 
+enum Images {
+  SNAKE = 1,
+  EATABLE = 3,
+  DYN_EATABLE = 4,
+  PATH = 11
+};
+
 Handle Port::Init()
 {
   // Set display options.
@@ -62,17 +71,14 @@ Handle Port::Init()
   REG_BG0VOFS = 0;
 
   LoadPaletteBGData(0, bg_palette, sizeof(bg_palette));
-  LoadTileData(4, 64, font_bold, 8192);
 
-  //Clear backgrounds
-  for (int y = 0; y < 32; ++y){
-    for (int x = 0; x < 32; ++x){
-      SetTile(30, x, y, 0);
-      SetTile(29, x, y, 0);
-      SetTile(28, x, y, 0);
-      SetTile(27, x, y, 0);
-    }
-  }
+  LoadTileData(4, 0, spritesTiles, spritesTilesLen);
+  LoadPaletteObjData(0, spritesPal, spritesPalLen);
+
+  LoadTileData(4, 128, font_bold, sizeof(font_bold));
+
+  handle.active = NUM_OBJECTS;
+  Render::Clear(&handle);
 
   return (Handle)&handle;
 }
@@ -89,9 +95,11 @@ void Time::FrameLimit(Handle handle)
 
 void Time::Delay(unsigned int delay)
 {
-  if (delay < 17)
-    delay = 17;
-  for (int i = 0; i < delay / 17; ++i)
+  int skips = delay / 17;
+  if (!skips)
+    skips = 1;
+
+  while (skips--)
     WaitVSync();
 }
 
@@ -154,37 +162,40 @@ void Resources::FreeFont(Font font)
 void Render::Text(Handle handle, int x, int y, Font font, const char* text, Color color, bool center)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;
-  int startPos = handleImpl->activeLetters;
-  if(center)
-    x -= 28;
-  for(int i = 0; i < strlen(text); i++) {
-    handleImpl->activeLetters++;
-    SetObject(startPos+i+45,
+  const size_t len = strlen(text);
+
+  if(center) {
+    x -= (len * 8) / 2;
+    y -= 8 / 2;
+  }
+
+  for(int i = 0; i < len; i++) {
+    SetObject(handleImpl->active++,
               ATTR0_SHAPE(0) | ATTR0_8BPP | ATTR0_REG | ATTR0_Y(y),
               ATTR1_SIZE(0) | ATTR1_X(x+(i*8)),
-              ATTR2_ID8(text[i] + 64));
+              ATTR2_ID8(text[i] + 128));
   }
 }
 
 void Render::Clear(Handle handle)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;
-  for(int i = 0; i < handleImpl->activeLetters; i++){
-    SetObject(i+45, ATTR0_HIDE, 0, 0);
+  for(int i = 0; i < handleImpl->active; i++){
+    SetObject(i, ATTR0_HIDE, 0, 0);
   }
-  handleImpl->activeLetters = 0;
+  handleImpl->active = 0;
 }
 
 Image Resources::LoadImage(Handle handle, const char* filename)
 {
   if(!strcmp(filename, "img/snake.png"))
-    return (Image)1;
+    return (Image)Images::SNAKE;
   else if(!strcmp(filename, "img/eatable.png"))
-    return (Image)2;
+    return (Image)Images::EATABLE;
   else if(!strcmp(filename, "img/dyn_eatable.png"))
-    return (Image)3;
+    return (Image)Images::DYN_EATABLE;
   else if(!strcmp(filename, "img/path.png"))
-    return (Image)4;
+    return (Image)Images::PATH;
 
   return (Image)100;
 }
@@ -195,25 +206,12 @@ void Resources::FreeImage(Image image)
 
 void Render::Blit(Handle handle, int x, int y, Image source, Rect* clip)
 {
-  char data[] = " ";
-  switch((int)source)
-    {
-    case 1:
-      data[0] += 'O';
-      break;
-    case 2:
-      data[0] += 'X';
-      break;
-    case 3:
-      data[0] += 'Z';
-      break;
-    case 4:
-      data[0] += 'S';
-      break;
-    default:
-      return;
-    }
+  HandleImpl* handleImpl = (HandleImpl*)handle;
+  const int id = clip ? clip->x / GRID_SIZE : 0;
+  const int offset = (int)source - 1;
 
-  Color dummyColor = { 230, 230, 230 };
-  Render::Text(handle, x, y, 0, data, dummyColor);
+  SetObject(handleImpl->active++,
+            ATTR0_SHAPE(0) | ATTR0_8BPP | ATTR0_REG | ATTR0_Y(y),
+            ATTR1_SIZE(0) | ATTR1_X(x),
+            ATTR2_ID8(id + offset));
 }

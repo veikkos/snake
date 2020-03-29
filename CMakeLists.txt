@@ -4,11 +4,8 @@ project(snake VERSION 1.0.0)
 file(GLOB SOURCES src/*.h src/*.cpp)
 
 if(BUILD MATCHES "GBA")
-    file(GLOB PORT_SOURCES src/gba/* src/gba/SuperCrateBox-GBA/*)
+    file(GLOB PORT_SOURCES src/gba/* src/gba/SuperCrateBox-GBA/* img/small/*.c img/small/*.h)
     list(APPEND SOURCES ${PORT_SOURCES})
-
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -mthumb-interwork -mthumb -O2")
-    set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -mthumb-interwork -mthumb -specs=gba.specs")
 else()
     file(GLOB PORT_SOURCES src/sdl/*)
     list(APPEND SOURCES ${PORT_SOURCES})
@@ -45,6 +42,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     )
 
 if(BUILD MATCHES "GBA")
+    target_include_directories(${PROJECT_NAME}
+        PRIVATE
+        img/small/
+        )
+
     target_compile_definitions(${PROJECT_NAME} PRIVATE GBA_BUILD=1)
 
     add_custom_command(TARGET ${PROJECT_NAME}

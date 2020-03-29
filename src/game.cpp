@@ -75,7 +75,7 @@ bool Game::Init(Handle handle) {
     return false;
   }
 
-  snake = new Snake(30, 30, 3);
+  snake = new Snake(GRID_SIZE * 3, GRID_SIZE * 3, 3);
 
   s_eatable = new Eatable(e_static, NULL);
 
@@ -327,13 +327,13 @@ void Game::Render(Handle handle, int end) {
   // Draw snake to the screen
   clip[0].x = 0;
   clip[0].y = 0;
-  clip[0].w = 10;
-  clip[0].h = 10;
+  clip[0].w = GRID_SIZE;
+  clip[0].h = GRID_SIZE;
 
-  clip[1].x = 10;
+  clip[1].x = GRID_SIZE;
   clip[1].y = 0;
-  clip[1].w = 10;
-  clip[1].h = 10;
+  clip[1].w = GRID_SIZE;
+  clip[1].h = GRID_SIZE;
 
   Port::Render::Blit(handle, snake->GetPosX(0), snake->GetPosY(0), snake_t, &clip[0]);
 
@@ -345,7 +345,7 @@ void Game::Render(Handle handle, int end) {
     vector< pair <int, int> > path = smartai->GetPath();
 
     if (path.size()) {
-      for (vector< pair <int, int> >::iterator it = path.begin(); it != path.end();
+      for (vector< pair <int, int> >::iterator it = path.begin() + 1; it != path.end();
         ++it) {
         pair <int, int> path_point = *it;
 
@@ -360,30 +360,30 @@ void Game::Render(Handle handle, int end) {
 
   if (d_eatable != NULL) {
 
-    clip[0].x = 40;
+    clip[0].x = GRID_SIZE * 4;
     clip[0].y = 0;
-    clip[0].w = 10;
-    clip[0].h = 10;
+    clip[0].w = GRID_SIZE;
+    clip[0].h = GRID_SIZE;
 
-    clip[1].x = 30;
+    clip[1].x = GRID_SIZE * 3;
     clip[1].y = 0;
-    clip[1].w = 10;
-    clip[1].h = 10;
+    clip[1].w = GRID_SIZE;
+    clip[1].h = GRID_SIZE;
 
-    clip[2].x = 20;
+    clip[2].x = GRID_SIZE * 2;
     clip[2].y = 0;
-    clip[2].w = 10;
-    clip[2].h = 10;
+    clip[2].w = GRID_SIZE;
+    clip[2].h = GRID_SIZE;
 
-    clip[3].x = 10;
+    clip[3].x = GRID_SIZE;
     clip[3].y = 0;
-    clip[3].w = 10;
-    clip[3].h = 10;
+    clip[3].w = GRID_SIZE;
+    clip[3].h = GRID_SIZE;
 
     clip[4].x = 0;
     clip[4].y = 0;
-    clip[4].w = 10;
-    clip[4].h = 10;
+    clip[4].w = GRID_SIZE;
+    clip[4].h = GRID_SIZE;
 
     Port::Render::Blit(handle, d_eatable->GetPosX(0), d_eatable->GetPosY(0), dyn_eatable,
       &clip[d_eatable->GetFrame()]);
