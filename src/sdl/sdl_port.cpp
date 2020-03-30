@@ -236,12 +236,12 @@ void Resources::FreeFont(Font font)
   TTF_CloseFont((TTF_Font*)font);
 }
 
-void Render::Text(Handle handle, int x, int y, Font font, const char* text, Color color, bool center)
+void Render::Text(Handle handle, int x, int y, Font font, const char* text, Color* color, bool center)
 {
-  SDL_Color sdlColor = {
-    color.r,
-    color.g,
-    color.b,
+  const SDL_Color sdlColor = {
+    color->r,
+    color->g,
+    color->b,
     255
   };
 

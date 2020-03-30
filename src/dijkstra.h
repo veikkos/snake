@@ -16,7 +16,7 @@ public:
   typedef std::vector<vertex_vector> vector_vertex_vector;
 
   std::vector<int> GetPath(int source, int target,
-    vector_vertex_vector cost);
+    vector_vertex_vector* cost);
 
 private:
 

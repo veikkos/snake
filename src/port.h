@@ -49,7 +49,7 @@ namespace Port
   {
     void Blit(Handle handle, int x, int y, Image source, Rect* clip = NULL);
 
-    void Text(Handle handle, int x, int y, Font font, const char* text, Color color, bool center = false);
+    void Text(Handle handle, int x, int y, Font font, const char* text, Color* color, bool center = false);
 
     void Clear(Handle handle);
 

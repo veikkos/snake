@@ -15,7 +15,7 @@ Dijkstra::~Dijkstra() {
 }
 
 vector<int> Dijkstra::GetPath(int source, int target,
-  vector_vertex_vector cost) {
+  vector_vertex_vector* cost) {
 
   int i, u = 0, count, w, min;
   bool done = false;
@@ -45,14 +45,15 @@ vector<int> Dijkstra::GetPath(int source, int target,
     dist[u].second = true;
     count++;
 
-    for (std::vector<vertex>::iterator it = cost.at(u).begin();
-      it != cost.at(u).end(); ++it) {
+    for (std::vector<vertex>::iterator it = cost->at(u).begin();
+      it != cost->at(u).end(); ++it) {
 
-      vertex v = (*it);
+      const vertex& v = (*it);
+      const int c = dist[u].first + v.second;
 
-      if ((dist[u].first + v.second < dist[v.first].first) &&
+      if ((c < dist[v.first].first) &&
         !dist[v.first].second) {
-        dist[v.first].first = dist[u].first + v.second;
+        dist[v.first].first = c;
         previous_step.at(v.first) = u;
 
         if (u == target || v.first == target) {

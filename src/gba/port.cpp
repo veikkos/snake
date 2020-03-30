@@ -140,7 +140,7 @@ void Resources::FreeFont(Font font)
 {
 }
 
-void Render::Text(Handle handle, int x, int y, Font font, const char* text, Color color, bool center)
+void Render::Text(Handle handle, int x, int y, Font font, const char* text, Color* color, bool center)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;
   const size_t len = strlen(text);

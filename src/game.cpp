@@ -323,7 +323,7 @@ void Game::Render(Handle handle, int end) {
 
   // Draw score to the screen
   snprintf(score_array, sizeof(score_array), "SCORE: %d", score);
-  Port::Render::Text(handle, 5, 5, font, score_array, textColor);
+  Port::Render::Text(handle, 5, 5, font, score_array, &textColor);
 
   // Draw snake to the screen
   clip[0].x = 0;
@@ -391,10 +391,11 @@ void Game::Render(Handle handle, int end) {
   }
 
   if (end) {
-    Port::Render::Text(handle, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, font, (char *)"GAME OVER!", textColor, true);
+    Port::Render::Text(handle, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, font,
+      "GAME OVER!", &textColor, true);
 
     // Re-apply score, so it will be on top.
-    Port::Render::Text(handle, 5, 5, font, score_array, textColor);
+    Port::Render::Text(handle, 5, 5, font, score_array, &textColor);
   }
 
   // Update the screen

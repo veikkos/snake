@@ -75,7 +75,7 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable) {
   target *= x_blocks;
   target += cur_eatable->GetPosX(0) / GRID_SIZE;
 
-  path = dijkstra->GetPath(snake_head, target, cost);
+  path = dijkstra->GetPath(snake_head, target, &cost);
 
   // If path exist, go for the target
   if (path.size()) {

@@ -93,7 +93,7 @@ MenuSelection Menu::Main(Handle handle) {
 
 int Menu::PrintText(Handle handle, int x, int y, char *text,
   Font font, Color *color) {
-  Port::Render::Text(handle, x, y, font, text, *color);
+  Port::Render::Text(handle, x, y, font, text, color);
   return true;
 }
 
