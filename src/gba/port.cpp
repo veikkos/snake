@@ -4,6 +4,8 @@
 #include "SuperCrateBox-GBA/font.h"
 
 #include "sprites.h"
+#include "g_bg.h"
+#include "m_bg.h"
 
 #include <cstring>
 
@@ -12,22 +14,20 @@ using namespace Port;
 #define MEM_SRAM ((uint8_t*)0xE000000)
 #define MEM_SRAM_HIGH_SCORE MEM_SRAM
 
-struct HandleImpl
-{
-  int active;
-} handle;
-
-const unsigned short bg_palette[256] __attribute__((aligned(4)))=
-{
-  0xFFFF
-};
-
 enum Images {
   SNAKE = 1,
   EATABLE = 3,
   DYN_EATABLE = 4,
-  PATH = 11
+  PATH = 11,
+  M_BG,
+  G_BG
 };
+
+struct HandleImpl
+{
+  int active;
+  Images bg;
+} handle;
 
 Handle Port::Init()
 {
@@ -38,8 +38,6 @@ Handle Port::Init()
   REG_BG0CNT = BG_CBB(0) | BG_SBB(30) | BG_8BPP | BG_REG_32x32;
   REG_BG0HOFS = 0;
   REG_BG0VOFS = 0;
-
-  LoadPaletteBGData(0, bg_palette, sizeof(bg_palette));
 
   LoadTileData(4, 0, spritesTiles, spritesTilesLen);
   LoadPaletteObjData(0, spritesPal, spritesPalLen);
@@ -179,6 +177,10 @@ Image Resources::LoadImage(Handle handle, const char* filename)
     return (Image)Images::DYN_EATABLE;
   else if(!strcmp(filename, "img/path.png"))
     return (Image)Images::PATH;
+  else if(!strcmp(filename, "img/g_bg.png"))
+    return (Image)Images::G_BG;
+  else if(!strcmp(filename, "img/m_bg.png"))
+    return (Image)Images::M_BG;
 
   return (Image)100;
 }
@@ -187,14 +189,47 @@ void Resources::FreeImage(Image image)
 {
 }
 
+void SetBackground(const unsigned short* tiles, size_t tilesLen, const unsigned short* pal, size_t palLen)
+{
+  LoadTileData(0, 0, tiles, tilesLen);
+  LoadPaletteBGData(0, pal, palLen);
+
+  int i = 0;
+  for (int y = 0; y < 160 / 8; ++y){
+    for (int x = 0; x < 240 / 8; ++x){
+      SetTile(30, x, y, i++);
+    }
+  }
+}
+
 void Render::Blit(Handle handle, int x, int y, Image source, Rect* clip)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;
-  const int id = clip ? clip->x / GRID_SIZE : 0;
-  const int offset = (int)source - 1;
 
-  SetObject(handleImpl->active++,
-            ATTR0_SHAPE(0) | ATTR0_8BPP | ATTR0_REG | ATTR0_Y(y),
-            ATTR1_SIZE(0) | ATTR1_X(x),
-            ATTR2_ID8(id + offset));
+  if ((int)source <= Images::PATH) {
+    const int id = clip ? clip->x / GRID_SIZE : 0;
+    const int offset = (int)source - 1;
+
+    SetObject(handleImpl->active++,
+              ATTR0_SHAPE(0) | ATTR0_8BPP | ATTR0_REG | ATTR0_Y(y),
+              ATTR1_SIZE(0) | ATTR1_X(x),
+              ATTR2_ID8(id + offset));
+  } else {
+    switch((int)source) {
+    case Images::M_BG:
+      if (handleImpl->bg != Images::M_BG) {
+        SetBackground(m_bgTiles, m_bgTilesLen, m_bgPal, m_bgPalLen);
+        handleImpl->bg = Images::M_BG;
+      }
+      break;
+    case Images::G_BG:
+      if (handleImpl->bg != Images::G_BG) {
+        SetBackground(g_bgTiles, g_bgTilesLen, g_bgPal, g_bgPalLen);
+        handleImpl->bg = Images::G_BG;
+      }
+      break;
+    default:
+      break;
+    }
+  }
 }
