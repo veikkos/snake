@@ -19,6 +19,7 @@ struct HandleImpl
   SDL_Renderer *sdlRenderer;
   SDL_Surface *screenSurface;
   unsigned int framestarttime;
+  int highScore;
 } handle;
 
 Handle Port::Init() {
@@ -74,6 +75,18 @@ void Port::Deinit(Handle handle)
 
   TTF_Quit();
   SDL_Quit();
+}
+
+int Persistent::GetHighScore(Handle handle)
+{
+  HandleImpl* handleImpl = (HandleImpl*)handle;
+  return handleImpl->highScore;
+}
+
+void Persistent::SetHighScore(Handle handle, int score)
+{
+  HandleImpl* handleImpl = (HandleImpl*)handle;
+  handleImpl->highScore = score;
 }
 
 void Time::FrameLimit(Handle handle)

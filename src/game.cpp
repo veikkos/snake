@@ -123,6 +123,13 @@ bool Game::Execute(Handle handle, game_mode mode) {
     }
   }
 
+  if (mode == SINGLE) {
+    int highScore = Port::Persistent::GetHighScore(handle);
+    if (score > highScore) {
+      Port::Persistent::SetHighScore(handle, score);
+    }
+  }
+
   if (done == DIED) {
     Port::Time::Delay(2000);
   }
@@ -315,13 +322,7 @@ void Game::Render(Handle handle, int end) {
   Port::Render::Blit(handle, 0, 0, background);
 
   // Draw score to the screen
-#if _MSC_VER
-  strncpy_s
-#else
-  strncpy
-#endif
-  (score_array, (char *)"SCORE: ", 7);
-  snprintf(&score_array[7], sizeof(score_array) - 7, "%d", score);
+  snprintf(score_array, sizeof(score_array), "SCORE: %d", score);
   Port::Render::Text(handle, 5, 5, font, score_array, textColor);
 
   // Draw snake to the screen

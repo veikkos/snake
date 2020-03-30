@@ -1,5 +1,6 @@
 #include "menu.h"
 #include "port.h"
+#include <stdio.h>
 
 #if GBA_BUILD
 #define BUTTON_1 "A"
@@ -51,14 +52,19 @@ MenuSelection Menu::Main(Handle handle) {
 
   MenuSelection i_selection = MenuSelection::MENU_NONE;
   const int x_pos = SCREEN_WIDTH / 6;
-  int y_pos = SCREEN_HEIGHT / 8;
+  int y_pos = SCREEN_HEIGHT / 10;
   const int y_increment = SCREEN_HEIGHT / 12;
+  char score_array[20];
 
   Color textColor = { 230, 230, 230 };
 
   // Draw background to the screen
   Port::Render::Blit(handle, 0, 0, background);
 
+  snprintf(score_array, sizeof(score_array), "High score: %d", Port::Persistent::GetHighScore(handle));
+
+  PrintText(handle, x_pos, y_pos, score_array, font, &textColor);
+  y_pos += y_increment * 2;
   PrintText(handle, x_pos, y_pos, (char *)"Select " BUTTON_1 " to play", font, &textColor);
   y_pos += y_increment;
   PrintText(handle, x_pos, y_pos, (char *)"Select " BUTTON_2 " to AI play", font,

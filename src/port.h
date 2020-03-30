@@ -11,6 +11,13 @@ namespace Port
 
   void Deinit(Handle handle);
 
+  namespace Persistent
+  {
+    int GetHighScore(Handle handle);
+
+    void SetHighScore(Handle handle, int score);
+  }
+
   namespace Time
   {
     void FrameLimit(Handle handle);
