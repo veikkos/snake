@@ -29,6 +29,12 @@ struct HandleImpl
   Images bg;
 } handle;
 
+
+const unsigned short fontPal[1] __attribute__((aligned(4)))=
+{
+  0x7BDE
+};
+
 Handle Port::Init()
 {
   // Set display options.
@@ -43,6 +49,7 @@ Handle Port::Init()
   LoadPaletteObjData(0, spritesPal, spritesPalLen);
 
   LoadTileData(4, 128, font_bold, sizeof(font_bold));
+  LoadPaletteObjData(64, fontPal, sizeof(fontPal));
 
   handle.active = NUM_OBJECTS;
   Render::Clear(&handle);
