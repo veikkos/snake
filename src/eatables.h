@@ -9,7 +9,8 @@
 typedef enum {
 
   e_static = 0,
-  e_dynamic
+  e_dynamic,
+  e_dynamic_shrink
 
 } eatable_type;
 
@@ -20,7 +21,7 @@ public:
 
   bool Update();
   int GetFrame();
-  bool IsAlive();
+  eatable_type GetType() const;
 
 private:
 

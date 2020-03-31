@@ -11,6 +11,7 @@ Game::Game() {
   snake_t = NULL;
   eatable = NULL;
   dyn_eatable = NULL;
+  dyn_eatable_2 = NULL;
 
   font = NULL;
 
@@ -58,6 +59,10 @@ Game::~Game() {
 
   if (dyn_eatable != NULL) {
     Port::Resources::FreeImage(dyn_eatable);
+  }
+
+  if (dyn_eatable_2 != NULL) {
+    Port::Resources::FreeImage(dyn_eatable_2);
   }
 
   if (path_mark != NULL) {
@@ -180,6 +185,12 @@ int Game::LoadContent(Handle handle) {
     return false;
   }
 
+  dyn_eatable_2 = Port::Resources::LoadImage(handle, "img/dyn_eatable_2.png");
+
+  if (dyn_eatable_2 == NULL) {
+    return false;
+  }
+
   path_mark = Port::Resources::LoadImage(handle, "img/path.png");
 
   if (path_mark == NULL) {
@@ -279,7 +290,8 @@ int Game::Update() {
     }
 
     if ((rand() % 1000) < 5) {
-      d_eatable = new Eatable(e_dynamic, &used);
+      const eatable_type type = (eatable_type)(e_dynamic + (rand() % 2));
+      d_eatable = new Eatable(type, &used);
     }
 
   }
@@ -289,9 +301,13 @@ int Game::Update() {
     if ((snake->GetPosX(0) == d_eatable->GetPosX(0)) && \
       (snake->GetPosY(0) == d_eatable->GetPosY(0))) {
 
-      score += d_eatable->GetFrame() + 1;
-
-      snake->Grow(1);
+      if (d_eatable->GetType() == eatable_type::e_dynamic_shrink) {
+        score += 2;
+      }
+      else {
+        score += d_eatable->GetFrame() + 1;
+        snake->Grow(1);
+      }
 
       delete d_eatable;
       d_eatable = NULL;
@@ -386,7 +402,9 @@ void Game::Render(Handle handle, int end) {
     clip[4].w = GRID_SIZE;
     clip[4].h = GRID_SIZE;
 
-    Port::Render::Blit(handle, d_eatable->GetPosX(0), d_eatable->GetPosY(0), dyn_eatable,
+    const eatable_type type = d_eatable->GetType();
+    Port::Render::Blit(handle, d_eatable->GetPosX(0), d_eatable->GetPosY(0),
+      type == eatable_type::e_dynamic_shrink ? dyn_eatable_2 : dyn_eatable,
       &clip[d_eatable->GetFrame()]);
   }
 

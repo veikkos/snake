@@ -29,7 +29,7 @@ Eatable::Eatable(eatable_type n_type,
 
   } while (block_used);
 
-  if (n_type == e_dynamic) {
+  if (n_type >= e_dynamic) {
     frame = E_DYN_FRAMES - 1;
   }
   else {
@@ -66,6 +66,11 @@ bool Eatable::Update() {
 int Eatable::GetFrame() {
 
   return frame;
+}
+
+eatable_type Eatable::GetType() const
+{
+  return type;
 }
 
 int Eatable::nearest(int value, int near) {

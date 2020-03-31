@@ -50,6 +50,7 @@ private:
   Image snake_t;
   Image eatable;
   Image dyn_eatable;
+  Image dyn_eatable_2;
   Image path_mark;
 
   Font font;

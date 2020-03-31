@@ -19,6 +19,7 @@ enum Images {
   EATABLE = 3,
   DYN_EATABLE = 4,
   PATH = 11,
+  DYN_EATABLE_2 = 12,
   M_BG,
   G_BG
 };
@@ -182,6 +183,8 @@ Image Resources::LoadImage(Handle handle, const char* filename)
     return (Image)Images::EATABLE;
   else if(!strcmp(filename, "img/dyn_eatable.png"))
     return (Image)Images::DYN_EATABLE;
+  else if(!strcmp(filename, "img/dyn_eatable_2.png"))
+    return (Image)Images::DYN_EATABLE_2;
   else if(!strcmp(filename, "img/path.png"))
     return (Image)Images::PATH;
   else if(!strcmp(filename, "img/g_bg.png"))
@@ -213,7 +216,7 @@ void Render::Blit(Handle handle, int x, int y, Image source, Rect* clip)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;
 
-  if ((int)source <= Images::PATH) {
+  if ((int)source < Images::M_BG) {
     const int id = clip ? clip->x / GRID_SIZE : 0;
     const int offset = (int)source - 1;
 
