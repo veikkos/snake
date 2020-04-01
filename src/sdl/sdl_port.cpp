@@ -239,15 +239,18 @@ void Resources::FreeFont(Font font)
 void Render::Text(Handle handle, int x, int y, Font font, const char* text, Color* color, bool center)
 {
   const SDL_Color sdlColor = {
-    color->r,
-    color->g,
-    color->b,
-    255
+    color->GetR(),
+    color->GetG(),
+    color->GetB()
   };
 
-  SDL_Surface *textSurface = TTF_RenderText_Solid((TTF_Font*)font, text, sdlColor);
+  SDL_Surface *textSurface = TTF_RenderText_Blended((TTF_Font*)font, text, sdlColor);
 
   if (textSurface) {
+    const uint8_t a = color->GetA();
+    if (a < 255)
+      SDL_SetSurfaceAlphaMod(textSurface, a);
+
     if (center) {
       x -= textSurface->w / 2;
       y -= textSurface->h / 2;

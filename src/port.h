@@ -2,6 +2,7 @@
 #define _PORT_H_
 
 #include "defines.h"
+#include "color.h"
 #include "snake.h"
 #include <stddef.h>
 

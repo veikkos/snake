@@ -4,11 +4,13 @@
 #include <stdlib.h>
 #include <vector>
 
+#include "defines.h"
 #include "snake.h"
 #include "eatables.h"
 #include "ai.h"
 #include "smart_ai.h"
 #include "port.h"
+#include "popup.h"
 
 #define QUITED  1
 #define DIED    2
@@ -41,7 +43,7 @@ private:
   template <class TYPE>
   void GetAi(TYPE *ai);
 
-  int Update();
+  int Update(Handle handle);
   void Render(Handle handle, int end);
 
   int done;
@@ -54,6 +56,7 @@ private:
   Image path_mark;
 
   Font font;
+  Font font_s;
 
   Snake *snake;
   Eatable *s_eatable;
@@ -61,6 +64,8 @@ private:
 
   Ai *ai;
   SmartAi *smartai;
+
+  std::vector<Popup*> popups;
 };
 
 

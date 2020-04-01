@@ -58,12 +58,6 @@ typedef enum {
   AI_PATH
 } AiSelection;
 
-struct Color {
-  uint8_t r;
-  uint8_t g;
-  uint8_t b;
-};
-
 struct Rect {
   int x, y;
   int w, h;

@@ -1,5 +1,6 @@
 #include "game.h"
-#include "defines.h"
+#include "color.h"
+#include "score_popup.h"
 #include <cstring>
 #include <stdio.h>
 #include <vector>
@@ -14,6 +15,7 @@ Game::Game() {
   dyn_eatable_2 = NULL;
 
   font = NULL;
+  font_s = NULL;
 
   snake = NULL;
   s_eatable = NULL;
@@ -72,6 +74,10 @@ Game::~Game() {
   if (font != NULL) {
     Port::Resources::FreeFont(font);
   }
+
+  if (font_s != NULL) {
+    Port::Resources::FreeFont(font_s);
+  }
 }
 
 bool Game::Init(Handle handle) {
@@ -120,7 +126,7 @@ bool Game::Execute(Handle handle, game_mode mode) {
       break;
     }
 
-    end = Update();
+    end = Update(handle);
     Render(handle, end);
 
     if (framelimit) {
@@ -158,6 +164,12 @@ int Game::LoadContent(Handle handle) {
   font = Port::Resources::LoadFont("fonts/DigitalDreamFat.ttf", 24);
 
   if (font == NULL) {
+    return false;
+  }
+
+  font_s = Port::Resources::LoadFont("fonts/DigitalDreamFat.ttf", 16);
+
+  if (font_s == NULL) {
     return false;
   }
 
@@ -236,7 +248,7 @@ void Game::GetAi(TYPE *ai) {
   }
 }
 
-int Game::Update() {
+int Game::Update(Handle handle) {
   int i;
 
   snake->Move();
@@ -270,10 +282,22 @@ int Game::Update() {
 
     snake->Grow(1);
 
+    ScorePopup* popup = new ScorePopup(handle, snake->GetPosX(0), snake->GetPosY(0), 1, font_s);
+    popups.push_back(popup);
+
     // Delete eaten "eatable" and
     // create a new one.
     delete s_eatable;
     s_eatable = new Eatable(e_static, &used);
+  }
+
+  for (std::vector<Popup*>::iterator it = popups.begin(); it != popups.end();) {
+    if ((*it)->Update()) {
+      ++it;
+    }
+    else {
+      it = popups.erase(it);
+    }
   }
 
   if (d_eatable == NULL) {
@@ -293,21 +317,27 @@ int Game::Update() {
       const eatable_type type = (eatable_type)(e_dynamic + (rand() % 2));
       d_eatable = new Eatable(type, &used);
     }
-
   }
   else {
 
     // Check if snake has collided with the dynamic eatable
     if ((snake->GetPosX(0) == d_eatable->GetPosX(0)) && \
       (snake->GetPosY(0) == d_eatable->GetPosY(0))) {
+      int scoreIncrease;
 
       if (d_eatable->GetType() == eatable_type::e_dynamic_shrink) {
-        score += 2;
+        scoreIncrease = 2;
       }
       else {
-        score += d_eatable->GetFrame() + 1;
+        scoreIncrease = d_eatable->GetFrame() + 1;
         snake->Grow(1);
       }
+
+      score += scoreIncrease;
+
+      ScorePopup* popup = new ScorePopup(handle, snake->GetPosX(0), snake->GetPosY(0),
+        scoreIncrease, font_s);
+      popups.push_back(popup);
 
       delete d_eatable;
       d_eatable = NULL;
@@ -406,6 +436,10 @@ void Game::Render(Handle handle, int end) {
     Port::Render::Blit(handle, d_eatable->GetPosX(0), d_eatable->GetPosY(0),
       type == eatable_type::e_dynamic_shrink ? dyn_eatable_2 : dyn_eatable,
       &clip[d_eatable->GetFrame()]);
+  }
+
+  for (std::vector<Popup*>::iterator it = popups.begin(); it != popups.end(); ++it) {
+    (*it)->Render();
   }
 
   if (end) {

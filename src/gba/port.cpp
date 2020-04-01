@@ -52,7 +52,7 @@ Handle Port::Init()
   LoadTileData(4, 128, font_bold, sizeof(font_bold));
   LoadPaletteObjData(64, fontPal, sizeof(fontPal));
 
-  handle.active = NUM_OBJECTS;
+  handle.active = 0;
   Render::Clear(&handle);
 
   return (Handle)&handle;
@@ -158,21 +158,26 @@ void Render::Text(Handle handle, int x, int y, Font font, const char* text, Colo
     y -= 8 / 2;
   }
 
-  for(int i = 0; i < len; i++) {
-    SetObject(handleImpl->active++,
-              ATTR0_SHAPE(0) | ATTR0_8BPP | ATTR0_REG | ATTR0_Y(y),
-              ATTR1_SIZE(0) | ATTR1_X(x+(i*8)),
-              ATTR2_ID8(text[i] + 128));
+  if (y >= 0) {
+    for(int i = 0; i < len; i++) {
+      const int x_pos = x+(i*8);
+      if (x_pos >= 0) {
+        SetObject(--(handleImpl->active),
+                  ATTR0_SHAPE(0) | ATTR0_8BPP | ATTR0_REG | ATTR0_Y(y),
+                  ATTR1_SIZE(0) | ATTR1_X(x_pos),
+                  ATTR2_ID8(text[i] + 128));
+      }
+    }
   }
 }
 
 void Render::Clear(Handle handle)
 {
   HandleImpl* handleImpl = (HandleImpl*)handle;
-  for(int i = 0; i < handleImpl->active; i++){
+  for(int i = handleImpl->active; i < NUM_OBJECTS; i++){
     SetObject(i, ATTR0_HIDE, 0, 0);
   }
-  handleImpl->active = 0;
+  handleImpl->active = NUM_OBJECTS;
 }
 
 Image Resources::LoadImage(Handle handle, const char* filename)
@@ -220,7 +225,7 @@ void Render::Blit(Handle handle, int x, int y, Image source, Rect* clip)
     const int id = clip ? clip->x / GRID_SIZE : 0;
     const int offset = (int)source - 1;
 
-    SetObject(handleImpl->active++,
+    SetObject(--(handleImpl->active),
               ATTR0_SHAPE(0) | ATTR0_8BPP | ATTR0_REG | ATTR0_Y(y),
               ATTR1_SIZE(0) | ATTR1_X(x),
               ATTR2_ID8(id + offset));
