@@ -50,7 +50,7 @@ namespace Port
   {
     void Blit(PortHandle handle, int x, int y, Image source, Rect* clip = NULL);
 
-    void Text(PortHandle handle, int x, int y, Font font, const char* text, Color* color, bool center = false);
+    void Text(PortHandle handle, int x, int y, Font font, const char* text, const Color* color, bool center = false);
 
     void Clear(PortHandle handle);
 

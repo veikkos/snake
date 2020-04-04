@@ -45,7 +45,16 @@ private:
   void GetAi(TYPE *ai);
 
   int Update(PortHandle handle);
+  bool UpdateEatables(PortHandle handle);
+  void UpdatePopups();
+
   void Render(PortHandle handle, int end);
+  void RenderSnake(PortHandle handle);
+  void RenderEatables(PortHandle handle);
+  void RenderPopups(PortHandle handle);
+  void RenderScore(PortHandle handle);
+  void RenderPath(PortHandle handle);
+  void RenderGameOver(PortHandle handle);
 
   void InactivityBlocker(PortHandle handle, bool ate);
 

@@ -26,7 +26,7 @@ Game::Game() {
   done = 0;
 
   framelimit = true;
-  render_path = false;
+  render_path = true;
   since_last_eat = 0;
 
   ai = NULL;
@@ -250,13 +250,10 @@ void Game::GetAi(TYPE *ai) {
 }
 
 int Game::Update(PortHandle handle) {
-  int i;
-  bool ate = false;
-
   snake->Move();
 
   // Check that if snake has contact with itself
-  for (i = 1; i < snake->GetLength(); i++) {
+  for (int i = 1; i < snake->GetLength(); i++) {
 
     if ((snake->GetPosX(0) == snake->GetPosX(i)) && \
       (snake->GetPosY(0) == snake->GetPosY(i))) {
@@ -264,6 +261,18 @@ int Game::Update(PortHandle handle) {
       return 1;
     }
   }
+
+  const bool ate = UpdateEatables(handle);
+
+  InactivityBlocker(handle, ate);
+
+  UpdatePopups();
+
+  return 0;
+}
+
+bool Game::UpdateEatables(PortHandle handle) {
+  bool ate = false;
 
   // Check if snake has collided with the eatable
   if ((snake->GetPosX(0) == s_eatable->GetPosX(0)) && \
@@ -293,16 +302,6 @@ int Game::Update(PortHandle handle) {
     s_eatable = new Eatable(e_static, &used);
 
     ate = true;
-  }
-
-  for (std::vector<Popup*>::iterator it = popups.begin(); it != popups.end();) {
-    if ((*it)->Update()) {
-      ++it;
-    }
-    else {
-      delete *it;
-      it = popups.erase(it);
-    }
   }
 
   if (d_eatable == NULL) {
@@ -361,26 +360,54 @@ int Game::Update(PortHandle handle) {
     }
   }
 
-  InactivityBlocker(handle, ate);
+  return ate;
+}
 
-  return 0;
+void Game::UpdatePopups() {
+  for (std::vector<Popup*>::iterator it = popups.begin(); it != popups.end();) {
+    if ((*it)->Update()) {
+      ++it;
+    }
+    else {
+      delete *it;
+      it = popups.erase(it);
+    }
+  }
 }
 
 void Game::Render(PortHandle handle, int end) {
 
-  int i;
-  char score_array[20];
-  Color textColor = { 230, 230, 230 };
-  Rect clip[5];
-
   // Draw background to the screen
   Port::Render::Blit(handle, 0, 0, background);
 
-  // Draw score to the screen
-  snprintf(score_array, sizeof(score_array), "SCORE: %d", score);
-  Port::Render::Text(handle, 5, 5, font, score_array, &textColor);
+  RenderScore(handle);
 
-  // Draw snake to the screen
+  RenderSnake(handle);
+
+  if (smartai && render_path && path_mark) {
+    RenderPath(handle);
+  }
+
+  RenderEatables(handle);
+
+  RenderPopups(handle);
+
+  if (end) {
+    RenderGameOver(handle);
+
+    // Re-apply score, so it will be on top.
+    RenderScore(handle);
+  }
+
+  // Update the screen
+  Port::Render::Draw(handle);
+
+  Port::Render::Clear(handle);
+}
+
+void Game::RenderSnake(PortHandle handle) {
+  Rect clip[2];
+
   clip[0].x = 0;
   clip[0].y = 0;
   clip[0].w = GRID_SIZE;
@@ -393,25 +420,14 @@ void Game::Render(PortHandle handle, int end) {
 
   Port::Render::Blit(handle, snake->GetPosX(0), snake->GetPosY(0), snake_t, &clip[0]);
 
-  for (i = 1; i < snake->GetLength(); i++) {
+  for (int i = 1; i < snake->GetLength(); i++) {
     Port::Render::Blit(handle, snake->GetPosX(i), snake->GetPosY(i), snake_t, &clip[1]);
   }
+}
 
-  if (smartai && render_path && path_mark) {
-    vector< pair <int, int> > path = smartai->GetPath();
+void Game::RenderEatables(PortHandle handle) {
+  Rect clip[5];
 
-    if (path.size()) {
-      for (vector< pair <int, int> >::iterator it = path.begin() + 1; it != path.end();
-        ++it) {
-        pair <int, int> path_point = *it;
-
-        Port::Render::Blit(handle, path_point.first, path_point.second, path_mark
-        );
-      }
-    }
-  }
-
-  // Draw eatable(s)
   Port::Render::Blit(handle, s_eatable->GetPosX(0), s_eatable->GetPosY(0), eatable);
 
   if (d_eatable != NULL) {
@@ -446,23 +462,40 @@ void Game::Render(PortHandle handle, int end) {
       type == eatable_type::e_dynamic_shrink ? dyn_eatable_2 : dyn_eatable,
       &clip[d_eatable->GetFrame()]);
   }
+}
 
+void Game::RenderPopups(PortHandle handle) {
   for (std::vector<Popup*>::iterator it = popups.begin(); it != popups.end(); ++it) {
     (*it)->Render();
   }
+}
 
-  if (end) {
-    Port::Render::Text(handle, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, font,
-      "GAME OVER!", &textColor, true);
+void Game::RenderScore(PortHandle handle) {
+  const Color textColor = { 230, 230, 230 };
+  char score_array[20];
 
-    // Re-apply score, so it will be on top.
-    Port::Render::Text(handle, 5, 5, font, score_array, &textColor);
+  snprintf(score_array, sizeof(score_array), "SCORE: %d", score);
+  Port::Render::Text(handle, 5, 5, font, score_array, &textColor);
+}
+
+void Game::RenderPath(PortHandle handle) {
+  vector< pair <int, int> > path = smartai->GetPath();
+
+  if (path.size()) {
+    for (vector< pair <int, int> >::iterator it = path.begin() + 1; it != path.end();
+      ++it) {
+      pair <int, int> path_point = *it;
+
+      Port::Render::Blit(handle, path_point.first, path_point.second, path_mark
+      );
+    }
   }
+}
 
-  // Update the screen
-  Port::Render::Draw(handle);
-
-  Port::Render::Clear(handle);
+void Game::RenderGameOver(PortHandle handle) {
+  const Color textColor = { 230, 230, 230 };
+  Port::Render::Text(handle, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, font,
+    "GAME OVER!", &textColor, true);
 }
 
 void Game::InactivityBlocker(PortHandle handle, bool ate) {

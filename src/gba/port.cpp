@@ -151,7 +151,7 @@ void Resources::FreeFont(Font font)
 {
 }
 
-void Render::Text(PortHandle handle, int x, int y, Font font, const char* text, Color* color, bool center)
+void Render::Text(PortHandle handle, int x, int y, Font font, const char* text, const Color* color, bool center)
 {
   PortImpl* handleImpl = (PortImpl*)handle;
   const size_t len = strlen(text);

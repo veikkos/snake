@@ -240,7 +240,7 @@ void Resources::FreeFont(Font font)
   TTF_CloseFont((TTF_Font*)font);
 }
 
-void Render::Text(PortHandle handle, int x, int y, Font font, const char* text, Color* color, bool center)
+void Render::Text(PortHandle handle, int x, int y, Font font, const char* text, const Color* color, bool center)
 {
   const SDL_Color sdlColor = {
     color->GetR(),
