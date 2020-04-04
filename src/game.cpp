@@ -296,6 +296,7 @@ int Game::Update(Handle handle) {
       ++it;
     }
     else {
+      delete *it;
       it = popups.erase(it);
     }
   }
