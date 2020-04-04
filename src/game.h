@@ -35,6 +35,7 @@ private:
   int score;
   bool framelimit;
   bool render_path;
+  int since_last_eat;
 
   int LoadContent(PortHandle handle);
 
@@ -45,6 +46,8 @@ private:
 
   int Update(PortHandle handle);
   void Render(PortHandle handle, int end);
+
+  void InactivityBlocker(PortHandle handle, bool ate);
 
   int done;
 

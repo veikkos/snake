@@ -35,7 +35,7 @@ void ScorePopup::Render()
   if (x < SCREEN_WIDTH && y < SCREEN_HEIGHT)
   {
     char score_array[3];
-    snprintf(score_array, sizeof(score_array), "+%d", score);
+    snprintf(score_array, sizeof(score_array), "%+d", score);
 
     Color color(200, 200, 200, opacity);
     Port::Render::Text(handle, x, y, font, score_array, &color, true);

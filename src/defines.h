@@ -29,6 +29,8 @@
 #define E_DYN_FRAME_AGE FPS
 #define E_DYN_FRAMES    5
 
+#define SECONDS_BEFORE_PENALTY 15
+
 struct PortImpl;
 typedef PortImpl* PortHandle;
 

@@ -27,6 +27,7 @@ Game::Game() {
 
   framelimit = true;
   render_path = false;
+  since_last_eat = 0;
 
   ai = NULL;
   smartai = NULL;
@@ -250,6 +251,7 @@ void Game::GetAi(TYPE *ai) {
 
 int Game::Update(PortHandle handle) {
   int i;
+  bool ate = false;
 
   snake->Move();
 
@@ -289,6 +291,8 @@ int Game::Update(PortHandle handle) {
     // create a new one.
     delete s_eatable;
     s_eatable = new Eatable(e_static, &used);
+
+    ate = true;
   }
 
   for (std::vector<Popup*>::iterator it = popups.begin(); it != popups.end();) {
@@ -342,6 +346,8 @@ int Game::Update(PortHandle handle) {
 
       delete d_eatable;
       d_eatable = NULL;
+
+      ate = true;
     }
 
     // Update dynamic eatable status
@@ -354,6 +360,8 @@ int Game::Update(PortHandle handle) {
       }
     }
   }
+
+  InactivityBlocker(handle, ate);
 
   return 0;
 }
@@ -455,4 +463,25 @@ void Game::Render(PortHandle handle, int end) {
   Port::Render::Draw(handle);
 
   Port::Render::Clear(handle);
+}
+
+void Game::InactivityBlocker(PortHandle handle, bool ate) {
+  if (!ate) {
+    if (since_last_eat++ > (FPS * SECONDS_BEFORE_PENALTY)) {
+      if (score) {
+        const int scoreDecrease = -1;
+
+        score += scoreDecrease;
+
+        ScorePopup* popup = new ScorePopup(handle, snake->GetPosX(0), snake->GetPosY(0),
+          scoreDecrease, font_s);
+        popups.push_back(popup);
+      }
+
+      since_last_eat -= FPS;
+    }
+  }
+  else {
+    since_last_eat = 0;
+  }
 }
