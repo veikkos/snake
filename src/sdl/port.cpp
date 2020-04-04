@@ -78,7 +78,7 @@ void Port::Deinit(PortHandle handle)
   TTF_Quit();
   SDL_Quit();
 
-  delete handle;
+  delete handleImpl;
 }
 
 int Persistent::GetHighScore(PortHandle handle)

@@ -28,13 +28,23 @@ struct PortImpl
 {
   int active;
   Images bg;
+  uint16_t framestarttime;
 };
-
 
 const unsigned short fontPal[1] __attribute__((aligned(4)))=
 {
   0x7BDE
 };
+
+inline uint16_t GetTicks()
+{
+  return REG_TM0D;
+}
+
+inline uint16_t GetTimerFrequency()
+{
+  return 16384;
+}
 
 PortHandle Port::Init()
 {
@@ -57,12 +67,19 @@ PortHandle Port::Init()
   handle->active = 0;
   Render::Clear(handle);
 
+  // Enable timer with 16.384 kHz frequency
+  REG_TM0CNT = (1 << 7) | 3;
+  REG_TM0D = 0;
+
+  handle->framestarttime = GetTicks();
+
   return (PortHandle)handle;
 }
 
 void Port::Deinit(PortHandle handle)
 {
-  delete handle;
+  PortImpl* handleImpl = (PortImpl*)handle;
+  delete handleImpl;
 }
 
 int Persistent::GetHighScore(PortHandle handle)
@@ -81,18 +98,25 @@ void Persistent::SetHighScore(PortHandle handle, int score)
 
 void Time::FrameLimit(PortHandle handle)
 {
-  for (int i = 0; i < 3; ++i)
-    WaitVSync();
+  PortImpl* handleImpl = (PortImpl*)handle;
+
+  const uint16_t waittime = GetTimerFrequency() / FPS;
+  const uint16_t endtime = handleImpl->framestarttime + waittime;
+  const uint16_t normalizing = 0 - handleImpl->framestarttime;
+  const uint16_t endtime_normalized = endtime + normalizing;
+
+  while((uint16_t)(GetTicks() + normalizing) < endtime_normalized)
+    ;
+
+  handleImpl->framestarttime = GetTicks();
 }
 
 void Time::Delay(unsigned int delay)
 {
-  int skips = delay / 17;
-  if (!skips)
-    skips = 1;
+  const uint16_t endtime = GetTicks() + (GetTimerFrequency() * delay / 1000);
 
-  while (skips--)
-    WaitVSync();
+  while(GetTicks() != endtime)
+    ;
 }
 
 GameSelection Input::Game(Snake *snake)

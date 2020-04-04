@@ -82,7 +82,7 @@ MenuSelection Menu::Main(PortHandle handle) {
   Port::Render::Draw(handle);
 
   while (i_selection == MenuSelection::MENU_NONE) {
-    Port::Time::Delay(10);
+    Port::Time::FrameLimit(handle);
     i_selection = GetInput();
   }
 
