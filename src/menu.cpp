@@ -29,7 +29,7 @@ Menu::~Menu() {
   }
 }
 
-bool Menu::Init(Handle handle) {
+bool Menu::Init(PortHandle handle) {
 
   // Open the font
   font = Port::Resources::LoadFont("fonts/DigitalDream.ttf", 28);
@@ -48,7 +48,7 @@ bool Menu::Init(Handle handle) {
   return true;
 }
 
-MenuSelection Menu::Main(Handle handle) {
+MenuSelection Menu::Main(PortHandle handle) {
 
   MenuSelection i_selection = MenuSelection::MENU_NONE;
   const int x_pos = SCREEN_WIDTH / 6;
@@ -91,7 +91,7 @@ MenuSelection Menu::Main(Handle handle) {
   return i_selection;
 }
 
-int Menu::PrintText(Handle handle, int x, int y, char *text,
+int Menu::PrintText(PortHandle handle, int x, int y, char *text,
   Font font, Color *color) {
   Port::Render::Text(handle, x, y, font, text, color);
   return true;

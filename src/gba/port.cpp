@@ -24,11 +24,11 @@ enum Images {
   G_BG
 };
 
-struct HandleImpl
+struct PortImpl
 {
   int active;
   Images bg;
-} handle;
+};
 
 
 const unsigned short fontPal[1] __attribute__((aligned(4)))=
@@ -36,8 +36,10 @@ const unsigned short fontPal[1] __attribute__((aligned(4)))=
   0x7BDE
 };
 
-Handle Port::Init()
+PortHandle Port::Init()
 {
+  PortImpl* handle = new PortImpl;
+
   // Set display options.
   REG_DISPCNT = DCNT_MODE0 | DCNT_OBJ | DCNT_BG0;
 
@@ -52,17 +54,18 @@ Handle Port::Init()
   LoadTileData(4, 128, font_bold, sizeof(font_bold));
   LoadPaletteObjData(64, fontPal, sizeof(fontPal));
 
-  handle.active = 0;
-  Render::Clear(&handle);
+  handle->active = 0;
+  Render::Clear(handle);
 
-  return (Handle)&handle;
+  return (PortHandle)handle;
 }
 
-void Port::Deinit(Handle handle)
+void Port::Deinit(PortHandle handle)
 {
+  delete handle;
 }
 
-int Persistent::GetHighScore(Handle handle)
+int Persistent::GetHighScore(PortHandle handle)
 {
   int score = 0;
   for(size_t i = 0; i<sizeof(score); ++i)
@@ -70,13 +73,13 @@ int Persistent::GetHighScore(Handle handle)
   return score != -1 ? score : 0;
 }
 
-void Persistent::SetHighScore(Handle handle, int score)
+void Persistent::SetHighScore(PortHandle handle, int score)
 {
   for(size_t i = 0; i<sizeof(score); ++i)
     MEM_SRAM_HIGH_SCORE[i] = (score >> (i * 8)) & 0xFF;
 }
 
-void Time::FrameLimit(Handle handle)
+void Time::FrameLimit(PortHandle handle)
 {
   for (int i = 0; i < 3; ++i)
     WaitVSync();
@@ -132,7 +135,7 @@ AiSelection Input::Ai()
   return AiSelection::AI_NONE;
 }
 
-void Render::Draw(Handle handle)
+void Render::Draw(PortHandle handle)
 {
   WaitVSync();
   UpdateObjects();
@@ -148,9 +151,9 @@ void Resources::FreeFont(Font font)
 {
 }
 
-void Render::Text(Handle handle, int x, int y, Font font, const char* text, Color* color, bool center)
+void Render::Text(PortHandle handle, int x, int y, Font font, const char* text, Color* color, bool center)
 {
-  HandleImpl* handleImpl = (HandleImpl*)handle;
+  PortImpl* handleImpl = (PortImpl*)handle;
   const size_t len = strlen(text);
 
   if(center) {
@@ -171,16 +174,16 @@ void Render::Text(Handle handle, int x, int y, Font font, const char* text, Colo
   }
 }
 
-void Render::Clear(Handle handle)
+void Render::Clear(PortHandle handle)
 {
-  HandleImpl* handleImpl = (HandleImpl*)handle;
+  PortImpl* handleImpl = (PortImpl*)handle;
   for(int i = handleImpl->active; i < NUM_OBJECTS; i++){
     SetObject(i, ATTR0_HIDE, 0, 0);
   }
   handleImpl->active = NUM_OBJECTS;
 }
 
-Image Resources::LoadImage(Handle handle, const char* filename)
+Image Resources::LoadImage(PortHandle handle, const char* filename)
 {
   if(!strcmp(filename, "img/snake.png"))
     return (Image)Images::SNAKE;
@@ -217,9 +220,9 @@ void SetBackground(const unsigned short* tiles, size_t tilesLen, const unsigned 
   }
 }
 
-void Render::Blit(Handle handle, int x, int y, Image source, Rect* clip)
+void Render::Blit(PortHandle handle, int x, int y, Image source, Rect* clip)
 {
-  HandleImpl* handleImpl = (HandleImpl*)handle;
+  PortImpl* handleImpl = (PortImpl*)handle;
 
   if ((int)source < Images::M_BG) {
     const int id = clip ? clip->x / GRID_SIZE : 0;

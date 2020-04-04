@@ -8,20 +8,20 @@
 
 namespace Port
 {
-  Handle Init();
+  PortHandle Init();
 
-  void Deinit(Handle handle);
+  void Deinit(PortHandle handle);
 
   namespace Persistent
   {
-    int GetHighScore(Handle handle);
+    int GetHighScore(PortHandle handle);
 
-    void SetHighScore(Handle handle, int score);
+    void SetHighScore(PortHandle handle, int score);
   }
 
   namespace Time
   {
-    void FrameLimit(Handle handle);
+    void FrameLimit(PortHandle handle);
 
     void Delay(unsigned int delay);
   }
@@ -41,20 +41,20 @@ namespace Port
 
     void FreeFont(Font font);
 
-    Image LoadImage(Handle handle, const char* path);
+    Image LoadImage(PortHandle handle, const char* path);
 
     void FreeImage(Image image);
   }
 
   namespace Render
   {
-    void Blit(Handle handle, int x, int y, Image source, Rect* clip = NULL);
+    void Blit(PortHandle handle, int x, int y, Image source, Rect* clip = NULL);
 
-    void Text(Handle handle, int x, int y, Font font, const char* text, Color* color, bool center = false);
+    void Text(PortHandle handle, int x, int y, Font font, const char* text, Color* color, bool center = false);
 
-    void Clear(Handle handle);
+    void Clear(PortHandle handle);
 
-    void Draw(Handle handle);
+    void Draw(PortHandle handle);
   }
 }
 

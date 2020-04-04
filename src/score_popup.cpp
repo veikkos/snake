@@ -1,7 +1,7 @@
 #include "score_popup.h"
 #include <stdio.h>
 
-ScorePopup::ScorePopup(Handle handle, int x, int y, int score, Font font)
+ScorePopup::ScorePopup(PortHandle handle, int x, int y, int score, Font font)
   : handle(handle), x(x + GRID_SIZE / 2), y(y - GRID_SIZE),
   tick(0), score(score), opacity(255), font(font)
 {

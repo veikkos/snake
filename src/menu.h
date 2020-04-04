@@ -10,14 +10,14 @@ public:
   Menu();
   ~Menu();
 
-  bool Init(Handle handle);
+  bool Init(PortHandle handle);
 
-  MenuSelection Main(Handle handle);
+  MenuSelection Main(PortHandle handle);
 
 private:
 
   MenuSelection GetInput();
-  int PrintText(Handle handle, int x, int y, char *text,
+  int PrintText(PortHandle handle, int x, int y, char *text,
     Font font, Color *color);
 
   Image background;

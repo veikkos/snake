@@ -8,7 +8,7 @@ int main(int argc, char *args[]) {
 
   MenuSelection sel;
   bool end;
-  Handle handle = Port::Init();
+  PortHandle handle = Port::Init();
 
   if (!handle) {
     return 0;

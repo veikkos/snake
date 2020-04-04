@@ -20,7 +20,7 @@ public:
   Game();
   ~Game();
 
-  bool Init(Handle handle);
+  bool Init(PortHandle handle);
 
   typedef enum {
     SINGLE,
@@ -28,7 +28,7 @@ public:
     SMART_AI
   } game_mode;
 
-  bool Execute(Handle handle, game_mode mode);
+  bool Execute(PortHandle handle, game_mode mode);
 
 private:
 
@@ -36,15 +36,15 @@ private:
   bool framelimit;
   bool render_path;
 
-  int LoadContent(Handle handle);
+  int LoadContent(PortHandle handle);
 
   void GetInput();
 
   template <class TYPE>
   void GetAi(TYPE *ai);
 
-  int Update(Handle handle);
-  void Render(Handle handle, int end);
+  int Update(PortHandle handle);
+  void Render(PortHandle handle, int end);
 
   int done;
 

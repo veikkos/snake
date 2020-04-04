@@ -80,7 +80,7 @@ Game::~Game() {
   }
 }
 
-bool Game::Init(Handle handle) {
+bool Game::Init(PortHandle handle) {
 
   if (LoadContent(handle) == false) {
     return false;
@@ -93,7 +93,7 @@ bool Game::Init(Handle handle) {
   return true;
 }
 
-bool Game::Execute(Handle handle, game_mode mode) {
+bool Game::Execute(PortHandle handle, game_mode mode) {
   int end = 0;
 
   switch (mode) {
@@ -160,7 +160,7 @@ bool Game::Execute(Handle handle, game_mode mode) {
 
 // Private
 
-int Game::LoadContent(Handle handle) {
+int Game::LoadContent(PortHandle handle) {
   font = Port::Resources::LoadFont("fonts/DigitalDreamFat.ttf", 24);
 
   if (font == NULL) {
@@ -248,7 +248,7 @@ void Game::GetAi(TYPE *ai) {
   }
 }
 
-int Game::Update(Handle handle) {
+int Game::Update(PortHandle handle) {
   int i;
 
   snake->Move();
@@ -358,7 +358,7 @@ int Game::Update(Handle handle) {
   return 0;
 }
 
-void Game::Render(Handle handle, int end) {
+void Game::Render(PortHandle handle, int end) {
 
   int i;
   char score_array[20];

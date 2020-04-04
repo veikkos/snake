@@ -29,8 +29,8 @@
 #define E_DYN_FRAME_AGE FPS
 #define E_DYN_FRAMES    5
 
-struct HandleImpl;
-typedef HandleImpl* Handle;
+struct PortImpl;
+typedef PortImpl* PortHandle;
 
 struct FontImpl;
 typedef FontImpl* Font;

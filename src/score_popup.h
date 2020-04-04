@@ -8,7 +8,7 @@
 class ScorePopup : public Popup
 {
 public:
-  ScorePopup(Handle handle, int x, int y, int score, Font font);
+  ScorePopup(PortHandle handle, int x, int y, int score, Font font);
 
   virtual ~ScorePopup();
 
@@ -17,7 +17,7 @@ public:
   virtual void Render() override;
 
 private:
-  Handle handle;
+  PortHandle handle;
   int x;
   int y;
   int score;

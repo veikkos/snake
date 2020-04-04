@@ -13,17 +13,19 @@
 
 using namespace Port;
 
-struct HandleImpl
+struct PortImpl
 {
   SDL_Window *sdlWindow;
   SDL_Renderer *sdlRenderer;
   SDL_Surface *screenSurface;
   unsigned int framestarttime;
   int highScore;
-} handle;
+};
 
-Handle Port::Init() {
-  memset(&handle, 0, sizeof(handle));
+PortHandle Port::Init() {
+  PortImpl* handle = new PortImpl;
+
+  memset(handle, 0, sizeof(*handle));
 
   srand((int)time(NULL));
 
@@ -33,7 +35,7 @@ Handle Port::Init() {
   }
 
   // Set up the screen
-  if (!(handle.sdlWindow = SDL_CreateWindow(
+  if (!(handle->sdlWindow = SDL_CreateWindow(
     "Snake v0.5",
     SDL_WINDOWPOS_UNDEFINED,
     SDL_WINDOWPOS_UNDEFINED,
@@ -43,7 +45,7 @@ Handle Port::Init() {
     return NULL;
   }
 
-  if (!(handle.sdlRenderer = SDL_CreateRenderer(handle.sdlWindow, -1,
+  if (!(handle->sdlRenderer = SDL_CreateRenderer(handle->sdlWindow, -1,
     SDL_RENDERER_ACCELERATED))) {
     return NULL;
   }
@@ -53,18 +55,18 @@ Handle Port::Init() {
     return NULL;
   }
 
-  handle.screenSurface = SDL_GetWindowSurface(handle.sdlWindow);
+  handle->screenSurface = SDL_GetWindowSurface(handle->sdlWindow);
 
-  if (!handle.screenSurface) {
+  if (!handle->screenSurface) {
     return NULL;
 
   }
-  return (Handle)&handle;
+  return (PortHandle)handle;
 }
 
-void Port::Deinit(Handle handle)
+void Port::Deinit(PortHandle handle)
 {
-  HandleImpl* handleImpl = (HandleImpl*)handle;
+  PortImpl* handleImpl = (PortImpl*)handle;
   if (handleImpl->sdlRenderer) {
     SDL_DestroyRenderer(handleImpl->sdlRenderer);
   }
@@ -75,23 +77,25 @@ void Port::Deinit(Handle handle)
 
   TTF_Quit();
   SDL_Quit();
+
+  delete handle;
 }
 
-int Persistent::GetHighScore(Handle handle)
+int Persistent::GetHighScore(PortHandle handle)
 {
-  HandleImpl* handleImpl = (HandleImpl*)handle;
+  PortImpl* handleImpl = (PortImpl*)handle;
   return handleImpl->highScore;
 }
 
-void Persistent::SetHighScore(Handle handle, int score)
+void Persistent::SetHighScore(PortHandle handle, int score)
 {
-  HandleImpl* handleImpl = (HandleImpl*)handle;
+  PortImpl* handleImpl = (PortImpl*)handle;
   handleImpl->highScore = score;
 }
 
-void Time::FrameLimit(Handle handle)
+void Time::FrameLimit(PortHandle handle)
 {
-  HandleImpl* handleImpl = (HandleImpl*)handle;
+  PortImpl* handleImpl = (PortImpl*)handle;
 
   unsigned int waittime = (int)(1000.0f / FPS);
   int delaytime;
@@ -220,9 +224,9 @@ AiSelection Input::Ai()
   return AiSelection::AI_NONE;
 }
 
-void Render::Draw(Handle handle)
+void Render::Draw(PortHandle handle)
 {
-  HandleImpl* handleImpl = (HandleImpl*)handle;
+  PortImpl* handleImpl = (PortImpl*)handle;
   SDL_UpdateWindowSurface(handleImpl->sdlWindow);
 }
 
@@ -236,7 +240,7 @@ void Resources::FreeFont(Font font)
   TTF_CloseFont((TTF_Font*)font);
 }
 
-void Render::Text(Handle handle, int x, int y, Font font, const char* text, Color* color, bool center)
+void Render::Text(PortHandle handle, int x, int y, Font font, const char* text, Color* color, bool center)
 {
   const SDL_Color sdlColor = {
     color->GetR(),
@@ -261,13 +265,13 @@ void Render::Text(Handle handle, int x, int y, Font font, const char* text, Colo
   }
 }
 
-void Render::Clear(Handle)
+void Render::Clear(PortHandle)
 {
 }
 
-Image Resources::LoadImage(Handle handle, const char* filename)
+Image Resources::LoadImage(PortHandle handle, const char* filename)
 {
-  HandleImpl* handleImpl = (HandleImpl*)handle;
+  PortImpl* handleImpl = (PortImpl*)handle;
   SDL_Surface *optimizedImage = NULL;
   SDL_Surface *loadedImage = NULL;
 
@@ -290,9 +294,9 @@ void Resources::FreeImage(Image image)
   SDL_FreeSurface((SDL_Surface*)image);
 }
 
-void Render::Blit(Handle handle, int x, int y, Image source, Rect* clip)
+void Render::Blit(PortHandle handle, int x, int y, Image source, Rect* clip)
 {
-  HandleImpl* handleImpl = (HandleImpl*)handle;
+  PortImpl* handleImpl = (PortImpl*)handle;
 
   SDL_Rect offset;
 
