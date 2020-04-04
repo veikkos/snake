@@ -17,46 +17,57 @@ Dijkstra::~Dijkstra() {
 vector<int> Dijkstra::GetPath(int source, int target,
   vector_vertex_vector* cost) {
 
-  int i, u = 0, count, w, min;
   bool done = false;
   vector<int> path;
+  std::vector<int> next_indexes;
+  next_indexes.reserve(matrix_size / 16);
 
-  for (i = 0; i < matrix_size; i++) {
+  for (int i = 0; i < matrix_size; i++) {
     dist[i].second = false;
     dist[i].first = INFINITE;
   }
 
   dist[source].first = 0;
 
-  count = 1;
-
   previous_step.at(source) = -1;
 
-  while (count < matrix_size && !done) {
-    min = INFINITE;
+  next_indexes.emplace_back(source);
 
-    for (w = 0; w < matrix_size; w++) {
-      if (dist[w].first < min && !dist[w].second) {
-        min = dist[w].first;
-        u = w;
+  while (!next_indexes.empty() && !done) {
+
+    int min = INFINITE;
+    int lowest_dist_index;
+
+    for (size_t i = 0; i < next_indexes.size(); ++i) {
+
+      const int distIndex = next_indexes[i];
+      int dist_value = dist[distIndex].first;
+
+      if (dist_value < min) {
+        lowest_dist_index = i;
+        min = dist_value;
       }
     }
 
-    dist[u].second = true;
-    count++;
+    const int dist_index = next_indexes[lowest_dist_index];
+    next_indexes.erase(next_indexes.begin() + lowest_dist_index);
+    dist[dist_index].second = true;
 
-    for (std::vector<vertex>::iterator it = cost->at(u).begin();
-      it != cost->at(u).end(); ++it) {
+    const vertex_vector* vertex_vector = &cost->at(dist_index);
 
-      const vertex& v = (*it);
-      const int c = dist[u].first + v.second;
+    for (size_t i = 0; i < vertex_vector->size(); ++i) {
 
-      if ((c < dist[v.first].first) &&
-        !dist[v.first].second) {
-        dist[v.first].first = c;
-        previous_step.at(v.first) = u;
+      const vertex* cost_vertex = &(*vertex_vector)[i];
+      const int& cost_pos = cost_vertex->first;
+      const int cost_value = dist[dist_index].first + cost_vertex->second;
 
-        if (u == target || v.first == target) {
+      if ((cost_value < dist[cost_pos].first) &&
+        !dist[cost_pos].second) {
+        dist[cost_pos].first = cost_value;
+        previous_step.at(cost_pos) = dist_index;
+        next_indexes.emplace_back(cost_pos);
+
+        if (dist_index == target || cost_pos == target) {
           done = true;
           break;
         }
