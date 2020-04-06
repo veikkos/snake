@@ -18,10 +18,10 @@
 
 #if GBA_BUILD
 #define GRID_SIZE       8
-#define MAX_LENGTH      128
+#define MAX_LENGTH      100
 #else
 #define GRID_SIZE       10
-#define MAX_LENGTH      50000
+#define MAX_LENGTH      (X_AREA * Y_AREA / (2 * GRID_SIZE))
 #endif
 
 #define SNAKE_PAUSE     1
