@@ -13,6 +13,7 @@ using namespace Port;
 
 #define MEM_SRAM ((uint8_t*)0xE000000)
 #define MEM_SRAM_HIGH_SCORE MEM_SRAM
+#define MEM_SRAM_HIGH_SCORE_VERSION (MEM_SRAM_HIGH_SCORE + 3)
 
 enum Images {
   SNAKE = 1,
@@ -30,6 +31,8 @@ struct PortImpl
   Images bg;
   uint16_t framestarttime;
 };
+
+static const uint8_t highScoreVersion = 1;
 
 const unsigned short fontPal[1] __attribute__((aligned(4)))=
 {
@@ -85,15 +88,19 @@ void Port::Deinit(PortHandle handle)
 int Persistent::GetHighScore(PortHandle handle)
 {
   int score = 0;
-  for(size_t i = 0; i<sizeof(score); ++i)
+  for(size_t i = 0; i < sizeof(score) - 1; ++i)
     score += MEM_SRAM_HIGH_SCORE[i] << (i * 8);
-  return score != -1 ? score : 0;
+
+  const uint8_t storedVersion = *MEM_SRAM_HIGH_SCORE_VERSION;
+  return score != -1 && storedVersion == highScoreVersion ? score : 0;
 }
 
 void Persistent::SetHighScore(PortHandle handle, int score)
 {
-  for(size_t i = 0; i<sizeof(score); ++i)
+  for(size_t i = 0; i < sizeof(score) - 1; ++i)
     MEM_SRAM_HIGH_SCORE[i] = (score >> (i * 8)) & 0xFF;
+
+  *MEM_SRAM_HIGH_SCORE_VERSION = highScoreVersion;
 }
 
 void Time::FrameLimit(PortHandle handle)
