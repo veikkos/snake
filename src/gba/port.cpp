@@ -185,6 +185,10 @@ void Resources::FreeFont(Font font)
 void Render::Text(PortHandle handle, int x, int y, Font font, const char* text, const Color* color, bool center)
 {
   PortImpl* handleImpl = (PortImpl*)handle;
+
+  if (handleImpl->active < 1)
+    return;
+
   const size_t len = strlen(text);
 
   if(center) {
@@ -256,6 +260,9 @@ void Render::Blit(PortHandle handle, int x, int y, Image source, Rect* clip)
   PortImpl* handleImpl = (PortImpl*)handle;
 
   if ((int)source < Images::M_BG) {
+    if (handleImpl->active < 1)
+      return;
+
     const int id = clip ? clip->x / GRID_SIZE : 0;
     const int offset = (int)source - 1;
 

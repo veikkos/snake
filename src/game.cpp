@@ -386,20 +386,20 @@ void Game::Render(PortHandle handle, int end) {
 
   RenderSnake(handle);
 
-  if (smartai && render_path && path_mark) {
-    RenderPath(handle);
-  }
-
-  RenderEatables(handle);
-
-  RenderPopups(handle);
-
   if (end) {
     RenderGameOver(handle);
 
     // Re-apply score, so it will be on top.
     RenderScore(handle);
   }
+
+  RenderEatables(handle);
+
+  if (smartai && render_path && path_mark) {
+    RenderPath(handle);
+  }
+
+  RenderPopups(handle);
 
   // Update the screen
   Port::Render::Draw(handle);
