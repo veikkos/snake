@@ -24,6 +24,8 @@ public:
 
   void Move();
 
+  bool IsPaused();
+
 private:
 
   Direction dir;

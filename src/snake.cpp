@@ -134,3 +134,7 @@ void Snake::Move() {
     break;
   }
 }
+
+bool Snake::IsPaused() {
+  return pause > 0;
+}

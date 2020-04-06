@@ -112,19 +112,21 @@ bool Game::Execute(PortHandle handle, game_mode mode) {
 
 
   while (!done) {
-    switch (mode) {
+    if (!snake->IsPaused()) {
+      switch (mode) {
 
-    case SINGLE:
-      GetInput();
-      break;
+      case SINGLE:
+        GetInput();
+        break;
 
-    case SMART_AI:
-      GetAi(smartai);
-      break;
+      case SMART_AI:
+        GetAi(smartai);
+        break;
 
-    case AI:
-      GetAi(ai);
-      break;
+      case AI:
+        GetAi(ai);
+        break;
+      }
     }
 
     end = Update(handle);

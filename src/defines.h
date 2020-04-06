@@ -11,7 +11,7 @@
 #define SCREEN_HEIGHT   480
 #endif
 
-#define FPS             20
+#define FPS             30
 
 #define X_AREA          SCREEN_WIDTH
 #define Y_AREA          SCREEN_HEIGHT
@@ -24,7 +24,7 @@
 #define MAX_LENGTH      50000
 #endif
 
-#define SNAKE_PAUSE     0
+#define SNAKE_PAUSE     1
 
 #define E_DYN_FRAME_AGE FPS
 #define E_DYN_FRAMES    5
