@@ -21,6 +21,7 @@ vector<int> Dijkstra::GetPath(int source, int target,
   vector<int> path;
   std::vector<int> next_indexes;
   next_indexes.reserve(matrix_size / 16);
+  int last_min = INFINITE;
 
   for (int i = 0; i < matrix_size; i++) {
     dist[i].second = false;
@@ -40,30 +41,35 @@ vector<int> Dijkstra::GetPath(int source, int target,
 
     for (size_t i = 0; i < next_indexes.size(); ++i) {
 
-      const int distIndex = next_indexes[i];
-      int dist_value = dist[distIndex].first;
+      const int& dist_index = next_indexes[i];
+      const int& dist_value = dist[dist_index].first;
 
       if (dist_value < min) {
         lowest_dist_index = i;
         min = dist_value;
+        if (min == last_min)
+          break;
       }
     }
+
+    last_min = min;
 
     const int dist_index = next_indexes[lowest_dist_index];
     next_indexes.erase(next_indexes.begin() + lowest_dist_index);
     dist[dist_index].second = true;
 
-    const vertex_vector* vertex_vector = &cost->at(dist_index);
+    const vertex_vector& vertex_vector = cost->at(dist_index);
 
-    for (size_t i = 0; i < vertex_vector->size(); ++i) {
+    for (size_t i = 0; i < vertex_vector.size(); ++i) {
 
-      const vertex* cost_vertex = &(*vertex_vector)[i];
-      const int& cost_pos = cost_vertex->first;
-      const int cost_value = dist[dist_index].first + cost_vertex->second;
+      const vertex& cost_vertex = vertex_vector[i];
+      const int& cost_pos = cost_vertex.first;
+      const int cost_value = dist[dist_index].first + cost_vertex.second;
+      dist_pair& dist_cos = dist[cost_pos];
 
-      if ((cost_value < dist[cost_pos].first) &&
-        !dist[cost_pos].second) {
-        dist[cost_pos].first = cost_value;
+      if ((cost_value < dist_cos.first) &&
+        !dist_cos.second) {
+        dist_cos.first = cost_value;
         previous_step.at(cost_pos) = dist_index;
         next_indexes.emplace_back(cost_pos);
 
