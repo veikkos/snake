@@ -1,11 +1,10 @@
 #include "dijkstra.h"
-
-using namespace std;
+#include <climits>
 
 Dijkstra::Dijkstra(unsigned int m_size) {
 
   matrix_size = m_size;
-  dist = new dist_pair[matrix_size];
+  dist = new Dist[matrix_size];
   previous_step.resize(matrix_size, -1);
 }
 
@@ -14,21 +13,20 @@ Dijkstra::~Dijkstra() {
   delete[] dist;
 }
 
-vector<int> Dijkstra::GetPath(int source, int target,
-  vector_vertex_vector* cost) {
+std::vector<int> Dijkstra::GetPath(int source, int target, Cost *cost) {
 
   bool done = false;
-  vector<int> path;
+  std::vector<int> path;
   std::vector<int> next_indexes;
   next_indexes.reserve(matrix_size / 16);
-  int last_min = INFINITE;
+  int last_min = INT_MAX;
 
   for (int i = 0; i < matrix_size; i++) {
-    dist[i].second = false;
-    dist[i].first = INFINITE;
+    dist[i].done = false;
+    dist[i].value = INT_MAX;
   }
 
-  dist[source].first = 0;
+  dist[source].value = 0;
 
   previous_step.at(source) = -1;
 
@@ -36,13 +34,13 @@ vector<int> Dijkstra::GetPath(int source, int target,
 
   while (!next_indexes.empty() && !done) {
 
-    int min = INFINITE;
+    int min = INT_MAX;
     int lowest_dist_index;
 
     for (size_t i = 0; i < next_indexes.size(); ++i) {
 
       const int& dist_index = next_indexes[i];
-      const int& dist_value = dist[dist_index].first;
+      const int& dist_value = dist[dist_index].value;
 
       if (dist_value < min) {
         lowest_dist_index = i;
@@ -56,26 +54,25 @@ vector<int> Dijkstra::GetPath(int source, int target,
 
     const int dist_index = next_indexes[lowest_dist_index];
     next_indexes.erase(next_indexes.begin() + lowest_dist_index);
-    dist[dist_index].second = true;
+    dist[dist_index].done = true;
 
-    const vertex_vector& vertex_vector = cost->at(dist_index);
+    for (size_t i = 0; i < sizeof(Cost) / sizeof(Cost::values[0]); ++i) {
 
-    for (size_t i = 0; i < vertex_vector.size(); ++i) {
+      const int& cost_pos = cost[dist_index].values[i];
+      if (cost_pos != -1) {
+        const int cost_value = dist[dist_index].value + 1;
+        Dist& dist_cos = dist[cost_pos];
 
-      const vertex& cost_vertex = vertex_vector[i];
-      const int& cost_pos = cost_vertex.first;
-      const int cost_value = dist[dist_index].first + cost_vertex.second;
-      dist_pair& dist_cos = dist[cost_pos];
+        if ((cost_value < dist_cos.value) &&
+          !dist_cos.done) {
+          dist_cos.value = cost_value;
+          previous_step.at(cost_pos) = dist_index;
+          next_indexes.emplace_back(cost_pos);
 
-      if ((cost_value < dist_cos.first) &&
-        !dist_cos.second) {
-        dist_cos.first = cost_value;
-        previous_step.at(cost_pos) = dist_index;
-        next_indexes.emplace_back(cost_pos);
-
-        if (dist_index == target || cost_pos == target) {
-          done = true;
-          break;
+          if (dist_index == target || cost_pos == target) {
+            done = true;
+            break;
+          }
         }
       }
     }

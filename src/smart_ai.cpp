@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 
+#include <cstring>
 #include <stdio.h>
 
 using namespace std;
@@ -10,10 +11,11 @@ using namespace std;
 SmartAi::SmartAi() {
 
   m_size = (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
-  cost.resize(m_size);
-  cost_grid.resize(m_size);
 
-  GenerateGrid(m_size, X_AREA / GRID_SIZE, &cost_grid);
+  cost_grid = new Dijkstra::Cost[m_size];
+  cost = new Dijkstra::Cost[m_size];
+
+  GenerateGrid(m_size, cost_grid);
 
   dijkstra = new Dijkstra(m_size);
 }
@@ -21,6 +23,9 @@ SmartAi::SmartAi() {
 SmartAi::~SmartAi() {
 
   delete dijkstra;
+
+  delete cost_grid;
+  delete cost;
 }
 
 bool SmartAi::BlockHasSnake(Snake *snake, int x, int y) {
@@ -54,7 +59,7 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable) {
   int x_blocks = X_AREA / GRID_SIZE;
   int snake_head, target;
 
-  cost = cost_grid;
+  memcpy(cost, cost_grid, sizeof(Dijkstra::Cost) * m_size);
 
   snake_head = (ai_snake->GetPosY(0) / GRID_SIZE) * \
     x_blocks + ai_snake->GetPosX(0) / \
@@ -67,7 +72,7 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable) {
 
     if (snake_in_block != snake_head) {
 
-      cost.at(snake_in_block).clear();
+      memset(&cost[snake_in_block].values, 0xFF, sizeof(Dijkstra::Cost::values));
     }
   }
 
@@ -75,7 +80,7 @@ void SmartAi::GetDir(Snake *ai_snake, Eatable *cur_eatable) {
   target *= x_blocks;
   target += cur_eatable->GetPosX(0) / GRID_SIZE;
 
-  path = dijkstra->GetPath(snake_head, target, &cost);
+  path = dijkstra->GetPath(snake_head, target, cost);
 
   // If path exist, go for the target
   if (path.size()) {
@@ -354,58 +359,39 @@ bool SmartAi::CollisionIn(Snake *ai_snake, Direction dir) {
   return false;
 }
 
-void SmartAi::GenerateGrid(int matrix_size, int width,
-  Dijkstra::vector_vertex_vector *cost_matrix) {
+void SmartAi::GenerateGrid(int matrix_size, Dijkstra::Cost* cost_matrix) {
 
-  int i = 0;
+  for (int i = 0; i < matrix_size; ++i) {
 
-  for (Dijkstra::vector_vertex_vector::iterator it = cost_matrix->begin();
-    it != cost_matrix->end(); ++it) {
-
-    Dijkstra::vertex v;
-    Dijkstra::vertex_vector *vec = &(*it);
+    Dijkstra::Cost *vec = &cost_matrix[i];
 
     // Right
-    v.first = i + 1;
+    vec->values[0] = i + 1;
 
     if ((i + 1) % (X_AREA / GRID_SIZE) == 0) {
-      v.first -= (X_AREA / GRID_SIZE);
+      vec->values[0] -= (X_AREA / GRID_SIZE);
     }
-
-    v.second = 1;
-    vec->push_back(v);
 
     // Left
-    v.first = i - 1;
+    vec->values[1] = i - 1;
 
     if (i % (X_AREA / GRID_SIZE) == 0) {
-      v.first += (X_AREA / GRID_SIZE);
+      vec->values[1] += (X_AREA / GRID_SIZE);
     }
 
-    v.second = 1;
-    vec->push_back(v);
-
     // Down
-    v.first = i + (X_AREA / GRID_SIZE);
+    vec->values[2] = i + (X_AREA / GRID_SIZE);
 
     if (i > (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE) -
       (X_AREA / GRID_SIZE)) {
-      v.first -= (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
+      vec->values[2] -= (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
     }
-
-    v.second = 1;
-    vec->push_back(v);
 
     // Up
-    v.first = i - (X_AREA / GRID_SIZE);
+    vec->values[3] = i - (X_AREA / GRID_SIZE);
 
     if (i < (X_AREA / GRID_SIZE)) {
-      v.first += (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
+      vec->values[3] += (X_AREA / GRID_SIZE) * (Y_AREA / GRID_SIZE);
     }
-
-    v.second = 1;
-    vec->push_back(v);
-
-    i++;
   }
 }
