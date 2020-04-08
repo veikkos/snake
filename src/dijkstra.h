@@ -15,10 +15,9 @@ public:
 
 private:
 
-  struct Dist { int value; bool done; };
+  struct Dist { int value; bool done; int previous; };
   Dist *dist;
   int matrix_size;
-  std::vector<int> previous_step;
 };
 
 #endif // DIJKSTRA_H_

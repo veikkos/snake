@@ -5,7 +5,6 @@ Dijkstra::Dijkstra(unsigned int m_size) {
 
   matrix_size = m_size;
   dist = new Dist[matrix_size];
-  previous_step.resize(matrix_size, -1);
 }
 
 Dijkstra::~Dijkstra() {
@@ -18,17 +17,18 @@ std::vector<int> Dijkstra::GetPath(int source, int target, Cost *cost) {
   bool done = false;
   std::vector<int> path;
   std::vector<int> next_indexes;
-  next_indexes.reserve(matrix_size / 16);
   int last_min = INT_MAX;
+
+  path.reserve(matrix_size / 32);
+  next_indexes.reserve(matrix_size / 16);
 
   for (int i = 0; i < matrix_size; i++) {
     dist[i].done = false;
     dist[i].value = INT_MAX;
+    dist[i].previous = -1;
   }
 
   dist[source].value = 0;
-
-  previous_step.at(source) = -1;
 
   next_indexes.emplace_back(source);
 
@@ -66,7 +66,7 @@ std::vector<int> Dijkstra::GetPath(int source, int target, Cost *cost) {
         if ((cost_value < dist_cos.value) &&
           !dist_cos.done) {
           dist_cos.value = cost_value;
-          previous_step.at(cost_pos) = dist_index;
+          dist[cost_pos].previous = dist_index;
           next_indexes.emplace_back(cost_pos);
 
           if (dist_index == target || cost_pos == target) {
@@ -79,18 +79,15 @@ std::vector<int> Dijkstra::GetPath(int source, int target, Cost *cost) {
   }
 
   if (done) {
-    int p_ptr = previous_step.at(target);
+    int p_ptr = dist[target].previous;
 
     path.push_back(target);
 
     while (p_ptr != -1 && p_ptr != source) {
       path.push_back(p_ptr);
-      p_ptr = previous_step.at(p_ptr);
+      p_ptr = dist[p_ptr].previous;
     }
   }
-
-  previous_step.resize(0);
-  previous_step.resize(matrix_size, -1);
 
   return path;
 }
