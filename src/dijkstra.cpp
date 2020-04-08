@@ -55,17 +55,16 @@ std::vector<int> Dijkstra::GetPath(int source, int target, Cost *cost) {
     const int dist_index = next_indexes[lowest_dist_index];
     next_indexes.erase(next_indexes.begin() + lowest_dist_index);
     dist[dist_index].done = true;
+    const int value = dist[dist_index].value + 1;
 
     for (size_t i = 0; i < sizeof(Cost) / sizeof(Cost::values[0]); ++i) {
 
       const int& cost_pos = cost[dist_index].values[i];
       if (cost_pos != -1) {
-        const int cost_value = dist[dist_index].value + 1;
         Dist& dist_cos = dist[cost_pos];
 
-        if ((cost_value < dist_cos.value) &&
-          !dist_cos.done) {
-          dist_cos.value = cost_value;
+        if ((value < dist_cos.value) && !dist_cos.done) {
+          dist_cos.value = value;
           dist[cost_pos].previous = dist_index;
           next_indexes.emplace_back(cost_pos);
 
