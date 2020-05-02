@@ -36,7 +36,7 @@ PortHandle Port::Init() {
 
   // Set up the screen
   if (!(handle->sdlWindow = SDL_CreateWindow(
-    "Snake v0.5",
+    "Snake v1.0.0",
     SDL_WINDOWPOS_UNDEFINED,
     SDL_WINDOWPOS_UNDEFINED,
     SCREEN_WIDTH,

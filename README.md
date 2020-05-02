@@ -1,5 +1,7 @@
 # Snake Game (Game Boy Advance, SDL)
 
+[comment]: <> (https://github.com/veikkos/snake)
+
 Simple multiplatform Snake game originally written for PC using SDL
 years ago as a personal game development studying. Since then it was
 ported for Game Boy Advance.
