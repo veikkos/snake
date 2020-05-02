@@ -6,6 +6,21 @@ ported for Game Boy Advance.
 
 ![Screenshot](https://github.com/veikkos/snake/blob/master/media/image.jpg)
 
+## Playing
+
+Snake has simple single player mode where player tries to eat as many
+spawing eatables as possible while growing in size. Mission is to
+avoid collision with itself. Special type of eatables with timer can
+also appear. Red ones give as many points as timer has time
+left. Green/blue ones give always two points and don't grow snake in
+size making them very valuable.
+
+Snake also has two AI modes which serve no real purpose beyond
+personal education.
+
+Snake supports high score which is persitent over gaming sessions
+when playing on GBA.
+
 ## Compiling
 
 ### Debian-like systems
