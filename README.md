@@ -2,6 +2,9 @@
 
 [comment]: <> (https://github.com/veikkos/snake)
 
+[![Downloads](https://img.shields.io/github/downloads/veikkos/snake/total.svg)](https://github.com/veikkos/snake/releases)
+[![Latest release](http://img.shields.io/github/release/veikkos/snake.svg)](https://github.com/veikkos/snake/releases/latest)
+
 Simple multiplatform Snake game originally written for PC using SDL
 years ago as a personal game development studying. Since then it was
 ported for Game Boy Advance.
